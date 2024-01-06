@@ -1,0 +1,51 @@
+<!-- activity_base.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Your main content here -->
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Add your views here for different sections -->
+        <!-- Example Views -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Home View"
+            android:gravity="center"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Search View"
+            android:gravity="center"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Profile View"
+            android:gravity="center"
+            android:textSize="20sp" />
+
+        <!-- Add more views for each bottom navigation item -->
+
+    </ViewFlipper>
+
+    <me.ibrahimsn.lib.SmoothBottomBar
+        android:padding="@dimen/_5sdp"
+        android:id="@+id/bottomNavView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        app:backgroundColor="@android:color/transparent"
+        android:background="@drawable/rounded_app_color"
+        app:menu="@menu/bottomlayout"
+        app:sideMargins="@dimen/_5sdp"
+        app:itemPadding="@dimen/_5sdp"/>
+</RelativeLayout>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/_140sdp"
+    android:layout_height="@dimen/_150sdp"
+    app:cardCornerRadius="@dimen/_5sdp"
+    android:elevation="@dimen/_25sdp"
+    android:layout_marginTop="@dimen/_8sdp"
+    android:layout_marginStart="@dimen/_8sdp"
+    android:layout_marginBottom="@dimen/_8sdp"
+    android:layout_marginEnd="@dimen/_8sdp"
+    android:id="@+id/userCardView"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/ll_staff_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="@dimen/_8sdp"
+        android:paddingLeft="@dimen/_10sdp"
+        android:paddingRight="@dimen/_10sdp"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_10sdp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_110sdp">
+
+            <ImageView
+                android:id="@+id/user_Active"
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="@dimen/_10sdp"
+                android:src="@drawable/icon_popup"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@id/PremiseStaffImages"
+                app:layout_constraintTop_toTopOf="@id/PremiseStaffImages">
+
+            </ImageView>
+
+            <!-- Image with Border -->
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/PremiseStaffImages"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_5sdp"
+                android:scaleType="centerCrop"
+                android:paddingLeft="@dimen/_20sdp"
+                android:paddingRight="@dimen/_20sdp"
+                android:src="@drawable/dummy_proflie"
+                android:visibility="visible"
+                app:civ_border_color="#F3F4F5"
+                app:civ_border_width="5.5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="6dp" />
+            <!-- Camera Icon -->
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/imageViewCameraIcon"
+                android:layout_width="@dimen/_13sdp"
+                android:layout_height="@dimen/_13sdp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="38dp"
+                app:civ_border_color="@color/green1"
+                app:civ_border_width="5.5dp"
+                app:layout_constraintEnd_toEndOf="@id/PremiseStaffImages"
+                app:layout_constraintTop_toTopOf="@id/PremiseStaffImages"
+                tools:ignore="UseAppTint" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+                <com.busydoor.app.customMethods.MyCustomTextView
+                    android:id="@+id/tv_staff_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/dummyUserName"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/llStaffDetails"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:orientation="horizontal">
+
+            <com.busydoor.app.customMethods.MyCustomTextView
+                android:id="@+id/tvStaffName"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:gravity="center"
+                android:text="@string/dummyUserName"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <com.busydoor.app.customMethods.RoundRectCornerImageView
+            android:id="@+id/imStaffImage"
+            android:layout_width="@dimen/_200sdp"
+            android:layout_height="@dimen/_175sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:contentDescription="TODO"
+            android:src="@drawable/dummy_proflie"
+            android:scaleType="fitCenter"
+            android:visibility="visible" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_200sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:background="@drawable/home_list_back"
+            android:padding="@dimen/_2sdp">
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lc_my_goal_activity_log_chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/home_list_back" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+

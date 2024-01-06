@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MyCustomTextView">
+        <attr name="setTypeFace" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="CircularProgressBar">
+        <attr name="maximum" format="float"/>
+        <attr name="progress" format="float"/>
+        <attr name="animateProgress" format="boolean"/>
+        <attr name="progressAnimationDuration" format="integer"/>
+        <attr name="foregroundStrokeColor" format="color"/>
+        <attr name="foregroundStrokeWidth" format="dimension"/>
+        <attr name="drawBackgroundStroke" format="boolean"/>
+        <attr name="backgroundStrokeColor" format="color"/>
+        <attr name="backgroundStrokeWidth" format="dimension"/>
+        <attr name="startAngle" format="float"/>
+        <attr name="indeterminate" format="boolean"/>
+        <attr name="indeterminateMinimumAngle" format="float"/>
+        <attr name="indeterminateSweepAnimationDuration" format="integer"/>
+        <attr name="indeterminateRotationAnimationDuration" format="integer"/>
+        <attr name="foregroundStrokeCap" format="enum">
+            <enum name="butt" value="0"/>
+            <enum name="round" value="1"/>
+            <enum name="square" value="2"/>
+        </attr>
+    </declare-styleable>
+
+
+
+    <declare-styleable name="MyCustomEdittext">
+        <attr name="setFontType" format="string"/>
+    </declare-styleable>
+
+    <!--Button style-->
+    <eat-comment>"Button style"</eat-comment>
+    <declare-styleable name="MyCustomButton">
+        <attr name="setCustomFontType" format="string"/>
+    </declare-styleable>
+
+
+
+
+
+
+
+        <declare-styleable name="AnalogClock">
+            <attr name="dial" format="reference"/>
+            <attr name="hand_hour" format="reference"/>
+            <attr name="hand_minute" format="reference"/>
+        </declare-styleable>
+
+
+
+
+
+
+</resources>

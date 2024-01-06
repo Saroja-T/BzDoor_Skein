@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/_10sdp"
+    android:padding="@dimen/_15sdp"
+    android:layout_gravity="center"
+    android:layout_marginStart="@dimen/_15sdp"
+    android:layout_marginEnd="@dimen/_15sdp"
+    android:background="@drawable/home_list_back"
+    android:showDividers="middle">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/dialog_tittle_text"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/dialog_text"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_48sdp"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/_1sdp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        style="?android:buttonBarStyle">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_38sdp"
+            android:id="@+id/cancel_action"
+            android:layout_weight="1"
+            android:elevation="@dimen/_3sdp"
+            android:text="NO, CANCEL"
+            android:background="@drawable/button_shapes_with_white_color"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:layout_marginEnd="@dimen/_5sdp"
+            style="?android:buttonBarButtonStyle"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:id="@+id/ok_action"
+            android:layout_height="@dimen/_38sdp"
+            android:layout_weight="1"
+            android:elevation="@dimen/_3sdp"
+            android:text="YES, PROCEED"
+            android:background="@drawable/button_shapes_with_app_color"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            style="?android:buttonBarButtonStyle"/>
+    </LinearLayout>
+
+</LinearLayout>
+

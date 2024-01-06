@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/_5sdp"
+    android:gravity="center"
+    android:background="@drawable/home_list_back"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/_1sdp"
+    android:elevation="@dimen/_10sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_1sdp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/colorGreyLight"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ActivityImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_margin="@dimen/_10sdp"
+                app:civ_border_color="@color/colorGreyLight"
+                app:civ_border_width="1.5dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:layout_marginStart="@dimen/_1sdp">
+
+                <com.busydoor.app.customMethods.MyCustomTextView
+                    android:id="@+id/Activity_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:padding="@dimen/_3sdp"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="bold"
+                    tools:text="text one" />
+
+                <com.busydoor.app.customMethods.MyCustomTextView
+                    android:id="@+id/ActivityTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_1sdp"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="normal"
+                    tools:text="text one" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/ImageShowHideBtn"
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:padding="@dimen/_9sdp"
+                android:layout_gravity="center"
+                android:src="@drawable/down_arrow"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="normal"
+                tools:text="text one"
+                android:contentDescription="TODO" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/showImage"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_300sdp"
+        android:orientation="horizontal"
+        tools:ignore="DuplicateIds"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <com.busydoor.app.customMethods.RoundRectCornerImageView
+                android:id="@+id/showActivityImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:contentDescription="TODO"
+                android:padding="@dimen/_5sdp"
+                android:scaleType="centerCrop"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

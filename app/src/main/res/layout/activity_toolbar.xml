@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/app_color"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <com.busydoor.app.customMethods.MyCustomTextView
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Activities"
+        android:textSize="@dimen/_15sdp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_marginRight="@dimen/_150sdp"
+        android:id="@+id/toolbar_name"
+        android:layout_height="match_parent"/>
+    <ImageView
+        android:id="@+id/close_activity"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_37sdp"
+        android:padding="@dimen/_13sdp"
+        android:src="@drawable/ic_close"
+        android:contentDescription="TODO" />
+
+</LinearLayout>

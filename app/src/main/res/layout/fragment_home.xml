@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.HomeFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+            <!--    Your content goes here    -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/userProfileView"
+                    layout="@layout/activity_user_profileview"
+                    android:visibility="visible" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_85sdp"
+                    android:orientation="vertical"
+                    android:visibility="visible"
+                    android:padding="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_8sdp">
+                    <ImageView
+                        android:id="@+id/iv_calendar_previous"
+                        android:layout_width="@dimen/_25sdp"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="1dp"
+                        android:visibility="gone"
+                        android:contentDescription="previous"
+                        android:src="@drawable/icon_back"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/iv_calendar_next"
+                        android:layout_width="@dimen/_18sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginEnd="10dp"
+                        android:contentDescription="next"
+                        android:visibility="gone"
+                        android:src="@drawable/icon_right_arrow"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_date_month"
+                        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0"
+                        tools:text="December 2020"
+                        tools:ignore="MissingConstraints" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_date_month" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <LinearLayout
+                    android:id="@+id/donutView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_330sdp"
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/_70sdp"
+                    android:visibility="visible">
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/_360sdp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:weightSum="1">
+                        <LinearLayout
+                            android:layout_width="@dimen/_340sdp"
+                            android:id="@+id/chart3"
+                            style="@style/clock_view_ll"
+                            android:background="@drawable/pie_chart_bg_box">
+
+                            <RelativeLayout
+                                android:layout_width="@dimen/_310sdp"
+                                android:layout_height="match_parent"
+                                android:id="@+id/chart_relative"
+                                style="@style/pie_chart_rl">
+
+                                <com.github.mikephil.charting.charts.PieChart
+                                    android:id="@+id/chart1"
+                                    android:layout_width="@dimen/_310sdp"
+                                    android:layout_height="@dimen/_350sdp"/>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="@dimen/_80sdp"
+                                    android:layout_weight="0.5"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:orientation="vertical"
+                                    android:layout_marginBottom="@dimen/_70sdp"
+                                    android:gravity="center" >
+                                    <com.busydoor.app.customMethods.MyCustomTextView
+                                        android:layout_width="wrap_content"
+                                        android:textColor="@color/black"
+                                        android:textStyle="bold"
+                                        android:textSize="@dimen/_16sdp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/_10sdp"
+                                        android:id="@+id/centerText">
+
+                                    </com.busydoor.app.customMethods.MyCustomTextView>
+
+                                    <ImageView
+                                        android:id="@+id/requestOffcite"
+                                        android:layout_width="@dimen/_105sdp"
+                                        android:layout_height="50dp"
+                                        android:visibility="gone">
+
+                                    </ImageView>
+                                </LinearLayout>
+
+                            </RelativeLayout>
+                            <LinearLayout
+                                android:layout_width="@dimen/_300sdp"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:layout_marginTop="@dimen/_5sdp">
+
+                                <LinearLayout
+                                    android:id="@+id/checkInDetails"
+                                    android:layout_width="@dimen/_110sdp"
+                                    android:layout_height="@dimen/_70sdp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="@dimen/_5sdp"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:visibility="visible">
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="@dimen/_16sdp"
+                                        android:layout_marginBottom="@dimen/_2sdp"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:layout_width="@dimen/_8sdp"
+                                            android:layout_height="@dimen/_8sdp"
+                                            android:layout_gravity="right|center"
+                                            android:layout_marginTop="@dimen/_2sdp"
+                                            android:background="@drawable/icon_checkouttime"
+                                            android:letterSpacing="0.1"></TextView>
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="@dimen/_5sdp"
+                                            android:layout_marginTop="@dimen/_2sdp"
+                                            android:layout_weight="1"
+                                            android:gravity="center"
+                                            android:letterSpacing="0.05"
+                                            android:maxLength="24"
+                                            android:text="Check In"
+                                            android:textColor="@color/app_color"
+                                            android:textStyle="normal" />
+
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="@dimen/_18sdp"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:layout_width="@dimen/_10sdp"
+                                            android:layout_height="@dimen/_10sdp"
+                                            android:layout_gravity="right|center"
+                                            android:letterSpacing="0.1"
+                                            android:visibility="gone"></TextView>
+
+                                        <TextView
+                                            android:id="@+id/checkInTime"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="@dimen/_5sdp"
+                                            android:layout_weight="1"
+                                            android:gravity="center"
+                                            android:letterSpacing="0.08"
+                                            android:maxLength="24"
+                                            android:text=" --:-- "
+                                            android:textColor="#000000"
+                                            android:textSize="20sp"
+                                            android:textStyle="normal" />
+
+                                    </LinearLayout>
+
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="@dimen/_70sdp"
+                                    android:layout_margin="@dimen/_10sdp"
+                                    android:layout_marginStart="@dimen/_5sdp"
+                                    android:background="@drawable/line_bg">
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/checkOutDetails"
+                                    android:layout_width="@dimen/_110sdp"
+                                    android:layout_height="@dimen/_70sdp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="@dimen/_5sdp"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:visibility="visible">
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="@dimen/_18sdp"
+                                        android:layout_marginBottom="@dimen/_2sdp"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:layout_width="@dimen/_8sdp"
+                                            android:layout_height="@dimen/_8sdp"
+                                            android:layout_gravity="right|center"
+                                            android:layout_marginTop="@dimen/_2sdp"
+                                            android:background="@drawable/icon_check_intime"
+                                            android:letterSpacing="0.1"></TextView>
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="@dimen/_5sdp"
+                                            android:layout_marginTop="@dimen/_2sdp"
+                                            android:layout_weight="1"
+                                            android:gravity="center"
+                                            android:letterSpacing="0.05"
+                                            android:maxLength="24"
+                                            android:text="Check Out"
+                                            android:textColor="@color/app_color"
+                                            android:textStyle="normal" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="@dimen/_18sdp"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:layout_width="@dimen/_10sdp"
+                                            android:layout_height="@dimen/_10sdp"
+                                            android:layout_gravity="right|center"
+                                            android:letterSpacing="0.1"
+                                            android:visibility="gone"></TextView>
+
+                                        <TextView
+                                            android:id="@+id/checkOutTime"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="@dimen/_5sdp"
+                                            android:layout_weight="1"
+                                            android:gravity="center"
+                                            android:letterSpacing="0.08"
+                                            android:maxLength="24"
+                                            android:text=" --:-- "
+                                            android:textColor="#000000"
+                                            android:textSize="20sp"
+                                            android:textStyle="normal" />
+                                    </LinearLayout>
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+        <!--  Bottom nav goes here  -->
+    </LinearLayout>
+
+</FrameLayout>

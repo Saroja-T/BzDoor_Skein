@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/_5sdp"
+    tools:context=".activity.RequestOffsiteActivity">
+
+    <include
+        android:id="@+id/requestOffcite"
+        layout="@layout/all_request_offisite_toolbar">
+    </include>
+    <LinearLayout
+        android:id="@+id/calendarIcon"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/offsiteSelectedDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="Fri -13th Oct,2023" />
+        <ImageView
+            android:padding="@dimen/_1sdp"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="match_parent"
+            android:src="@drawable/icon_calendartoday" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_width="match_parent"
+        android:padding="@dimen/_5sdp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/allRequestHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:text="All Requests" />
+        <ImageView
+            android:id="@+id/RequestOffsiteIcon"
+            android:padding="@dimen/_1sdp"
+            android:layout_weight="1"
+            android:layout_width="@dimen/_28sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:src="@drawable/icon_request" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@drawable/verticals_line">
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_requestAll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        tools:listitem="@layout/activity_all_requests_offsite_items">>
+
+    </androidx.recyclerview.widget.RecyclerView>
+    <LinearLayout
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_width="match_parent"
+        android:padding="@dimen/_5sdp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/noData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="@dimen/_16sdp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+
+</LinearLayout>

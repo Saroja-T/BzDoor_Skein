@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appBackground"
+    android:fillViewport="true"
+    android:orientation="vertical"
+    tools:context=".activity.LoginHomeActivity">
+
+    <LinearLayout
+        android:id="@+id/ll_parent_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/_300sdp"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_gravity="center"
+            android:src="@drawable/otp_image"
+            android:layout_marginTop="@dimen/_30sdp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.busydoor.app.customMethods.MyCustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/otpHeader"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_22sdp" />
+
+            <com.busydoor.app.customMethods.MyCustomTextView
+                android:layout_width="@dimen/_210sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/otpMessage"
+                android:textColor="#949191"
+                android:textSize="@dimen/_9sdp" />
+
+
+            <LinearLayout
+                android:id="@+id/otpTextView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_38sdp"
+                android:layout_marginStart="@dimen/_25sdp"
+                android:layout_weight="1"
+                android:background="@drawable/textfield_shapes"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_25sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="28dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:gravity="start|center"
+                            android:background="@drawable/lock_outline"
+                            android:padding="@dimen/_8sdp" />
+
+                        <com.busydoor.app.customMethods.MyCustomEdittext
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_40sdp"
+                            android:backgroundTint="@color/appBackground"
+                            android:digits="1234567890"
+                            android:layout_marginStart="@dimen/_1sdp"
+                            android:hint="@string/enterCode"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
+                            android:gravity="center|left"
+                            android:layout_gravity="center"
+                            android:id="@+id/OTP"
+                            android:padding="@dimen/_5sdp"
+                            android:textColor="@color/black"
+                            android:textColorHint="#CCCCCC"
+                            android:textSize="@dimen/_10sdp"
+                            android:maxLength="6" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <com.busydoor.app.customMethods.MyCustomButton
+                android:id="@+id/btnOtpVerify"
+                android:layout_width="@dimen/_265sdp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/app_color"
+                android:background="@drawable/button_shapes"
+                android:layout_marginTop="@dimen/_25sdp"
+                android:gravity="center"
+                android:stateListAnimator="@animator/selector_animator"
+                android:text="VERIFY"
+                android:outlineAmbientShadowColor="@color/black"
+                android:shadowRadius="10"
+                android:shadowColor="@color/black"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12sdp" />
+
+            <LinearLayout
+                android:id="@+id/resendCodeView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:gravity="center_horizontal">
+
+                <com.busydoor.app.customMethods.MyCustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/resendCode"
+                    android:textColor="@color/app_color"
+                    android:visibility="visible"
+                    android:background="@color/white"
+                    android:textSize="@dimen/_10sdp" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="20sp"
+                    android:id="@+id/resendCode"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:src="@drawable/icon_resend">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+            </LinearLayout>
+            <com.busydoor.app.customMethods.MyCustomTextView
+                android:id="@+id/timerChange"
+                android:layout_width="@dimen/_210sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:gravity="center"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/resendHint"
+                android:textColor="#949191"
+                android:textSize="@dimen/_9sdp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

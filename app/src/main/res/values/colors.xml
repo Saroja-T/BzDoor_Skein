@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#00A2E7</color>
+    <color name="purple_500">#00A2E7</color>
+    <color name="purple_700">#00A2E7</color>
+    <color name="teal_200">#00A2E7</color>
+    <color name="teal_700">#00A2E7</color>
+    <color name="black">#FF000000</color>
+    <color name="black1">#999999</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#F13F3F</color>
+    <color name="green">#A8A4A4</color>
+    <color name="green1">#918E8E</color>
+    <color name="linegreen1">#3ADB73</color>
+    <color name="app_color">#4355E3</color>
+    <color name="dashboard_In">#3ADB73</color>
+    <color name="background">#00A2E7</color>
+    <color name="location_text_color">#F0BC53</color>
+    <color name="d_seleted_back_color">#DCEFFE</color>
+    <color name="text_color">#949191</color>
+
+    <color name="colorGreyLight">#e6e6e6</color>
+    <color name="colorGreyLightOne">#B1B0B0</color>
+
+    <color name="firstBox">#4CC0A6</color>
+    <color name="thirdBox">#77B1DF</color>
+    <color name="thirdBoxDark">#225f91</color>
+    <color name="fourthBox">#A694E8</color>
+    <color name="finishedColor">#3BE38E</color>
+    <color name="unfinishedColor">#F3F3F3</color>
+
+    <!--Bar Colors-->
+    <color name="greenBar">#4DE4A1</color>
+    <color name="yellowBar">#FCE181</color>
+    <color name="redBar">#FEA5A5</color>
+    <!--<color name="fifthBox">#c8848c</color>
+    <color name="fifthBoxDark">#6a2f36</color>
+    <color name="sixthBox">#e89e52</color>
+    <color name="sixthBoxDark">#b56617</color>-->
+    <color name="fifthBox">#e89e52</color>
+    <color name="sixthBox">#c8848c</color>
+    <color name="sixthBoxDark">#6a2f36</color>
+
+    <color name="signInBox">#669999</color>
+    <color name="signOutBox">#df9fbf</color>
+
+    <color name="pie_offline">#4fb3e8</color>
+    <color name="pie_closed">#eb6e7a</color>
+    <color name="pie_opened">#99cf43</color>
+    <color name="online">#36C06D</color>
+    <color name="offline">#F75632</color>
+    <color name="download">#0044cc</color>
+    <color name="generate">#33cc33</color>
+
+
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="appBackground">#FFFFFF</color>
+
+
+    <color name="pending">#E98919</color>
+    <color name="approved">#16984A</color>
+    <color name="reject">#F01B1B</color>
+    <color name="dot_color">#3143D0</color>
+
+
+</resources>

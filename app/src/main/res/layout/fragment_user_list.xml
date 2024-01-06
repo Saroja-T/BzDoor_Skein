@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.UserListFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <include
+            android:id="@+id/userProfileView"
+            layout="@layout/activity_user_profileview"></include>
+        <androidx.core.widget.NestedScrollView
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="vertical">
+                <com.busydoor.app.customMethods.NonscrollRecyclerview
+                    android:id="@+id/rvUserList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
+
+                </com.busydoor.app.customMethods.NonscrollRecyclerview>
+
+                <TextView
+                    android:layout_marginTop="@dimen/_190sdp"
+                    android:id="@+id/userNodataView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/noData"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_20sdp"
+                    android:visibility="gone">
+
+                </TextView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fab"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="TODO">
+
+        <com.getbase.floatingactionbutton.AddFloatingActionButton
+            android:id="@+id/first"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/icon_req_alarm_"
+            app:fab_icon="@drawable/icon_req_alarm_">
+
+        </com.getbase.floatingactionbutton.AddFloatingActionButton>
+        <com.getbase.floatingactionbutton.AddFloatingActionButton
+            android:id="@+id/second"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/icon_req_alarm_"
+            app:fab_icon="@drawable/icon_users">
+        </com.getbase.floatingactionbutton.AddFloatingActionButton>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+
+</FrameLayout>

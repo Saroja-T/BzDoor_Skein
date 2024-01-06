@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/myActivitiesPageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+    <include
+        android:id="@+id/ActivityTabBar"
+        layout="@layout/activity_toolbar"
+        android:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ActivityListview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:visibility="visible"
+        android:orientation="vertical"
+        tools:listitem="@layout/myactivity_list_layout" />
+
+
+    <com.busydoor.app.customMethods.MyCustomTextView
+        android:id="@+id/ActivityNoData"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="@string/noData"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16sdp"
+        android:visibility="gone"/>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

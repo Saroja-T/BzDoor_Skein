@@ -1,0 +1,154 @@
+{
+  "project_info": {
+    "project_number": "309944173023",
+    "project_id": "bzboss",
+    "storage_bucket": "bzboss.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309944173023:android:5a55bac76eff45ca48446a",
+        "android_client_info": {
+          "package_name": "com.busydoor.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309944173023-r2l7ba8r9n0fahc32ta8d9u3r0qlqs3d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.busydoor.app",
+            "certificate_hash": "a05d74ac06d813f88936f9bb09a480e8341ac2f3"
+          }
+        },
+        {
+          "client_id": "309944173023-ir2mvsh1q7d810b3mvqluq80kgkvduhk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuWcF3LJn-863z3Np4kKb5w9dZjRo3Lsg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309944173023-dgsaj2roq96aovgveo3hl8r86816lvd3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "309944173023-4jdb88l5rrd49hjaubhvt1bb5jdlqkf1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.theadeptz.busydoor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309944173023:android:de9307bf054ded8248446a",
+        "android_client_info": {
+          "package_name": "com.bzboss.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309944173023-0o7q26dv2mcia3ms6vu0reto1e34r49s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bzboss.app",
+            "certificate_hash": "8f3567d41f49d30f15dd56ec34f39b18d8db4ecd"
+          }
+        },
+        {
+          "client_id": "309944173023-1l2bsk1v8uuds684gjnphu9u9geindga.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bzboss.app",
+            "certificate_hash": "b37df81bec7dc11330dc26b9a65c29d198c7c7f3"
+          }
+        },
+        {
+          "client_id": "309944173023-ffa5j62ogmmpgp8a3i7ualob730dnq16.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bzboss.app",
+            "certificate_hash": "a05d74ac06d813f88936f9bb09a480e8341ac2f3"
+          }
+        },
+        {
+          "client_id": "309944173023-ieoi19q545i6l7dsqn3mou5eig5jic8a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bzboss.app",
+            "certificate_hash": "039110188a2fe08ef5efa4cb5593ee079a8a4edc"
+          }
+        },
+        {
+          "client_id": "309944173023-mnvto3k74a7i2p69cd0qobs45i7r6ptu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bzboss.app",
+            "certificate_hash": "045b07f10bf921f400e5bdcb9c56ef0e4619da3b"
+          }
+        },
+        {
+          "client_id": "309944173023-ou1i99ir5eg4d71pnm0t3qgggd5jb0ua.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bzboss.app",
+            "certificate_hash": "33e1dc2e1e9a132c46ae877fc01955f3be32abeb"
+          }
+        },
+        {
+          "client_id": "309944173023-p4qk26epscroel932oedev06hto43un0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bzboss.app",
+            "certificate_hash": "3274a6f354add1456b47e26391489d8d91fc4368"
+          }
+        },
+        {
+          "client_id": "309944173023-tvhj8o16s89c67lqvuch6joll4jhesjk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bzboss.app",
+            "certificate_hash": "85e0a4131d76feec71d1ab1a9bf47300fc1fccff"
+          }
+        },
+        {
+          "client_id": "309944173023-ir2mvsh1q7d810b3mvqluq80kgkvduhk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuWcF3LJn-863z3Np4kKb5w9dZjRo3Lsg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309944173023-dgsaj2roq96aovgveo3hl8r86816lvd3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "309944173023-4jdb88l5rrd49hjaubhvt1bb5jdlqkf1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.theadeptz.busydoor"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

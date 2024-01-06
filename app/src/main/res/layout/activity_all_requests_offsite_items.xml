@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/_5sdp"
+    android:id="@+id/rvRequestAllOffsite"
+    tools:context=".activity.RequestOffsiteActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/reason_ui_view"
+            android:layout_width="10dp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:visibility="gone"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:textStyle="normal"
+                android:layout_gravity="center"
+                android:textColor="@color/text_color"
+                android:layout_marginTop="@dimen/_22sdp"
+                android:background="@drawable/rounded_blue"/>
+            <ImageView
+            android:layout_width="@dimen/_1sdp"
+            android:layout_height="@dimen/_33sdp"
+            android:textStyle="normal"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            android:textColor="@color/text_color"
+            android:background="@drawable/offsite_line"/>
+            <ImageView
+            android:layout_width="@dimen/_6sdp"
+            android:layout_height="@dimen/_6sdp"
+            android:textStyle="normal"
+            android:layout_gravity="center"
+                android:visibility="visible"
+            android:textColor="@color/text_color"
+            android:background="@drawable/rounded_blue"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/noViewReason"
+            android:layout_width="10dp"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:textStyle="normal"
+                android:layout_gravity="center"
+                android:textColor="@color/text_color"
+                android:layout_marginTop="@dimen/_22sdp"
+                android:background="@drawable/rounded_blue"/>
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:textColor="@color/text_color"
+                android:text=""
+                android:textSize="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_1sdp"/>
+            <TextView
+                android:id="@+id/offsiteTotalTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_2sdp"
+                android:textColor="@color/text_color"/>
+            <ImageView
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/_3sdp"
+                android:src="@drawable/icon_req_alarm_"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="right|center_vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/approvalStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sdp"
+                    android:layout_marginEnd="@dimen/_8sdp" />
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/et_ReasonView"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/approvedByDateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:textSize="@dimen/_9sdp"
+                android:textColor="@color/text_color"
+                android:layout_marginStart="@dimen/_3sdp"
+                android:text="Mariam John on 12th June 2023" />
+            <TextView
+                android:id="@+id/viewAppovedCommand"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/_3sdp"
+                android:visibility="gone"
+                android:text="VIEW REASON"
+                android:textStyle="bold"
+                android:textSize="@dimen/_8sdp"
+                android:layout_marginStart="@dimen/_3sdp"
+                android:textColor="#FF5B27"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_30sdp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/requestType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="normal"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:layout_marginEnd="@dimen/_5sdp"/>
+        <TextView
+            android:id="@+id/requestedOffsiteTime"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:padding="@dimen/_8sdp"
+            android:gravity="center"
+            android:textSize="@dimen/_10sdp"
+            android:textStyle="bold"
+            android:background="@drawable/pm_bg"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:textColor="#2B70F6"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/secondcommentsHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="normal"
+            android:textColor="@color/black"
+            android:text="Comments" />
+        <LinearLayout
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:padding="@dimen/_5sdp"
+            android:gravity="center"
+            android:backgroundTint="#ECEDFA"
+            android:background="@drawable/home_list_back"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/Off_time_comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                android:textStyle="normal"
+                android:text="Hi, Welcome"
+                android:textColor="@color/text_color">
+
+            </TextView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@drawable/verticals_line">
+    </LinearLayout>
+
+</LinearLayout>

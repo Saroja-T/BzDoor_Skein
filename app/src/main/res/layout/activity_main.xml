@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/app_color"
+    android:gravity="center">
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="@dimen/_280sdp"
+        android:layout_height="@dimen/_400sdp"
+        android:src="@drawable/login_image"/>
+</LinearLayout>

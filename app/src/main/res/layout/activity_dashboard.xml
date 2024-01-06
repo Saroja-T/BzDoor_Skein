@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/_5sdp"
+    tools:context=".activity.DashboardActivity">
+
+    <LinearLayout
+        android:id="@+id/ll_home_dashbord"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+        <include
+            android:id="@+id/DashboardAppbar"
+            layout="@layout/dashboard_toolbar" />
+        <View
+            android:layout_width="@dimen/_313sdp"
+            android:layout_height="0.9dp"
+            android:background="#B0AEAE"
+            android:layout_marginTop="1dp"
+            />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/PremiseListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:visibility="visible"
+            tools:listitem="@layout/dashboard_list_items" />
+
+
+        <com.busydoor.app.customMethods.MyCustomTextView
+            android:id="@+id/premiseNoData"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:gravity="center"
+            android:text="@string/waitingPermissionAccess"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16sdp"
+            android:visibility="gone"/>
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
