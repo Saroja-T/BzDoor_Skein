@@ -25,7 +25,6 @@ import com.busydoor.app.customMethods.encode
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.customMethods.key
 import com.busydoor.app.databinding.FragmentYourActivityBinding
-import com.busydoor.app.model.RequestAllOffsiteResponse
 import com.busydoor.app.model.UserActivities
 import com.busydoor.app.model.UserModel
 import com.google.gson.Gson
@@ -64,7 +63,7 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
         cryptLib = CryptLib2()
         premiseID= activity?.intent?.getStringExtra("premise_id")
         userSelectedDate= activity?.intent?.getStringExtra("userSelectDate")
-        displayCurrentDate = convertDate(userSelectedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
+//        displayCurrentDate = convertDate(userSelectedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
 //        binding.offsiteSelectedDate.text= displayCurrentDate
         return root
     }
@@ -73,19 +72,17 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.e("setHomeOfferData","")
-        getAllActivities("2024-01-09")
+//        getAllActivities("2024-01-09")
 
     }
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
-        getAllActivities("2024-01-09")
+//        getAllActivities("2024-01-09")
 
     }
 
-    private fun setHomeOfferData(
-        data: ArrayList<UserActivities.Data>
-    ) {
+    private fun setHomeOfferData(data: ArrayList<UserActivities.Data.Activitiesdetails>) {
         Log.e("setHomeOfferData","")
          if (data.size > 0) {
         binding.rvYourActivities.setHasFixedSize(true)
@@ -163,7 +160,7 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
                 requestAllDataGet = apiResponseManager.response as UserActivities
                 if (requestAllDataGet!!.statusCode == SUCCESS_CODE) {
                     if (requestAllDataGet!!.data != null) {
-                        setHomeOfferData(requestAllDataGet!!.data as ArrayList<UserActivities.Data>)
+                        setHomeOfferData(requestAllDataGet!!.data!!.activitiesdetails as ArrayList<UserActivities.Data.Activitiesdetails>)
                         Log.e("zzzzzzzz",requestAllDataGet!!.data.toString())
                     } else {
                         // no data found

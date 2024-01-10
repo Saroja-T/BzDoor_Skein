@@ -10,9 +10,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDialog
 import com.busydoor.app.R
-import com.busydoor.app.activity.ActivityBase
 import com.busydoor.app.activity.LoginHomeActivity
-import com.busydoor.app.activity.MacAddressActivity
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.Utils.dismissDialog
 import com.busydoor.app.customMethods.getProgressDialog

@@ -2,7 +2,6 @@
 package com.busydoor.app.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
@@ -258,7 +257,6 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
     fun getUserListRequest() {
         try {
             if (isOnline(requireContext())) {
-
                 Log.e("apiCalled", " yes")
                 Log.d("BDApplication", "the p ${"requestType".toString()}")
                 ApiRequest(

@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import com.busydoor.app.R
 import com.busydoor.app.activity.CryptLib2
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
@@ -48,7 +47,7 @@ class RequestFragment : Fragment(), ApiResponseInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            getAllActivities("2024-01-09")
+//            getAllActivities("2024-01-09")
         }
     }
 
@@ -68,14 +67,14 @@ class RequestFragment : Fragment(), ApiResponseInterface {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getAllActivities("2024-01-09")
+//        getAllActivities("2024-01-09")
 
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
-        getAllActivities("2024-01-09")
+//        getAllActivities("2024-01-09")
 
     }
 

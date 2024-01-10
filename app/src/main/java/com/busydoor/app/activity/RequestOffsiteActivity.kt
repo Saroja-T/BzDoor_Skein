@@ -1,6 +1,5 @@
 package com.busydoor.app.activity
 
-import android.R
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -14,7 +13,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.busydoor.app.apiService.ApiInitialize

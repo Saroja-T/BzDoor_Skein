@@ -36,7 +36,6 @@ import com.busydoor.app.customMethods.forceResendingTokenGbl
 import com.busydoor.app.customMethods.gContext
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.databinding.ActivityOtpVerifyBinding
-import com.google.android.material.internal.ContextUtils.getActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential

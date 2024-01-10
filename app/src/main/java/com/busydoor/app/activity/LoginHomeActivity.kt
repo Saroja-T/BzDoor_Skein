@@ -1,7 +1,6 @@
 package com.busydoor.app.activity
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +8,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.busydoor.app.R
 import com.busydoor.app.apiService.ApiInitialize
-import com.busydoor.app.apiService.ApiInitialize.TERM_AND_CONDITION
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager

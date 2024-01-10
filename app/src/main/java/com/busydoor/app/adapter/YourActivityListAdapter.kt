@@ -17,7 +17,7 @@ import com.busydoor.app.model.UserActivities
 
 class YourActivityListAdapter(
     private val context: Context,
-     private val activityList: ArrayList<UserActivities.Data>,
+     private val activityList: ArrayList<UserActivities.Data.Activitiesdetails>,
 ) : RecyclerView.Adapter<YourActivityListAdapter.InnerViewHolder>() {
     private val TAG = "HomeListAdapter"
 
@@ -36,32 +36,32 @@ class YourActivityListAdapter(
     @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: InnerViewHolder, position: Int) {
         holder.bind(position, activityList)
-        val model: UserActivities.Data = activityList[position]
+        val model: UserActivities.Data.Activitiesdetails = activityList[position]
 
         val circularProgressDrawable = CircularProgressDrawable(context)
         circularProgressDrawable.strokeWidth = 5f
         circularProgressDrawable.centerRadius = 30f
         circularProgressDrawable.backgroundColor= R.color.app_color
         circularProgressDrawable.start()
-        Log.d(TAG, "onBindViewHolder: "+model.activitiesdetails)
+        Log.d(TAG, "onBindViewHolder: $model")
 //
-//        if(model.activitiesdetails !=null) {
-//            Log.e("adapterview",model.photo.toString())
-//
-//            Glide.with(context)
-//                .load(model.photo)
-//                .placeholder(circularProgressDrawable)
-//                .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                .skipMemoryCache(true)
-//                .into(holder.cIvImage)
-//        }else{
-//            Glide.with(context)
-//                .load(R.drawable.icon_users)
-//                .placeholder(circularProgressDrawable)
-//                .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                .skipMemoryCache(true)
-//                .into(holder.cIvImage)
-//        }
+        if(model.image !=null) {
+            Log.e("adapterview",model.image.toString())
+
+            Glide.with(context)
+                .load(model.image)
+                .placeholder(circularProgressDrawable)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(holder.cIvImage)
+        }else{
+            Glide.with(context)
+                .load(R.drawable.icon_users)
+                .placeholder(circularProgressDrawable)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(holder.cIvImage)
+        }
 //
 //
 //        holder.tvMessage.text = model.name
@@ -102,7 +102,7 @@ class YourActivityListAdapter(
 
         fun bind(
             position: Int,
-             treatmentName: ArrayList<UserActivities.Data>
+             treatmentName: ArrayList<UserActivities.Data.Activitiesdetails>
         ) {
 
         }

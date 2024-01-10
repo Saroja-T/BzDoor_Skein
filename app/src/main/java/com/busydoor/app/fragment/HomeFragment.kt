@@ -30,7 +30,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
 import com.busydoor.app.activity.ActivityBase
 import com.busydoor.app.activity.AllOffsiteRequestActivity
-import com.busydoor.app.activity.CreateNewUserActivity
 import com.busydoor.app.activity.CryptLib2
 import com.busydoor.app.activity.EditProfileActivity
 import com.busydoor.app.activity.RequestOffsiteActivity

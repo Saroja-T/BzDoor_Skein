@@ -14,10 +14,27 @@ data class UserActivities (
 
         @SerializedName("userdetails"       ) var userdetails       : Userdetails?              = Userdetails(),
         @SerializedName("premisedetails"    ) var premisedetails    : Premisedetails?           = Premisedetails(),
-        @SerializedName("activitiesdetails" ) var activitiesdetails : ArrayList<String>         = arrayListOf(),
+        @SerializedName("activitiesdetails" ) var activitiesdetails : ArrayList<Activitiesdetails> = arrayListOf(),
         @SerializedName("offsitedetails"    ) var offsitedetails    : ArrayList<Offsitedetails> = arrayListOf()
 
     ){
+        data class Activitiesdetails (
+
+            @SerializedName("notification_id" ) var notificationId : Int?    = null,
+            @SerializedName("premise_id"      ) var premiseId      : Int?    = null,
+            @SerializedName("user_id"         ) var userId         : Int?    = null,
+            @SerializedName("datetime"        ) var datetime       : String? = null,
+            @SerializedName("type"            ) var type           : String? = null,
+            @SerializedName("title"           ) var title          : String? = null,
+            @SerializedName("file_name"       ) var fileName       : String? = null,
+            @SerializedName("message"         ) var message        : String? = null,
+            @SerializedName("image"           ) var image          : String? = null,
+            @SerializedName("url"             ) var url            : String? = null,
+            @SerializedName("created_at"      ) var createdAt      : String? = null,
+            @SerializedName("updated_at"      ) var updatedAt      : String? = null,
+            @SerializedName("is_send"         ) var isSend         : String? = null
+
+        )
         data class Offsitedetails (
 
             @SerializedName("staff_time_permission_id" ) var staffTimePermissionId : Int?    = null,

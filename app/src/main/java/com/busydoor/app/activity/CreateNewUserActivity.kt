@@ -3,7 +3,6 @@ package com.busydoor.app.activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.text.SpannableString
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -21,17 +20,14 @@ import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
 import com.busydoor.app.customMethods.CREATE_NEW_USER
-import com.busydoor.app.customMethods.DEVICE_TYPE
 import com.busydoor.app.customMethods.ERROR_CODE
 import com.busydoor.app.customMethods.PrefUtils
-import com.busydoor.app.customMethods.REGISTER
 import com.busydoor.app.customMethods.SUCCESS_CODE
 import com.busydoor.app.customMethods.activity
 import com.busydoor.app.customMethods.forceResendingTokenGbl
 import com.busydoor.app.customMethods.gContext
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.databinding.ActivityNewUserBinding
-import com.busydoor.app.databinding.ActivityRegisterBinding
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential

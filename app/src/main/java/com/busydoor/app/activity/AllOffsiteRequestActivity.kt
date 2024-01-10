@@ -27,7 +27,6 @@ import com.busydoor.app.customMethods.activity
 import com.busydoor.app.customMethods.convertDate
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.databinding.ActivityAllOffsiteRequestsBinding
-import com.busydoor.app.fragment.HomeFragment
 import com.busydoor.app.interfaceD.HomeClick
 import com.busydoor.app.model.RequestAllOffsiteResponse
 import java.text.SimpleDateFormat
