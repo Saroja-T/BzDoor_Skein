@@ -1,6 +1,7 @@
 
 package com.busydoor.app.fragment
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.busydoor.app.activity.EditProfileActivity
 import com.busydoor.app.customMethods.convertDate
 import com.busydoor.app.databinding.FragmentStatisticsBinding
 import com.github.mikephil.charting.components.AxisBase
@@ -43,10 +45,11 @@ class StatisticsFragment : Fragment(), OnChartValueSelectedListener {
         binding = FragmentStatisticsBinding.inflate(inflater, container, false)
         val root: View = binding.root
         // Inflate the layout for this fragment
-
+        binding.userProfileView.editProfile.setOnClickListener {
+            startActivity(Intent(requireActivity(), EditProfileActivity::class.java))
+        }
 
         binding.chart.clear()
-
         if(binding.chart.data != null)
             binding.chart.data.clearValues()
         binding.chart.description.isEnabled = false

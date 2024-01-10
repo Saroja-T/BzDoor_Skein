@@ -1,9 +1,11 @@
 package com.busydoor.app.activity
 
-import android.app.Dialog
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Spannable
@@ -11,7 +13,6 @@ import android.text.SpannableString
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -34,8 +35,8 @@ import com.busydoor.app.customMethods.activity
 import com.busydoor.app.customMethods.forceResendingTokenGbl
 import com.busydoor.app.customMethods.gContext
 import com.busydoor.app.customMethods.isOnline
-import com.busydoor.app.customMethods.showView
 import com.busydoor.app.databinding.ActivityOtpVerifyBinding
+import com.google.android.material.internal.ContextUtils.getActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -54,6 +55,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
     private var verificationId: String = ""
     private val binding by lazy { ActivityOtpVerifyBinding.inflate(layoutInflater) }
     private var register_type: String = ""
+    private var createUser: String = ""
 
     /** initialize UI and functionality here ... **/
     @RequiresApi(Build.VERSION_CODES.R)
@@ -67,6 +69,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
         verificationId = intent.getStringExtra("verificationId").toString()
         phone_number = intent.getStringExtra("phone_number").toString()
         register_type = intent.getStringExtra("otp_type").toString()
+        createUser = intent.getStringExtra("premise_id").toString()
 
         binding.btnOtpVerify.setOnClickListener {
             if (TextUtils.isEmpty(binding.OTP.text.toString())) {
@@ -173,7 +176,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
                     encrypt(phone_number),
                     encrypt(intent.getStringExtra("premiseID").toString()),
                     encrypt(intent.getStringExtra("status").toString()),
-                    "linkedtopremise"
+                    "linktopremise"
                 ),
                 ADD_USER_PREMISE, true, this
             )
@@ -201,7 +204,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
                     encrypt(intent.getStringExtra("last_name").toString()),
                     encrypt(intent.getStringExtra("accessLevelName").toString()),
                     "register",
-                    encrypt(intent.getStringExtra("premiseID").toString()),
+                    encrypt(createUser),
                     encrypt(intent.getStringExtra("userStatus").toString())
                 ),
                 ADD_USER, true, this
@@ -382,15 +385,13 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
                 when (response.optInt("status_code")) {
                     SUCCESS_CODE -> {
                         ADD_USER_RESPONSE = 1
-                        showDialog(response.optString("message"))
+                        setResult(Activity.RESULT_OK)
+                        showAlertBox("approved",response.optString("message"))
                     }
                     ERROR_CODE -> {
                         val data = response.getJSONObject("data")
-                        showSnackBar(
-                            binding.root,
-                            data.optString("all"),
-                            ACTIONSNACKBAR.DISMISS
-                        )
+                        showAlertBox("rejected",data.optString("all"))
+
                     }
                 }
             }
@@ -400,22 +401,13 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
                 val response = JSONObject(responseValue)
                 when (response.optInt("status_code")) {
                     SUCCESS_CODE -> {
-                        showSnackBar(
-                            binding.root,
-                            response.optString("message"),
-                            ACTIONSNACKBAR.DISMISS
-                        )
-                        showView = false
+                        showAlertBox("approved",response.optString("message"))
                         ADD_USER_RESPONSE = 1
-                        finish()
                     }
                     ERROR_CODE -> {
                         val data = response.getJSONObject("data")
-                        showSnackBar(
-                            binding.root,
-                            data.optString("all"),
-                            ACTIONSNACKBAR.DISMISS
-                        )
+                        showAlertBox("rejected",data.optString("all"))
+
                     }
                 }
             }
@@ -423,25 +415,40 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
     }
 
     /** Showing the error response ... **/
-    private fun showDialog(title: String) {
-        val dialog = Dialog(this)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.response_dialog_layout)
-        val lp = WindowManager.LayoutParams()
-        lp.copyFrom(dialog.window?.attributes)
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-        dialog.show()
-        dialog.window?.attributes = lp
-        val body = dialog.findViewById(R.id.body) as TextView
-        body.text = title
-        val yesBtn = dialog.findViewById(R.id.okBtn) as Button
-        yesBtn.setOnClickListener {
-            dialog.dismiss()
-            val intent = Intent()
-            setResult(RESULT_OK, intent)
-            finish()
+    private fun showAlertBox(type: String, reason: String){
+        val dialog = AlertDialog.Builder(this)
+        val view: View = layoutInflater.inflate(com.busydoor.app.R.layout.custom_alert_dialog, null)
+        dialog.setView(view)
+        dialog.setCancelable(true)
+        val alert = dialog.create()
+        alert.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val content = view.findViewById<View>(com.busydoor.app.R.id.dialog_text) as TextView
+        val tittle = view.findViewById<View>(com.busydoor.app.R.id.dialog_tittle_text) as TextView
+        val cancel = view.findViewById<View>(com.busydoor.app.R.id.cancel_action) as Button
+        cancel.setOnClickListener { alert.dismiss() }
+        val ok = view.findViewById<View>(com.busydoor.app.R.id.ok_action) as Button
+        cancel.visibility = View.GONE
+        content.textAlignment= View.TEXT_ALIGNMENT_CENTER
+        content.text = reason
+        ok.text = "Done"
+        when(type){
+            "approved"->{
+                tittle.text = "Success"
+                if(reason!=null){content.text = reason}
+                ok.setOnClickListener {
+                    alert.dismiss();
+                    finish();
+                }
+            }
+            "rejected"->{
+                tittle.text = "Something went wrong"
+                if(reason!=null){content.text = reason}
+                ok.setOnClickListener {
+                    finish();
+                    alert.dismiss();
+                }
+            }
         }
+        alert.show()
     }
-
 }

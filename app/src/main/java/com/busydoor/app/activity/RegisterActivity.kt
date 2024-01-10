@@ -1,8 +1,6 @@
 package com.busydoor.app.activity
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
@@ -66,8 +64,6 @@ class RegisterActivity : ActivityBase(), ApiResponseInterface, AdapterView.OnIte
         accessLevelList!!.add("Staff")
 
         premiseID = intent?.getStringExtra("premise_id").toString()
-
-
 
         setSpinner1(binding.spAccessLevel,accessLevelList!!)
 

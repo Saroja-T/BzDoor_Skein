@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
 import com.busydoor.app.activity.ActivityBase
 import com.busydoor.app.activity.CryptLib2
+import com.busydoor.app.activity.EditProfileActivity
 import com.busydoor.app.activity.StaffDetailsOnWeekActivity
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
@@ -85,6 +86,9 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
         premiseID = activity?.intent?.getStringExtra("premiseId").toString()
         Log.e("original value home== ",premiseID.toString())
         staffCountGet(globalDate)
+        binding.userProfileView.editProfile.setOnClickListener {
+            startActivity(Intent(requireActivity(), EditProfileActivity::class.java))
+        }
 
         binding.userProfileView.backPage.setOnClickListener {
             requireActivity().finish();

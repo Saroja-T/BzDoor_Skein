@@ -18,6 +18,9 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="Theme.BusyDoor.AppBarOverlay" parent="Theme.AppCompat.Light.NoActionBar" />
+
     <style name="Theme.BusyDoor.PopupOverlay" parent="Theme.AppCompat.Light.NoActionBar" />
+
 </resources>

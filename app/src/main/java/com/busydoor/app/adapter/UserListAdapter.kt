@@ -82,11 +82,14 @@ class UserListAdapter(
         circularProgressDrawable.backgroundColor= R.color.app_color
         circularProgressDrawable.start()
 
-        holder.userActive!!.visibility= View.VISIBLE
+        if(userId != model.userId.toString()){holder.userActive!!.visibility= View.VISIBLE}else{
+            holder.userActive!!.visibility= View.GONE
+        }
         // Set click listener for the userActive ImageView/Button
         // Set click listener for the userActive ImageView/Button in onBindViewHolder
         holder.userActive?.setOnClickListener { view ->
-            showActivePopupMenu(view,homeClick,model.userActiveStatus!!,position)
+            if(userId != model.userId.toString()){
+            showActivePopupMenu(view,homeClick,model.userActiveStatus!!,position)}
         }
 
         if(model.photo !=null) {

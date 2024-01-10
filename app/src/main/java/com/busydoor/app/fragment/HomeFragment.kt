@@ -30,7 +30,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
 import com.busydoor.app.activity.ActivityBase
 import com.busydoor.app.activity.AllOffsiteRequestActivity
+import com.busydoor.app.activity.CreateNewUserActivity
 import com.busydoor.app.activity.CryptLib2
+import com.busydoor.app.activity.EditProfileActivity
 import com.busydoor.app.activity.RequestOffsiteActivity
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
@@ -122,6 +124,9 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         premiseID = activity?.intent?.getStringExtra("premiseId").toString()
         Log.e("original value home== ",premiseID.toString())
 
+        binding.userProfileView.editProfile.setOnClickListener {
+            startActivity(Intent(requireContext(), EditProfileActivity::class.java))
+        }
         /*** Function to setup Date view */
         binding. recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -624,19 +629,25 @@ class HomeFragment : Fragment(),ApiResponseInterface {
                 .into(binding.userProfileView.PremiseStaffImage)
         }
 
-        if(dataModel.userDetails!!.staffStatus == "in"){
-            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_staff_profile_in)
-        }else if(dataModel.userDetails!!.staffStatus == "inout"){
-            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_inout)
-        }else if(dataModel.userDetails!!.staffStatus == "out"){
-            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_out)
-        }else if(dataModel.userDetails!!.staffStatus == "offline"){
-            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-        }
-        else{
-//            binding.userProfileView.staffStatus.visibility= View.GONE
-            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-//            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
+        when (dataModel.userDetails!!.staffStatus) {
+            "in" -> {
+                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_staff_profile_in)
+                binding.checkOutTime.setTextColor(Color.GRAY)
+            }
+            "inout" -> {
+                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_inout)
+            }
+            "out" -> {
+                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_out)
+            }
+            "offline" -> {
+                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
+            }
+            else -> {
+    //            binding.userProfileView.staffStatus.visibility= View.GONE
+                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
+    //            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
+            }
         }
 
         binding.userProfileView.userName.text =homePremisedata!!.data!!.userDetails!!.staffFirstName +" "+homePremisedata!!.data!!.userDetails!!.staffLastName;
@@ -702,7 +713,8 @@ class HomeFragment : Fragment(),ApiResponseInterface {
     private fun setDataLine(dataModel: HomeDataResponse.Data.DonutDetails) {
         val xAxisLabelList  = java.util.ArrayList<String>()
         chart?.setExtraOffsets(35f, 0f, 35f, 0f)
-        binding.centerText.text =dataModel.totalInHours.toString()
+        binding.centerHourTime.text = convertDate(dataModel.totalInHours.toString(),"HH:MM:SS","HH")
+        binding.centerMinsTime.text = convertDate(dataModel.totalInHours.toString(),"HH:MM:SS","MM")
         // Custom renderer used to add dots at the end of value lines.
         val entries: java.util.ArrayList<PieEntry> = java.util.ArrayList()
         for (y in xAxisLabelList) {

@@ -72,10 +72,10 @@ class BDApplication: Application() {
         beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(BeaconParser.EDDYSTONE_UID_LAYOUT))
         startMyOwnForeground("bsboss")
         beaconManager.setEnableScheduledScanJobs(false)
-        beaconManager.backgroundBetweenScanPeriod = 100
+        beaconManager.backgroundBetweenScanPeriod = 60000
         beaconManager.backgroundScanPeriod = 1100
         beaconManager.foregroundScanPeriod = 1100
-        beaconManager.foregroundBetweenScanPeriod = 30
+        beaconManager.foregroundBetweenScanPeriod = 60000
         /*
          check the MacAddress through the dashboard page is empty or not
          is empty means user don't have an beacons permission

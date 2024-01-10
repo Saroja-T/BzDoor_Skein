@@ -125,7 +125,7 @@
                                     android:padding="@dimen/_5sdp"
                                     android:textColor="@color/black"
                                     android:textColorHint="#CCCCCC"
-                                    android:textSize="@dimen/_10sdp"
+                                    android:textSize="@dimen/_13sdp"
                                     android:maxLength="10" />
 
                             </LinearLayout>

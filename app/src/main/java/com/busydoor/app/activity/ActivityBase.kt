@@ -43,7 +43,7 @@ ActivityBase : AppCompatActivity() {
     private var mProgressDialog: AppCompatDialog? = null
 
     /*Encryption variables*/
-    var cryptLib: CryptLib2? = null
+    open var cryptLib: CryptLib2? = null
     val key = "12345678901234561234567890123456"
     private val ENCRYPTION_IV = "12345678901234561234567890123456"
 

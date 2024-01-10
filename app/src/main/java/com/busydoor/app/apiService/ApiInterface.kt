@@ -11,6 +11,7 @@ import com.busydoor.app.model.RequestAllOffsiteResponse
 import com.busydoor.app.model.StaffCountResponse
 import com.busydoor.app.model.StaffGraphcount
 import com.busydoor.app.model.StaffListOnDate
+import com.busydoor.app.model.UserActivities
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Field
@@ -204,7 +205,7 @@ interface ApiInterface {
         @Field("premise_id") premise_id: String,
         @Field("status") status: String,
         @Field("type") type: String,
-    ): Call<AddUserToPremise>
+    ): Call<ResponseBody>
 //
     // Function to add attendance
     @FormUrlEncoded
@@ -227,6 +228,15 @@ interface ApiInterface {
         @Query("premise_id") premiseId: String,
         @Query("date") date: String,
     ): Call<RequestAllOffsiteResponse>
+
+    @Headers("Accept:application/json")
+    @GET("user/getRequestOffsite")
+    fun getYourActivitiesList(
+        @Header("Authorization") inToken: String,
+        @Query("premise_id") premiseId: String,
+        @Query("date") date: String,
+    ): Call<UserActivities>
+
     @Headers("Accept:application/json")
     @GET("user/getstaffcount")
     fun getStaffCount(
@@ -285,4 +295,6 @@ interface ApiInterface {
         @Field("status") status: String,
         @Field("device_type") deviceType: String
     ): Call<AttendanceResponse>
+
+
 }

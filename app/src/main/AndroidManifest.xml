@@ -67,6 +67,9 @@
             android:exported="false"
             android:label="@string/title_activity_bottom_navigation" />
         <activity
+        android:name=".activity.EditProfileActivity"
+        android:exported="true" />
+        <activity
             android:name=".activity.RequestOffsiteActivity"
             android:exported="false" />
         <activity

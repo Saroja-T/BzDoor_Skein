@@ -24,6 +24,7 @@
                 android:orientation="vertical">
 
                 <include
+                    android:id="@+id/userProfileView"
                     layout="@layout/activity_user_profileview"
                     android:visibility="visible" />
                 <LinearLayout

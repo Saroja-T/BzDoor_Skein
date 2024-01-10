@@ -122,16 +122,57 @@
                                     android:orientation="vertical"
                                     android:layout_marginBottom="@dimen/_70sdp"
                                     android:gravity="center" >
-                                    <com.busydoor.app.customMethods.MyCustomTextView
-                                        android:layout_width="wrap_content"
-                                        android:textColor="@color/black"
-                                        android:textStyle="bold"
-                                        android:textSize="@dimen/_16sdp"
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginBottom="@dimen/_10sdp"
-                                        android:id="@+id/centerText">
+                                        android:layout_gravity="center"
+                                        android:orientation="horizontal">
+                                        <com.busydoor.app.customMethods.MyCustomTextView
+                                            android:layout_width="wrap_content"
+                                            android:textColor="@color/black"
+                                            android:textStyle="bold"
+                                            android:textSize="@dimen/_25sdp"
+                                            android:text=" "
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginBottom="@dimen/_10sdp"
+                                            android:id="@+id/centerHourTime">
 
-                                    </com.busydoor.app.customMethods.MyCustomTextView>
+                                        </com.busydoor.app.customMethods.MyCustomTextView>
+                                        <com.busydoor.app.customMethods.MyCustomTextView
+                                            android:layout_width="wrap_content"
+                                            android:textColor="@color/black"
+                                            android:textStyle="normal"
+                                            android:textSize="@dimen/_12sdp"
+                                            android:text="hrs "
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginBottom="@dimen/_10sdp"
+                                            android:id="@+id/centerHourText">
+
+                                        </com.busydoor.app.customMethods.MyCustomTextView>
+                                        <com.busydoor.app.customMethods.MyCustomTextView
+                                            android:layout_width="wrap_content"
+                                            android:textColor="@color/black"
+                                            android:textStyle="bold"
+                                            android:textSize="@dimen/_25sdp"
+                                            android:text=" "
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginBottom="@dimen/_10sdp"
+                                            android:id="@+id/centerMinsTime">
+
+                                        </com.busydoor.app.customMethods.MyCustomTextView>
+                                        <com.busydoor.app.customMethods.MyCustomTextView
+                                            android:layout_width="wrap_content"
+                                            android:textColor="@color/black"
+                                            android:textStyle="normal"
+                                            android:textSize="@dimen/_12sdp"
+                                            android:text="mins"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginBottom="@dimen/_10sdp"
+                                            android:id="@+id/centerMinsText">
+
+                                        </com.busydoor.app.customMethods.MyCustomTextView>
+
+                                    </LinearLayout>
 
                                     <ImageView
                                         android:id="@+id/requestOffcite"
