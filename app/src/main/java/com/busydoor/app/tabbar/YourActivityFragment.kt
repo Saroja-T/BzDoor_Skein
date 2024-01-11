@@ -78,7 +78,7 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
-//        getAllActivities("2024-01-09")
+        getAllActivities("2023-12-28")
 
     }
 
@@ -97,11 +97,12 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
         // Create adapter object
         binding.rvYourActivities.adapter = YourActivityListAdapter
             binding.rvYourActivities.visibility = View.VISIBLE
-        YourActivityListAdapter.notifyDataSetChanged()
+             binding.activityNodataView.visibility = View.GONE
+             YourActivityListAdapter.notifyDataSetChanged()
 
         } else {
-//            binding.premiseNoData.visibility = View.VISIBLE
-            binding.rvYourActivities.visibility = View.GONE
+            binding.activityNodataView.visibility = View.VISIBLE
+             binding.rvYourActivities.visibility = View.GONE
         }
     }
 

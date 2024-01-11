@@ -25,13 +25,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/offsiteDateHeading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
+                    android:text="Fri -13th Oct,2023"
                     android:textColor="@color/black"
-                    android:text="Fri -13th Oct,2023" />
+                    android:textSize="20sp" />
                 <ImageView
                     android:padding="@dimen/_1sdp"
                     android:layout_width="@dimen/_20sdp"
@@ -56,31 +57,25 @@
                         android:orientation="horizontal">
 
                         <RadioButton
+                            android:id="@+id/radioButtonOffsite"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/app_color"
+                            android:padding="@dimen/_5sdp"
+                            android:text="Offsite Work"
+                            android:textSize="20sp" />
+
+                        <RadioButton
                             android:id="@+id/radioButtonPersonal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/app_color"
                             android:padding="@dimen/_5sdp"
-                            android:text="Personal request" />
-
-                        <RadioButton
-                            android:id="@+id/radioButtonOffsite"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/_5sdp"
-                            android:buttonTint="@color/app_color"
-                            android:text="Offsite request" />
+                            android:text="Personal"
+                            android:textSize="20sp" />
                     </RadioGroup>
                 </LinearLayout>
             </LinearLayout>
-            <TextView
-                android:id="@+id/offsiteHintText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="normal"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:textColor="@color/text_color"
-                android:text="Enter the start and end time entry" />
 
             <LinearLayout
                 android:layout_marginTop="@dimen/_10sdp"
@@ -124,8 +119,8 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/rectangle_grey"
                                 android:gravity="center"
-                                android:textStyle="bold"
                                 android:text="00"
+                                android:textSize="24sp"
                                 android:timePickerMode="spinner" />
 
                             <TextView
@@ -158,12 +153,12 @@
                                 android:id="@+id/etStartMins"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/_35sdp"
-                                android:ems="10"
-                                android:textStyle="bold"
-                                android:background="@drawable/rectangle_grey"
-                                android:gravity="center"
                                 android:layout_weight="1"
-                                android:text="00" />
+                                android:background="@drawable/rectangle_grey"
+                                android:ems="10"
+                                android:gravity="center"
+                                android:text="00"
+                                android:textSize="24sp" />
 
                             <TextView
                                 android:id="@+id/textView7"
@@ -259,13 +254,13 @@
                                 android:id="@+id/et_end_hour"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/_35sdp"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:textStyle="bold"
-                                android:text="00"
                                 android:layout_centerHorizontal="true"
-                                android:timePickerMode="spinner"
-                                android:background="@drawable/rectangle_grey"/>
+                                android:layout_weight="1"
+                                android:background="@drawable/rectangle_grey"
+                                android:gravity="center"
+                                android:text="00"
+                                android:textSize="24sp"
+                                android:timePickerMode="spinner" />
 
                             <TextView
                                 android:id="@+id/textView61"
@@ -297,12 +292,12 @@
                                 android:id="@+id/et_end_min"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/_35sdp"
+                                android:layout_weight="1"
                                 android:background="@drawable/rectangle_grey"
                                 android:gravity="center"
-                                android:textStyle="bold"
-                                android:layout_weight="1"
                                 android:inputType="text"
-                                android:text="00" />
+                                android:text="00"
+                                android:textSize="24sp" />
 
                             <TextView
                                 android:id="@+id/textView71"
@@ -365,27 +360,31 @@
 
                 </LinearLayout>
             </LinearLayout>
+
             <LinearLayout
-                android:layout_marginTop="@dimen/_25sdp"
-                android:padding="@dimen/_2sdp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="47dp"
+                android:layout_marginTop="@dimen/_25sdp"
+                android:orientation="horizontal"
+                android:padding="@dimen/_2sdp">
+
                 <TextView
                     android:id="@+id/offsiteTimeDifferView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="normal"
+                    android:text="Total offsite time "
                     android:textColor="@color/text_color"
-                    android:text="Total offsite time -" />
+                    android:textStyle="normal" />
+
                 <TextView
                     android:id="@+id/offsiteTimeDiffer"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="00:00 mins"
-                    android:textStyle="bold"
                     android:layout_marginStart="@dimen/_3sdp"
-                    android:textColor="@color/app_color"/>
+                    android:text="00:00 mins"
+                    android:textColor="@color/app_color"
+                    android:textSize="34sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
             <LinearLayout

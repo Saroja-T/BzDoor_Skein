@@ -169,9 +169,9 @@ class BDApplication: Application() {
     fun startMyOwnForeground(message: String) {
         objSharedPref!!.putBoolean("isServiceRun", true)
         val builder = Notification.Builder(this, "BDApp")
-        builder.setSmallIcon(R.drawable.ic_launcher_foreground)
-        builder.setContentTitle("BzDoor - Scanning for Beacons")
-        val intent = Intent(this, MacAddressActivity::class.java)
+        builder.setSmallIcon(R.drawable.app_icon_foreground)
+        builder.setContentTitle("Bi Service to Auto Check-In and Check-Out")
+        val intent = Intent(this, SplashActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT + PendingIntent.FLAG_IMMUTABLE
         )
@@ -346,9 +346,9 @@ class BDApplication: Application() {
     private fun sendNotification(notificationText: String) {
         val contentText = notificationText;
         val builder = NotificationCompat.Builder(this, "bdapp-notification-id")
-            .setContentTitle("bzBoss")
+            .setContentTitle("Business-i")
             .setContentText(contentText)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.app_icon_notification)
         val stackBuilder = TaskStackBuilder.create(this)
         stackBuilder.addNextIntent(Intent(this, SplashActivity::class.java))
         val resultPendingIntent = stackBuilder.getPendingIntent(

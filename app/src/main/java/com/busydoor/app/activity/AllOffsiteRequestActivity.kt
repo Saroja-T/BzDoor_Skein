@@ -221,7 +221,7 @@ class AllOffsiteRequestActivity : ActivityBase(),ApiResponseInterface, HomeClick
                             encrypt(date)
                         ),
                         ALL_REQUEST_OFFSITE,
-                        false,
+                        true,
                         this
                     )
             }else {

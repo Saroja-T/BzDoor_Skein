@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
 import com.busydoor.app.customMethods.MyCustomTextView
+import com.busydoor.app.customMethods.convertDate
 import com.busydoor.app.model.UserActivities
 
 class YourActivityListAdapter(
@@ -44,10 +45,9 @@ class YourActivityListAdapter(
         circularProgressDrawable.backgroundColor= R.color.app_color
         circularProgressDrawable.start()
         Log.d(TAG, "onBindViewHolder: $model")
-//
+
         if(model.image !=null) {
             Log.e("adapterview",model.image.toString())
-
             Glide.with(context)
                 .load(model.image)
                 .placeholder(circularProgressDrawable)
@@ -62,36 +62,9 @@ class YourActivityListAdapter(
                 .skipMemoryCache(true)
                 .into(holder.cIvImage)
         }
-//
-//
-//        holder.tvMessage.text = model.name
-//        holder.tvTime.text = model.premiseStatus
-//
-//        if (model.country.isNotEmpty()) {
-//            holder.tvTime.text =model.city + ", " + model.state
-//        } else {
-//            holder.tvTime.text = model.city
-//        }
-//
-//
-//
-//        when (model.premiseStatus) {
-//            "in" -> {
-////                holder.premiseUserStatus.setImageResource(R.drawable.premiselist_staff_satus_in)
-//            }
-//            "inout" -> {
-////                holder.premiseUserStatus.setBackgroundResource(R.drawable.premiselist_staff_status_inout)
-//            }
-//            "out" -> {
-////                holder.premiseUserStatus.setBackgroundResource(R.drawable.premiselist_staff_status_out)
-//            }
-//            "offline" -> {
-////                holder.premiseUserStatus.setBackgroundResource(R.drawable.premiselist_staff_status_offline)
-//            }
-//            else -> {
-//    //            holder.premiseUserStatus.setBackgroundResource(R.color.colorGreyLight)
-//            }
-//        }
+
+        holder.tvMessage.text=model.message.toString()
+        holder.tvTime.text= convertDate(model.datetime.toString(),"yyyy-MM-dd HH:mm:ss","hh:mm a")
     }
 
     class InnerViewHolder(view: View,context: Context) : RecyclerView.ViewHolder(view) {

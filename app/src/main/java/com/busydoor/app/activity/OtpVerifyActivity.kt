@@ -64,7 +64,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
         gContext = this@OtpVerifyActivity
         activity = this@OtpVerifyActivity
         mAuth = FirebaseAuth.getInstance()
-
+        Log.e("OTPPPP  ",objSharedPref.getString("FCM_TOKEN")!!.toString())
         verificationId = intent.getStringExtra("verificationId").toString()
         phone_number = intent.getStringExtra("phone_number").toString()
         register_type = intent.getStringExtra("otp_type").toString()
@@ -220,7 +220,9 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
     /** normal register user functionality fun here ... **/
     @RequiresApi(Build.VERSION_CODES.R)
     private fun registerApi() {
+        Log.d(TAG, "onCreate: " + objSharedPref.getString("FCM_TOKEN")!!)
         if (isOnline(this@OtpVerifyActivity)) {
+            Log.e("OTPPPP  ","registerApi   "+objSharedPref.getString("FCM_TOKEN")!!.toString())
             ApiRequest(
                 this,
                 ApiInitialize.initialize(ApiInitialize.LOCAL_URL).userRegisterFunction(
@@ -229,7 +231,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
                     encrypt(intent.getStringExtra("last_name").toString()),
                     encrypt(intent.getStringExtra("accessLevelName").toString()),
                     encrypt(DEVICE_TYPE),
-                    objSharedPref.getString("FCM_TOKEN")!!,
+                    objSharedPref.getString("FCM_TOKEN")!!.toString(),
                     encrypt(timeZoneSet),
                     "register"
                 ),

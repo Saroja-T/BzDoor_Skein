@@ -8,7 +8,7 @@
 
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="@dimen/_280sdp"
-        android:layout_height="@dimen/_400sdp"
-        android:src="@drawable/login_image"/>
+        android:layout_width="191dp"
+        android:layout_height="316dp"
+        android:src="@drawable/app_icon_foreground" />
 </LinearLayout>

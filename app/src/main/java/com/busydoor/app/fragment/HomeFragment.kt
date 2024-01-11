@@ -713,7 +713,7 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         val xAxisLabelList  = java.util.ArrayList<String>()
         chart?.setExtraOffsets(35f, 0f, 35f, 0f)
         binding.centerHourTime.text = convertDate(dataModel.totalInHours.toString(),"HH:MM:SS","HH")
-        binding.centerMinsTime.text = convertDate(dataModel.totalInHours.toString(),"HH:MM:SS","MM")
+        binding.centerMinsTime.text = convertDate(dataModel.totalInHours.toString(),"HH:MM:SS","mm")
         // Custom renderer used to add dots at the end of value lines.
         val entries: java.util.ArrayList<PieEntry> = java.util.ArrayList()
         for (y in xAxisLabelList) {
@@ -721,7 +721,7 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         }
         // Blue - #convertDate
         val in_Color = intArrayOf(
-            Color.rgb(67, 85, 227),
+            Color.rgb(45, 100, 188),
         )
 
         // light_grey - #99cf43

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">bzDoor</string>
+    <string name="app_name">Business-i</string>
     <string name="title_home">Home</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_tabbar">TabbarActivity</string>

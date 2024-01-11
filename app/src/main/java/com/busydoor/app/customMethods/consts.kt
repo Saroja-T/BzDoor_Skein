@@ -35,7 +35,7 @@ const val REQUEST_OFFSITE= 28
 const val ALL_REQUEST_OFFSITE= 29
 
 
-const val SerachUSER_LIST_DATA =20
+const val AcceptRejectOffsite=20
 const val UPDATE_USER =21
 const val ADD_USER =22
 var ADD_USER_RESPONSE =1
@@ -67,6 +67,8 @@ const val key = "12345678901234561234567890123456"
 const val ENCRYPTION_IV = "12345678901234561234567890123456"
 var END_DATE = ""
 var DATE_OPTION = ""
+var ACTIVITY_DATE = ""
+var ACTIVITY_PREMISE_ID = ""
 var DEVICE_TYPE: String = "Android"
 var forceResendingTokenGbl: PhoneAuthProvider.ForceResendingToken? =null
 lateinit var activity: Activity

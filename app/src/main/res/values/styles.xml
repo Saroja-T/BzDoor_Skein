@@ -25,13 +25,16 @@
 
     </style>
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/app_color</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="windowActionBar">false</item>
         <!-- Other theme attributes -->
     </style>
 
     <style name="MyDialogTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:windowFullscreen">false</item>
-        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:statusBarColor">@color/app_color</item>
         <item name="windowActionBar">false</item>
 <!--        <item name="android:windowAnimationStyle">@style/PauseDialogAnimation</item>-->
 

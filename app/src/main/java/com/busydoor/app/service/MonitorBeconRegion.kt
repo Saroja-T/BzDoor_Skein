@@ -125,9 +125,9 @@ class MonitorBeaconsRegion(beaconManagerParam: BeaconManager,
             count += 1
             val contentText = notificationText + count.toString()
             val builder = NotificationCompat.Builder(pagecontext, "bdapp-notification-id")
-                .setContentTitle("bzBoss")
+                .setContentTitle("Business-i")
                 .setContentText(contentText)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.app_icon_notification)
             val stackBuilder = TaskStackBuilder.create(pagecontext)
             stackBuilder.addNextIntent(Intent(pagecontext, MacAddressActivity::class.java))
             val resultPendingIntent = stackBuilder.getPendingIntent(

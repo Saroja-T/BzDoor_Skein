@@ -12,10 +12,10 @@ data class UserActivities (
 
     data class Data (
 
-        @SerializedName("userdetails"       ) var userdetails       : Userdetails?              = Userdetails(),
-        @SerializedName("premisedetails"    ) var premisedetails    : Premisedetails?           = Premisedetails(),
+        @SerializedName("userdetails"       ) var userdetails       : Userdetails?                 = Userdetails(),
+        @SerializedName("premisedetails"    ) var premisedetails    : Premisedetails?              = Premisedetails(),
         @SerializedName("activitiesdetails" ) var activitiesdetails : ArrayList<Activitiesdetails> = arrayListOf(),
-        @SerializedName("offsitedetails"    ) var offsitedetails    : ArrayList<Offsitedetails> = arrayListOf()
+        @SerializedName("offsitedetails"    ) var offsitedetails    : ArrayList<Offsitedetails>    = arrayListOf()
 
     ){
         data class Activitiesdetails (
@@ -52,7 +52,9 @@ data class UserActivities (
             @SerializedName("approved_by"              ) var approvedBy            : String? = null,
             @SerializedName("comments_by_approver"     ) var commentsByApprover    : String? = null,
             @SerializedName("approved_date"            ) var approvedDate          : String? = null,
-            @SerializedName("approved_time"            ) var approvedTime          : String? = null
+            @SerializedName("approved_time"            ) var approvedTime          : String? = null,
+            @SerializedName("approver_photo"           ) var approverPhoto         : String? = null,
+            @SerializedName("requester_photo"          ) var requesterPhoto        : String? = null
 
         )
         data class Premisedetails (
@@ -65,7 +67,6 @@ data class UserActivities (
             @SerializedName("country"      ) var country     : String? = null
 
         )
-
         data class Userdetails (
 
             @SerializedName("user_id"         ) var userId        : Int?    = null,

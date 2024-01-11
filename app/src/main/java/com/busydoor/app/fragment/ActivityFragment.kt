@@ -76,7 +76,7 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
         binding.calendarIcon.setOnClickListener{
             requireActivity().recreate()
         }
-        getAllActivities("2024-01-09")
+        getAllActivities("2023-12-28")
         val adapter = YourPagerAdapter(childFragmentManager)
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
@@ -172,7 +172,7 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
                     Log.e("apiCalled", " getApiResponse1")
                     if (requestAllDataGet!!.data != null) {
                         Log.e("apiCalled", " getApiResponse2")
-                        setHomeOfferData(requestAllDataGet!!.data as ArrayList<UserActivities.Data>)
+                        setHomeOfferData(requestAllDataGet!!.data)
                         Log.e("zzzzzzzz",requestAllDataGet!!.data.toString())
                     } else {
                         // no data found
@@ -187,10 +187,10 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
 
     }
 
-    private fun setHomeOfferData(userDetails: ArrayList<UserActivities.Data>) {
+    private fun setHomeOfferData(model: UserActivities.Data?) {
         Log.e("apiCalled", " getApiResponse3")
-        binding.userProfileView.userName.text= userDetails[0].userdetails!!.userFirstName+" "+userDetails[0].userdetails!!.userLastName
-        binding.userProfileView.userNumber.text = userDetails[0].premisedetails!!.premiseName+", "+userDetails[0].premisedetails!!.city+","+userDetails[0].premisedetails!!.state
+        binding.userProfileView.userName.text= model!!.userdetails!!.userFirstName+" "+model.userdetails!!.userLastName
+        binding.userProfileView.userNumber.text = model.premisedetails!!.premiseName+", "+model.premisedetails!!.city+","+model.premisedetails!!.state
 
 
         val circularProgressDrawable = CircularProgressDrawable(requireContext())
@@ -198,11 +198,11 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
         circularProgressDrawable.centerRadius = 30f
         circularProgressDrawable.backgroundColor= R.color.app_color
         circularProgressDrawable.start()
-        if(userDetails[0].userdetails !=null) {
-            Log.e("adapterview",userDetails[0].userdetails.toString())
+        if(model.userdetails !=null) {
+            Log.e("adapterview",model.userdetails.toString())
 
             Glide.with(requireContext())
-                .load(userDetails[0].userdetails!!.userImage)
+                .load(model.userdetails!!.userImage)
                 .placeholder(circularProgressDrawable)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
@@ -215,16 +215,16 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
                 .skipMemoryCache(true)
                 .into(binding.userProfileView.PremiseStaffImage)
         }
-        when (userDetails[0]!!.userdetails!!.userStatus) {
+        when (model!!.userdetails!!.userStatus) {
             "in" -> {              binding.userProfileView.PremiseStaffImage.setImageResource(R.drawable.premiselist_staff_satus_in)
             }
-            "inout" -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.premiselist_staff_status_inout)
+            "inout" -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_inout)
             }
-            "out" -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.premiselist_staff_status_out)
+            "out" -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_out)
             }
-            "offline" -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.premiselist_staff_status_offline)
+            "offline" -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
             }
-            else -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.premiselist_staff_status_offline)
+            else -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
             }
         }
     }

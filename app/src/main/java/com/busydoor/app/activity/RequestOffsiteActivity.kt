@@ -80,15 +80,15 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
         endHourMins= binding.etEndHour.text.toString()+":"+binding.etEndMin.text.toString()+" "+convertDate(outputFormat.format(currentTime),"HH:mm:ss","a")
 
         /** Set Initial Time Difference Start-End... **/
-        binding.offsiteTimeDiffer.text="00 hr 15 mins"
-        /** Set "Personal" radio button as checked by default and api test also set. **/
-        radioButtonPersonal!!.isChecked = true
-        if (radioButtonPersonal!!.isChecked){
-            requestType="personal"
+        binding.offsiteTimeDiffer.text="00 hrs 15 mins"
+        /** Set "Offsite" radio button as checked by default and api test also set. **/
+        radioButtonOffsite!!.isChecked = true
+        if (radioButtonOffsite!!.isChecked){
+            requestType="offsite"
         }
 
         // Initially set to Personal
-        lastCheckedRadioButton = radioButtonPersonal
+        lastCheckedRadioButton = radioButtonOffsite
         // set group of radioButton
         val radioGroup = binding.radioGroup
         // set on click listener to that radio button
@@ -308,13 +308,13 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
             println("Time difference: $diffHours hours, $diffMinutes minutes, $diffSeconds seconds")
             /** Set UI to Show Time Difference to selected Start ANd END times With show Hours Mins With Conditions added prefix 0 or Not */
             if(diffHours.toString().length>1 && diffMinutes.toString().length>1){
-                binding.offsiteTimeDiffer.text ="$diffHours hr $diffMinutes mins "
+                binding.offsiteTimeDiffer.text ="$diffHours hrs $diffMinutes mins "
             }else if(diffHours.toString().length==1 && diffMinutes.toString().length>1){
-                binding.offsiteTimeDiffer.text ="0$diffHours hr $diffMinutes mins "
+                binding.offsiteTimeDiffer.text ="0$diffHours hrs $diffMinutes mins "
             }else if(diffMinutes.toString().length==1 && diffHours.toString().length>1){
-                binding.offsiteTimeDiffer.text ="$diffHours hr 0$diffMinutes mins"
+                binding.offsiteTimeDiffer.text ="$diffHours hrs 0$diffMinutes mins"
             }else{
-                binding.offsiteTimeDiffer.text ="0$diffHours hr 0$diffMinutes mins"
+                binding.offsiteTimeDiffer.text ="0$diffHours hrs 0$diffMinutes mins"
             }
 
             /** Set UI to Show Time with AM/PM BGColor */
@@ -354,7 +354,7 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
             binding.etEndPm.setBackgroundResource(com.busydoor.app.R.drawable.pm_bg)
             binding.etEndAm.setBackgroundResource(com.busydoor.app.R.drawable.am_bg)
         }
-        binding.offsiteTimeDiffer.text="00 hr 15 mins"
+        binding.offsiteTimeDiffer.text="00 hrs 15 mins"
         endHourMins=SimpleDateFormat("hh:mm a").format(calendar.time).toString()
     }
 
@@ -393,7 +393,7 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
             }
             "offsiteSend"->{
                 tittle.text="Send Request";
-                content.text="Are your sure do you want to send the offsite request for approval"
+                content.text="Do you want to send the offsite request for approval?"
                     ok.setOnClickListener {
                         alert.dismiss()
                         sendRequest()
@@ -401,7 +401,7 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
             }
             "offsiteCancel"->{
                 tittle.text="Cancel Request";
-                content.text="Are your sure do you want to cancel the request? All your changes will not be saved."
+                content.text="Do you want to cancel this request? All your changes will be lost."
                 ok.setOnClickListener{
                     recreate()
                     binding.commentsTextView.text!!.clear()
@@ -411,7 +411,7 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
             }
             "api-success"->{
                 tittle.text = "Success"
-                content.text="Staff request offsite added successfully"
+                content.text="Your Offsite request was sent for approval."
                 cancel.visibility =View.GONE
                 ok.text= "Done"
                 ok.setOnClickListener {
