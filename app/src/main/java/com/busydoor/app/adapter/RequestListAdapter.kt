@@ -70,6 +70,7 @@ class RequestsAdapter(
                 .skipMemoryCache(true)
                 .into(holder.imageUSer)
         }
+
         if(model.approverPhoto !=null) {
             Log.e("adapterview",model.toString())
             Glide.with(context)
@@ -109,10 +110,25 @@ class RequestsAdapter(
             Log.e("original value dash== ",model.toString())
 
         }
-        holder.hideShowView.setOnClickListener {
+
         holder.requestbyUserView.visibility =View.GONE
         holder.approvalCmdView.visibility =View.GONE
         holder.approvalStatusView.visibility =View.GONE
+
+        var isShow:Boolean=false
+        holder.hideShowView.setOnClickListener {
+            isShow=!isShow
+            if(!isShow){
+                holder.hideShowView.setImageResource(R.drawable.icon_down_arrow)
+                holder.requestbyUserView.visibility =View.GONE
+                holder.approvalCmdView.visibility =View.GONE
+                holder.approvalStatusView.visibility =View.GONE
+            }else{
+                holder.hideShowView.setImageResource(R.drawable.icon_up_arrow)
+                holder.requestbyUserView.visibility =View.VISIBLE
+                holder.approvalCmdView.visibility =View.VISIBLE
+                holder.approvalStatusView.visibility =View.VISIBLE
+            }
         }
 
 
@@ -122,13 +138,23 @@ class RequestsAdapter(
         else{holder.approvalCmdView.visibility= View.GONE}
         if(model.timePermissionStatus!=null){
             holder.approvalSatus.text=model.timePermissionStatus
-            holder.accept_rejectView.visibility= View.GONE
-        }else if(model.timePermissionStatus =="rejected"){
-            holder.accept_rejectView.visibility= View.GONE
-        }else if(model.timePermissionStatus =="approved"){
-            holder.accept_rejectView.visibility= View.GONE
-        }else if(model.timePermissionStatus =="pending"){
-            holder.accept_rejectView.visibility= View.GONE
+            when (model.timePermissionStatus) {
+                "rejected" -> {
+                    holder.approvalSatus.setTextColor(R.color.reject)
+                    holder.accept_rejectView.visibility= View.GONE
+                }
+                "approved" -> {
+                    holder.approvalSatus.setTextColor(R.color.approved)
+                    holder.accept_rejectView.visibility= View.GONE
+                }
+                "pending" -> {
+                    holder.approvalSatus.setTextColor(R.color.pending)
+                    holder.accept_rejectView.visibility= View.GONE
+                }
+                else ->{
+                    holder.accept_rejectView.visibility= View.GONE
+                }
+            }
         }else{
             holder.approvalStatusView.visibility= View.GONE
         }

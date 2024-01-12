@@ -18,12 +18,14 @@ import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
+import com.busydoor.app.customMethods.ACTIVITY_PREMISE_ID
 import com.busydoor.app.customMethods.ALL_REQUEST_OFFSITE
 import com.busydoor.app.customMethods.AcceptRejectOffsite
 import com.busydoor.app.customMethods.ENCRYPTION_IV
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.SUCCESS_CODE
 import com.busydoor.app.customMethods.encode
+import com.busydoor.app.customMethods.globalDate
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.customMethods.key
 import com.busydoor.app.databinding.FragmentYourActivityBinding
@@ -72,7 +74,7 @@ class RequestFragment : Fragment(), ApiResponseInterface,HomeClick {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
-        getAllActivities("2023-12-28")
+        getAllActivities(globalDate)
 
     }
 
@@ -89,7 +91,7 @@ class RequestFragment : Fragment(), ApiResponseInterface,HomeClick {
                     requireActivity(),
                     ApiInitialize.initialize(ApiInitialize.LOCAL_URL).getYourActivitiesList(
                         "Bearer ${getUserModel()!!.data.token}",
-                        encrypt("1"),
+                        encrypt(ACTIVITY_PREMISE_ID),
                         encrypt(date)
                     ),
                     ALL_REQUEST_OFFSITE,
@@ -149,7 +151,7 @@ class RequestFragment : Fragment(), ApiResponseInterface,HomeClick {
             AcceptRejectOffsite ->{
                 if(aceeptRejectData!!.statusCode== SUCCESS_CODE){
                     if(aceeptRejectData!!.data !=null ){
-                        getAllActivities("2023-12-28")
+                        getAllActivities(globalDate)
                     }else{
                     }
                 }

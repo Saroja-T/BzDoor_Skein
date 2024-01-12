@@ -119,6 +119,7 @@ class StaffDetailsOnWeekActivity : ActivityBase(),ApiResponseInterface,HomeClick
 
                 // Update the TextView to display the selected date with the format
                 binding.offsiteHeading.text= convertDate(formattedDate,"yyyy-MM-dd","EEE - dd 'th' MMM',' yyyy")
+                binding.tvStaffSelectedLabel.text = convertDate(formattedDate,"yyyy-MM-dd","EEEE, MMMM dd, yyyy")
                 /*** Function to staffListGet when click datePicker select a date to call api request */
                 staffGraphGet(formattedDate)
             },

@@ -68,10 +68,11 @@ time from 7:12 pm to 8:30 pm (10/10/2023)"
 
                     <ImageView
                         android:id="@+id/hideShowView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:src="@android:drawable/arrow_up_float"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="match_parent"
+                        android:paddingRight="@dimen/_10sdp"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:src="@drawable/icon_down_arrow"
                         android:layout_gravity="center"/>
                 </LinearLayout>
                 <View
@@ -242,8 +243,7 @@ my offsite request."
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="@dimen/_5sdp">
+                android:orientation="vertical">
                 <com.busydoor.app.customMethods.MyCustomTextView
                     android:id="@+id/approvalStatus"
                     android:layout_width="match_parent"
@@ -277,7 +277,7 @@ my offsite request."
             android:textColor="#747171"
             android:textFontWeight="400"
             android:textSize="@dimen/_10sdp"
-            android:layout_marginBottom="@dimen/_25sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
             android:visibility="visible"
             />
     </LinearLayout>
