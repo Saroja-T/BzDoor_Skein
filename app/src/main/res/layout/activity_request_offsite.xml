@@ -369,22 +369,46 @@
                 android:padding="@dimen/_2sdp">
 
                 <TextView
-                    android:id="@+id/offsiteTimeDifferView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Total offsite time "
-                    android:textColor="@color/text_color"
-                    android:textStyle="normal" />
-
-                <TextView
-                    android:id="@+id/offsiteTimeDiffer"
+                    android:id="@+id/offsiteTimeDifferHR"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/_3sdp"
-                    android:text="00:00 mins"
+                    android:text="00"
                     android:textColor="@color/app_color"
                     android:textSize="34sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:gravity="bottom"
+                    android:text="hrs"
+                    android:textColor="@color/app_color"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/offsiteTimeDifferMin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:text="00"
+                    android:textColor="@color/app_color"
+                    android:textSize="34sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:gravity="bottom"
+                    android:text="mins"
+                    android:textColor="@color/app_color"
+                    android:textSize="14sp" />
 
             </LinearLayout>
             <LinearLayout

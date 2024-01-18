@@ -23,7 +23,7 @@
             android:layout_weight="1"
             android:padding="@dimen/_5sdp"
             android:gravity="left|center"
-            android:text="Staff Presents"
+            android:text="Staff"
             android:textColor="@color/black"
             android:letterSpacing="0.001"
             android:textSize="@dimen/_15sdp"

@@ -237,13 +237,15 @@ interface ApiInterface {
         @Query("premise_id") premiseId: String,
         @Query("date") date: String,
     ): Call<UserActivities>
+
+    @FormUrlEncoded
     @Headers("Accept:application/json")
-    @GET("user/approverejectoffsite")
+    @PUT("user/approverejectoffsite")
     fun setPermissionoffsite(
         @Header("Authorization") inToken: String,
-        @Query("staff_time_permission_id") permissionId: String,
-        @Query("time_permission_status") permissionStatus: String,
-        @Query("comments") comments: String,
+        @Field("staff_time_permission_id") permissionId: String,
+        @Field("time_permission_status") permissionStatus: String,
+        @Field("comments") comments: String,
     ): Call<AcceptOffsiteRes>
 
     @Headers("Accept:application/json")

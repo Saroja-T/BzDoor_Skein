@@ -127,48 +127,52 @@
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
                                         android:orientation="horizontal">
+
                                         <com.busydoor.app.customMethods.MyCustomTextView
+                                            android:id="@+id/centerHourTime"
                                             android:layout_width="wrap_content"
-                                            android:textColor="@color/black"
-                                            android:textStyle="bold"
-                                            android:textSize="@dimen/_25sdp"
-                                            android:text=" "
                                             android:layout_height="wrap_content"
                                             android:layout_marginBottom="@dimen/_10sdp"
-                                            android:id="@+id/centerHourTime">
+                                            android:text="00"
+                                            android:textColor="@color/black"
+                                            android:textSize="28sp">
 
                                         </com.busydoor.app.customMethods.MyCustomTextView>
+
                                         <com.busydoor.app.customMethods.MyCustomTextView
+                                            android:id="@+id/centerHourText"
                                             android:layout_width="wrap_content"
-                                            android:textColor="@color/black"
-                                            android:textStyle="normal"
-                                            android:textSize="@dimen/_12sdp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="@dimen/_2sdp"
+                                            android:layout_marginBottom="@dimen/_10sdp"
                                             android:text="hrs "
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginBottom="@dimen/_10sdp"
-                                            android:id="@+id/centerHourText">
+                                            android:textColor="@color/black"
+                                            android:textSize="14sp"
+                                            android:textStyle="normal">
 
                                         </com.busydoor.app.customMethods.MyCustomTextView>
+
                                         <com.busydoor.app.customMethods.MyCustomTextView
+                                            android:id="@+id/centerMinsTime"
                                             android:layout_width="wrap_content"
-                                            android:textColor="@color/black"
-                                            android:textStyle="bold"
-                                            android:textSize="@dimen/_25sdp"
-                                            android:text=" "
                                             android:layout_height="wrap_content"
                                             android:layout_marginBottom="@dimen/_10sdp"
-                                            android:id="@+id/centerMinsTime">
+                                            android:text="00"
+                                            android:textColor="@color/black"
+                                            android:textSize="28sp">
 
                                         </com.busydoor.app.customMethods.MyCustomTextView>
+
                                         <com.busydoor.app.customMethods.MyCustomTextView
+                                            android:id="@+id/centerMinsText"
                                             android:layout_width="wrap_content"
-                                            android:textColor="@color/black"
-                                            android:textStyle="normal"
-                                            android:textSize="@dimen/_12sdp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="@dimen/_2sdp"
+                                            android:layout_marginBottom="@dimen/_10sdp"
                                             android:text="mins"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginBottom="@dimen/_10sdp"
-                                            android:id="@+id/centerMinsText">
+                                            android:textColor="@color/black"
+                                            android:textSize="14sp"
+                                            android:textStyle="normal">
 
                                         </com.busydoor.app.customMethods.MyCustomTextView>
 

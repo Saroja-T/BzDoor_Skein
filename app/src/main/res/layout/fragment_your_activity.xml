@@ -28,6 +28,8 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/_12sdp"
             android:textColor="#747171"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:textStyle="bold|normal"
             android:textFontWeight="400"
             android:text="Oct 14 | 09:50 am"

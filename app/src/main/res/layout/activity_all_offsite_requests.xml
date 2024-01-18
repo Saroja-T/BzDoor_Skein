@@ -15,20 +15,29 @@
         android:id="@+id/calendarIcon"
         android:layout_marginTop="@dimen/_25sdp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/offsiteSelectedDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:text="Fri -13th Oct,2023"
             android:textColor="@color/black"
-            android:text="Fri -13th Oct,2023" />
+            android:textSize="20sp" />
         <ImageView
             android:padding="@dimen/_1sdp"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="match_parent"
             android:src="@drawable/icon_calendartoday" />
+
+        <ImageView
+            android:id="@+id/RequestOffsiteIcon"
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="match_parent"
+            android:padding="@dimen/_1sdp"
+            android:src="@drawable/icon_request" />
 
     </LinearLayout>
     <LinearLayout
@@ -41,18 +50,10 @@
             android:id="@+id/allRequestHeading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
             android:layout_weight="1"
             android:layout_gravity="center"
             android:textColor="@color/black"
             android:text="All Requests" />
-        <ImageView
-            android:id="@+id/RequestOffsiteIcon"
-            android:padding="@dimen/_1sdp"
-            android:layout_weight="1"
-            android:layout_width="@dimen/_28sdp"
-            android:layout_height="@dimen/_28sdp"
-            android:src="@drawable/icon_request" />
 
     </LinearLayout>
 

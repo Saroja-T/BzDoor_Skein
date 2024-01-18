@@ -214,7 +214,9 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
                                 totalStaffCount =
                                     staffCountData!!.data!!.count!!.totalCount!!.toInt()
 
-                                binding.staffCountView.text= "$presentStaffCount/$totalStaffCount"
+                                binding.staffCountView.text= "$presentStaffCount"
+                                binding.textOnline.text= "$presentStaffCount"
+
                                 if (presentStaffCount != 0 && presentStaffCount != null) {
                                     percentage = ((100 * presentStaffCount)
                                             / totalStaffCount)
@@ -222,7 +224,8 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
                                 binding.pgbStaffs?.progress = percentage.toFloat()
                             } else {
                                 chart?.clear()
-                            binding.staffCountView.text ="No staffs"
+                                binding.staffCountView.text ="No staffs"
+                                binding.textOnline.text= "0"
                             }
                         }
                         }

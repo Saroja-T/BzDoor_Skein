@@ -138,12 +138,12 @@ class UserListAdapter(
             when (menuItem.title) {
                 "Active" -> {
                     homeClick.homePostionClick(position)
-                    Toast.makeText(view.context, "User is Active ${activeStatus}", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(view.context, "User is Active ${activeStatus}", Toast.LENGTH_SHORT).show()
                     true
                 }
                 "Inactive" -> {
                     homeClick.homePostionClick(position)
-                    Toast.makeText(view.context, "User is InActive $activeStatus", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(view.context, "User is InActive $activeStatus", Toast.LENGTH_SHORT).show()
                     true
                 }
                 else -> false

@@ -104,6 +104,7 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
 
         } else {
             binding.activityNodataView.visibility = View.VISIBLE
+             binding.noData.text="No Activities found this Date"
              binding.rvYourActivities.visibility = View.GONE
         }
     }

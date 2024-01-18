@@ -83,7 +83,7 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
         binding.calendarIcon.setOnClickListener{
             showDatePicker()
         }
-        binding.offsiteDateTime.text= convertDate(globalDate,"yyyy-MM-dd","EEEE, MMM dd,yyyy")
+        binding.offsiteDateTime.text= convertDate(globalDate,"yyyy-MM-dd","EEE, MMM dd,yyyy")
         getAllActivities(globalDate)
 
         val adapter = YourPagerAdapter(childFragmentManager)
@@ -266,7 +266,7 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
                 .into(binding.userProfileView.PremiseStaffImage)
         }
         when (model!!.userdetails!!.userStatus) {
-            "in" -> {              binding.userProfileView.PremiseStaffImage.setImageResource(R.drawable.premiselist_staff_satus_in)
+            "in" -> { binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_staff_profile_in)
             }
             "inout" -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_inout)
             }

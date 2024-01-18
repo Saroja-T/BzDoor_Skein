@@ -10,6 +10,7 @@
     android:layout_marginLeft="@dimen/_5sdp"
     android:layout_marginRight="@dimen/_5sdp"
     android:paddingBottom="@dimen/_15sdp"
+    android:id="@+id/requestNotification"
     android:paddingTop="@dimen/_15sdp">
 
     <LinearLayout
@@ -19,7 +20,6 @@
         android:orientation="vertical"
         android:layout_marginTop="@dimen/_10sdp">
         <LinearLayout
-            android:id="@+id/requestNotification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -244,7 +244,7 @@ my offsite request."
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <com.busydoor.app.customMethods.MyCustomTextView
+                <TextView
                     android:id="@+id/approvalStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
