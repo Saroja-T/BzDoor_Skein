@@ -421,9 +421,9 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
             }
             "api-failure"->{
                 alert.setCancelable(true)
-                tittle.text="Something went wrong"
+                tittle.text=""
                 content.text=requestOffsiteRes!!.message.toString();
-                ok.text= "Ok"
+                ok.text= "Done"
                 cancel.visibility= View.GONE
                 ok.setOnClickListener {
                     alert.dismiss()

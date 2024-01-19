@@ -643,9 +643,9 @@ class HomeFragment : Fragment(),ApiResponseInterface {
                 binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
             }
             else -> {
-    //            binding.userProfileView.staffStatus.visibility= View.GONE
+                //            binding.userProfileView.staffStatus.visibility= View.GONE
                 binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-    //            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
+                //            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
             }
         }
 
@@ -712,8 +712,14 @@ class HomeFragment : Fragment(),ApiResponseInterface {
     private fun setDataLine(dataModel: HomeDataResponse.Data.DonutDetails) {
         val xAxisLabelList  = java.util.ArrayList<String>()
         chart?.setExtraOffsets(35f, 0f, 35f, 0f)
-        binding.centerHourTime.text = convertDate(dataModel.totalInHours.toString(),"HH:MM:SS","HH")
-        binding.centerMinsTime.text = convertDate(dataModel.totalInHours.toString(),"HH:MM:SS","mm")
+        val timeHHMMSS = dataModel.totalInHours.toString().split(":")
+        if( timeHHMMSS.size > 2 ) {
+            binding.centerHourTime.text = timeHHMMSS[0]
+            binding.centerMinsTime.text = timeHHMMSS[1]
+        }
+        else
+            binding.centerHourTime.text = "Incorrect time format detected"
+
         // Custom renderer used to add dots at the end of value lines.
         val entries: java.util.ArrayList<PieEntry> = java.util.ArrayList()
         for (y in xAxisLabelList) {

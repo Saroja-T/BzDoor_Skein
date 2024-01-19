@@ -12,6 +12,7 @@ import com.busydoor.app.model.RequestAllOffsiteResponse
 import com.busydoor.app.model.StaffCountResponse
 import com.busydoor.app.model.StaffGraphcount
 import com.busydoor.app.model.StaffListOnDate
+import com.busydoor.app.model.UpdateUserStatus
 import com.busydoor.app.model.UserActivities
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -47,7 +48,7 @@ interface ApiInterface {
         @Field("status") status: String,
         @Field("premise_id") premiseId: String,
         @Field("user_id") userId: String
-    ): Call<AddUserToPremise>
+    ): Call<UpdateUserStatus>
 
     // Function for registering a user in the application
     @FormUrlEncoded

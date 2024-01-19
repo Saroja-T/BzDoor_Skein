@@ -83,6 +83,9 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
         binding.calendarIcon.setOnClickListener{
             showDatePicker()
         }
+        binding.userProfileView.backPage.setOnClickListener {
+            requireActivity().finish()
+        }
         binding.offsiteDateTime.text= convertDate(globalDate,"yyyy-MM-dd","EEE, MMM dd,yyyy")
         getAllActivities(globalDate)
 

@@ -228,7 +228,9 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
                                 binding.textOnline.text= "0"
                             }
                         }
+                        chart?.clear()
                         }
+                    chart?.clear()
 
                     }
                 }

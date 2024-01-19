@@ -38,8 +38,10 @@ data class UserActivities (
         data class Offsitedetails (
 
             @SerializedName("staff_time_permission_id" ) var staffTimePermissionId : Int?    = null,
+            @SerializedName("requester_type"           ) var requesterType         : String? = null,
             @SerializedName("requester_first_name"     ) var requesterFirstName    : String? = null,
             @SerializedName("requester_last_name"      ) var requesterLastName     : String? = null,
+            @SerializedName("requester_photo"          ) var requesterPhoto        : String? = null,
             @SerializedName("time_permission_status"   ) var timePermissionStatus  : String? = null,
             @SerializedName("time_permission_reason"   ) var timePermissionReason  : String? = null,
             @SerializedName("requested_date"           ) var requestedDate         : String? = null,
@@ -49,12 +51,12 @@ data class UserActivities (
             @SerializedName("end_date"                 ) var endDate               : String? = null,
             @SerializedName("end_time"                 ) var endTime               : String? = null,
             @SerializedName("comments_by_requester"    ) var commentsByRequester   : String? = null,
-            @SerializedName("approved_by"              ) var approvedBy            : String? = null,
+            @SerializedName("approver_first_name"      ) var approverFirstName     : String? = null,
+            @SerializedName("approver_last_name"       ) var approverLastName      : String? = null,
+            @SerializedName("approver_photo"           ) var approverPhoto         : String? = null,
             @SerializedName("comments_by_approver"     ) var commentsByApprover    : String? = null,
             @SerializedName("approved_date"            ) var approvedDate          : String? = null,
-            @SerializedName("approved_time"            ) var approvedTime          : String? = null,
-            @SerializedName("approver_photo"           ) var approverPhoto         : String? = null,
-            @SerializedName("requester_photo"          ) var requesterPhoto        : String? = null
+            @SerializedName("approved_time"            ) var approvedTime          : String? = null
 
         )
         data class Premisedetails (
@@ -73,6 +75,7 @@ data class UserActivities (
             @SerializedName("user_first_name" ) var userFirstName : String? = null,
             @SerializedName("user_last_name"  ) var userLastName  : String? = null,
             @SerializedName("user_image"      ) var userImage     : String? = null,
+            @SerializedName("user_access_level") var userAccessLevel : String? = null,
             @SerializedName("user_status"     ) var userStatus    : String? = null
 
         )

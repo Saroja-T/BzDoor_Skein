@@ -29,7 +29,6 @@
                 android:layout_marginStart="@dimen/_2sdp"
                 android:padding="@dimen/_3sdp"
                 android:visibility="visible"
-                android:scaleType="centerCrop"
                 app:civ_border_color="#A39E9F80"
                 app:civ_border_width="4dp"
                 android:src="@drawable/dummy_premise_img"/>

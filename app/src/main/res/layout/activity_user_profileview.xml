@@ -43,8 +43,8 @@
                     android:layout_margin="@dimen/_2sdp"
                     android:layout_marginStart="@dimen/_2sdp"
                     android:padding="@dimen/_3sdp"
-                    android:visibility="visible"
-                    android:scaleType="centerCrop"/>
+                    android:scaleType="centerCrop"
+                    android:visibility="visible"/>
                 <!-- Camera Icon -->
                         <pl.droidsonroids.gif.GifImageView
                             android:id="@+id/staffStatus"

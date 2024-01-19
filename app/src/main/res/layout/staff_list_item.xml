@@ -45,7 +45,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_5sdp"
-                android:scaleType="centerCrop"
                 android:paddingLeft="@dimen/_20sdp"
                 android:paddingRight="@dimen/_20sdp"
                 android:src="@drawable/dummy_proflie"

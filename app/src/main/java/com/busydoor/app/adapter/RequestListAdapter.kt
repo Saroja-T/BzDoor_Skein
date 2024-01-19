@@ -2,6 +2,7 @@ package com.busydoor.app.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
@@ -30,6 +32,7 @@ class RequestsAdapter(
     private val context: Context,
     private val requestActivityList: ArrayList<UserActivities.Data.Offsitedetails>,
     private var homeClick: RequestClick,
+    private var isAdmin: String,
 ) : RecyclerView.Adapter<RequestsAdapter.InnerViewHolder>() {
     private val TAG = "HomeListAdapter"
 
@@ -116,28 +119,34 @@ class RequestsAdapter(
             homeClick.activityPositionClick(model.staffTimePermissionId!!,"reject","")
         }
 
+        if(model.requesterType=="yours"){
+            holder.hideShowView.visibility=View.GONE
+            holder.accept_rejectView.visibility=View.GONE
+            holder.approvalStatusView.visibility=View.VISIBLE
+            holder.requestTime.text="you" +" has requested an "+model.timePermissionReason +" time from "+convertDate(model.startTime,"hh:mm:ss","hh:mm a")+"  to "+ convertDate(model.endTime,"hh:mm:ss","hh:mm a") +" ("+convertDate(model.requestedDate,"yyyy-MM-dd","dd-MM-yyyy")+")"
+        }else{
+            holder.requestTime.text=model.requesterFirstName +" has requested an "+model.timePermissionReason +" time from "+convertDate(model.startTime,"hh:mm:ss","hh:mm a")+"  to "+ convertDate(model.endTime,"hh:mm:ss","hh:mm a") +" ("+convertDate(model.requestedDate,"yyyy-MM-dd","dd-MM-yyyy")+")"
+        }
 
-        holder.requestbyUserView.visibility =View.GONE
-        holder.approvalCmdView.visibility =View.GONE
-        holder.approvalStatusView.visibility =View.GONE
+        holder.Time.text= convertDate(model.requestedTime.toString(),"yyyy-MM-dd HH:mm:ss","hh:mm a")
+
+
+
 
         var isShow=false
         holder.hideShowView.setOnClickListener {
             holder.requestbyUserView.visibility =View.VISIBLE
             holder.approvalCmdView.visibility =View.VISIBLE
-            holder.approvalStatusView.visibility =View.VISIBLE
 
             isShow= !isShow
             if(!isShow){
                 holder.hideShowView.setImageResource(R.drawable.icon_down_arrow)
                 holder.requestbyUserView.visibility =View.GONE
                 holder.approvalCmdView.visibility =View.GONE
-                holder.approvalStatusView.visibility =View.GONE
             }else{
                 holder.hideShowView.setImageResource(R.drawable.icon_up_arrow)
                 holder.requestbyUserView.visibility =View.VISIBLE
                 holder.approvalCmdView.visibility =View.VISIBLE
-                holder.approvalStatusView.visibility =View.VISIBLE
             }
         }
 
@@ -152,25 +161,35 @@ class RequestsAdapter(
         else{
             holder.approvalCmdView.visibility= View.GONE}
 
+
         if(model.timePermissionStatus!=null){
             when (model.timePermissionStatus) {
                 "rejected" -> {
-                    holder.approvalSatus.setTextColor(R.color.reject)
-                    holder.accept_rejectView.visibility= View.GONE
-                    holder.approvalSatus.text=model.timePermissionStatus
+                    holder.approvalSatus.setTextColor(Color.parseColor("#F01B1B"))
+                    holder.accept_rejectView.visibility = View.GONE
+                    holder.approvalStatusView.visibility=View.VISIBLE
+                    holder.approvalSatus.text =model.approverFirstName+" have "+ model.timePermissionStatus
+
                 }
                 "approved" -> {
-                    holder.approvalSatus.setTextColor(R.color.approved)
-                    holder.accept_rejectView.visibility= View.GONE
-                    holder.approvalSatus.text=model.timePermissionStatus
+                    holder.approvalSatus.setTextColor(Color.parseColor("#16984A"))
+                    holder.accept_rejectView.visibility = View.GONE
+                    holder.approvalStatusView.visibility=View.VISIBLE
+                    holder.approvalSatus.text =model.approverFirstName+" have "+ model.timePermissionStatus
+
                 }
                 "pending" -> {
-                    holder.approvalSatus.setTextColor(R.color.pending)
-                    holder.accept_rejectView.visibility= View.VISIBLE
-                    holder.approvalStatusView.visibility= View.GONE
-                    holder.approvalSatus.text=model.timePermissionStatus
-                }
-                else ->{
+                    holder.approvalSatus.setTextColor(Color.parseColor("#E98919"))
+                    if(model.requesterType=="yours"){
+                        holder.accept_rejectView.visibility= View.GONE
+                        holder.approvalStatusView.visibility= View.VISIBLE
+                        holder.approvalSatus.text=model.timePermissionStatus
+                    }else{
+                        holder.accept_rejectView.visibility= View.VISIBLE
+                        holder.approvalStatusView.visibility= View.GONE
+                    }
+                        }
+                else -> {
                     holder.accept_rejectView.visibility= View.VISIBLE
                     holder.approvalStatusView.visibility= View.GONE
                     holder.approvalSatus.text=model.timePermissionStatus
@@ -179,12 +198,14 @@ class RequestsAdapter(
         }else{
             holder.approvalStatusView.visibility= View.GONE
         }
-        holder.requestTime.text=model.requesterFirstName +" has requested an "+model.timePermissionReason +" time from "+convertDate(model.startTime,"HH:MM:SS","hh:mm a")+"  to "+ convertDate(model.endTime,"HH:MM:SS","hh:mm a") +" ("+convertDate(model.requestedDate,"yyyy-MM-dd","dd-MM-yyyy")+")"
-        holder.approvalTime.text= convertDate(model.approvedTime,"HH:MM:SS","hh:mm a")
+        holder.approvalTime.text= convertDate(model.approvedTime,"hh:mm:ss","hh:mm a")
     }
 
     class InnerViewHolder(view: View,context: Context) : RecyclerView.ViewHolder(view) {
         val premiseImage: CircleImageView = view.findViewById(R.id.cIvImage)
+        val Time: MyCustomTextView = view.findViewById(R.id.tvTime)
+        val premiseImageLayout: ConstraintLayout = view.findViewById(R.id.imageLayout)
+        val frameLayout: FrameLayout = view.findViewById(R.id.layoutStatus)
         val hideShowView: ImageView = view.findViewById(R.id.hideShowView)
         val imageUSer: CircleImageView = view.findViewById(R.id.ImageUSer)
         val imageManager: CircleImageView = view.findViewById(R.id.ImageManager)

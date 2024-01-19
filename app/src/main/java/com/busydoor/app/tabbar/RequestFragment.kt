@@ -55,7 +55,7 @@ class RequestFragment : Fragment(), ApiResponseInterface,RequestClick {
     private var requestAllDataGet: UserActivities? = null
     private var aceeptRejectData: AcceptOffsiteRes? = null
     private lateinit var binding: FragmentRequestBinding
-    var notificationId: Int? =null
+    private var notificationId: Int? =null
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +98,7 @@ class RequestFragment : Fragment(), ApiResponseInterface,RequestClick {
         if(status=="accept"){
             Log.e("activityPositionClick",status)
             showAlertBox(status)
-        }else{
+        }else if(status=="reject"){
             Log.e("activityPositionClick",status)
             showAlertBox(status)
         }
@@ -146,17 +146,18 @@ class RequestFragment : Fragment(), ApiResponseInterface,RequestClick {
 
             }
             "api-success"->{
+                alert.setCancelable(true)
                 tittle.text = "Success"
                 content.text="Your Offsite request was sent for approval."
                 cancel.visibility =View.GONE
                 ok.text= "Done"
                 ok.setOnClickListener {
-
+                    alert.dismiss()
                 }
             }
             "api-failure"->{
                 alert.setCancelable(true)
-                tittle.text="Something went wrong"
+                tittle.text=" "
                 content.text=aceeptRejectData!!.message.toString();
                 ok.text= "Done"
                 cancel.visibility= View.GONE
@@ -236,12 +237,12 @@ class RequestFragment : Fragment(), ApiResponseInterface,RequestClick {
 
                 }
             }
-            AcceptRejectOffsite ->{
-                Log.e("apiCalled","no data found")
+            AcceptRejectOffsite -> {
+                aceeptRejectData = apiResponseManager.response as AcceptOffsiteRes
+                Log.e("AcceptRejectOffsite",aceeptRejectData.toString())
                 if(aceeptRejectData!!.statusCode == SUCCESS_CODE){
-                    if(aceeptRejectData!!.data !=null ){
-                        getAllActivities(globalDate)
-                    }
+                    getAllActivities(globalDate)
+                    showAlertBox("api-success")
                 }else{
                     showAlertBox("api-failure")
                 }
@@ -261,7 +262,7 @@ class RequestFragment : Fragment(), ApiResponseInterface,RequestClick {
                 RequestsAdapter(
                     requireContext(),
                     data,
-                    this,)
+                    this,getUserModel()!!.data.isAdmin)
             // Create adapter object
             binding.rvRequests.adapter = requestListAdapter
             binding.rvRequests.visibility = View.VISIBLE

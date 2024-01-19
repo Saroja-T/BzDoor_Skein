@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.PopupMenu
@@ -16,6 +18,8 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.busydoor.app.R
 import com.busydoor.app.databinding.ActivityBottomNavBarBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
 
@@ -28,10 +32,6 @@ class BottomNavigationBarActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-            window.setFlags(WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT,
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS);
-        }
         binding = ActivityBottomNavBarBinding.inflate(layoutInflater)
         setContentView(binding.root)
         navController = findNavController(R.id.main_fragment)
@@ -46,6 +46,7 @@ class BottomNavigationBarActivity : AppCompatActivity() {
 
         setupSmoothBottomMenu()
     }
+
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -90,6 +91,9 @@ class BottomNavigationBarActivity : AppCompatActivity() {
     private fun setupSmoothBottomMenu() {
         val popupMenu = PopupMenu(this, null)
         popupMenu.inflate(R.menu.menu_bottom)
+        // Hide the second item in the menu
+        val itemIndexToHide = 2
+        popupMenu.menu.removeItem(itemIndexToHide)
         val menu = popupMenu.menu
         binding.bottomBar.setupWithNavController(menu, navController)
 //        binding.bottomBar.setupWithNavController(navController)
