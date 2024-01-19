@@ -1,6 +1,5 @@
 package com.busydoor.app.apiService
 
-import com.busydoor.app.model.AcceptOffsiteRes
 import com.busydoor.app.model.AddUserToPremise
 import com.busydoor.app.model.AttendanceResponse
 import com.busydoor.app.model.EmitterDetailsRespons
@@ -12,7 +11,6 @@ import com.busydoor.app.model.RequestAllOffsiteResponse
 import com.busydoor.app.model.StaffCountResponse
 import com.busydoor.app.model.StaffGraphcount
 import com.busydoor.app.model.StaffListOnDate
-import com.busydoor.app.model.UpdateUserStatus
 import com.busydoor.app.model.UserActivities
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -37,7 +35,7 @@ interface ApiInterface {
     fun userLoginFunction(
         @Field("phone_number") first_name: String,
         @Field("device_type") device_type: String,
-        @Field("fcm_token") device_token: String,
+        @Field("device_token") device_token: String,
         @Field("time_zone") time_zone: String,
     ): Call<ResponseBody>
     @FormUrlEncoded
@@ -48,7 +46,7 @@ interface ApiInterface {
         @Field("status") status: String,
         @Field("premise_id") premiseId: String,
         @Field("user_id") userId: String
-    ): Call<UpdateUserStatus>
+    ): Call<AddUserToPremise>
 
     // Function for registering a user in the application
     @FormUrlEncoded
@@ -60,7 +58,7 @@ interface ApiInterface {
         @Field("last_name") last_name: String,
         @Field("access_level") access_level: String,
         @Field("device_type") device_type: String,
-        @Field("fcm_token") device_token: String,
+        @Field("device_token") device_token: String,
         @Field("time_zone") time_zone: String,
         @Field("type") type: String,
     ): Call<ResponseBody>
@@ -232,22 +230,12 @@ interface ApiInterface {
     ): Call<RequestAllOffsiteResponse>
 
     @Headers("Accept:application/json")
-    @GET("user/getuseractivitiesoffsitelist")
+    @GET("user/getRequestOffsite")
     fun getYourActivitiesList(
         @Header("Authorization") inToken: String,
         @Query("premise_id") premiseId: String,
         @Query("date") date: String,
     ): Call<UserActivities>
-
-    @FormUrlEncoded
-    @Headers("Accept:application/json")
-    @PUT("user/approverejectoffsite")
-    fun setPermissionoffsite(
-        @Header("Authorization") inToken: String,
-        @Field("staff_time_permission_id") permissionId: String,
-        @Field("time_permission_status") permissionStatus: String,
-        @Field("comments") comments: String,
-    ): Call<AcceptOffsiteRes>
 
     @Headers("Accept:application/json")
     @GET("user/getstaffcount")

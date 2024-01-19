@@ -22,8 +22,7 @@ data class RequestAllOffsiteResponse (
         @SerializedName("end_date"               ) var endDate              : String? = null,
         @SerializedName("end_time"               ) var endTime              : String? = null,
         @SerializedName("comments_by_requester"  ) var commentsByRequester  : String? = null,
-        @SerializedName("approver_first_name"      ) var approverFirstName     : String? = null,
-        @SerializedName("approver_last_name"       ) var approverLastName      : String? = null,
+        @SerializedName("approved_by"            ) var approvedBy           : String? = null,
         @SerializedName("comments_by_approver"   ) var commentsByApprover   : String? = null,
         @SerializedName("approved_date"          ) var approvedDate         : String? = null,
         @SerializedName("approved_time"          ) var approvedTime         : String? = null

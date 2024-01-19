@@ -238,21 +238,6 @@ class BeaconScanPermissionsActivity: PermissionsActivity()  {
         setContentView(layout)
     }
 
-
-    private fun checkBatteryOptimizationPermissionss() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val powerManager = getSystemService(POWER_SERVICE) as PowerManager
-            if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
-                val intent = Intent()
-                intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                intent.data = Uri.parse("package:$packageName")
-                startActivity(intent)
-            }
-            else{
-//                objSharedPref.putBoolean("isBatteryOpt",true)
-            }
-        }
-    }
     private fun dp(value: Int): Int {
         return (value * scale + 0.5f).toInt()
     }
@@ -328,7 +313,6 @@ class BeaconScanPermissionsActivity: PermissionsActivity()  {
             drawable.setColorFilter(Color.parseColor("#4355E3"), PorterDuff.Mode.SRC_IN) // Set the color you want
             // Set the modified drawable as the button's background
             continueButton.background = drawable
-            checkBatteryOptimizationPermissionss()
         }
     }
 

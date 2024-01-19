@@ -643,9 +643,9 @@ class HomeFragment : Fragment(),ApiResponseInterface {
                 binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
             }
             else -> {
-                //            binding.userProfileView.staffStatus.visibility= View.GONE
+    //            binding.userProfileView.staffStatus.visibility= View.GONE
                 binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-                //            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
+    //            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
             }
         }
 

@@ -216,7 +216,6 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
 
                                 binding.staffCountView.text= "$presentStaffCount"
                                 binding.textOnline.text= "$presentStaffCount"
-
                                 if (presentStaffCount != 0 && presentStaffCount != null) {
                                     percentage = ((100 * presentStaffCount)
                                             / totalStaffCount)
@@ -228,9 +227,7 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
                                 binding.textOnline.text= "0"
                             }
                         }
-                        chart?.clear()
                         }
-                    chart?.clear()
 
                     }
                 }

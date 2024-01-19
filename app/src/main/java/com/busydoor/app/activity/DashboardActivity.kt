@@ -26,7 +26,6 @@ import com.busydoor.app.apiService.ApiInitialize.TERM_AND_CONDITION
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
-import com.busydoor.app.customMethods.ACTIVITY_PREMISE_ID
 import com.busydoor.app.customMethods.BEACON_DETAILS
 import com.busydoor.app.customMethods.CHECK_DIALOG_OPEN_CLOSE
 import com.busydoor.app.customMethods.HOME_DATA_GET
@@ -82,7 +81,6 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
 
     override fun homePostionClick(postion: Int) {
         Log.e("original value dash== ",homeDataGet!!.data[postion].premiseId.toString())
-        ACTIVITY_PREMISE_ID=homeDataGet!!.data[postion].premiseId.toString()
         startActivity(
             Intent(
                 this@DashboardActivity,

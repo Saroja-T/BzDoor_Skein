@@ -33,7 +33,7 @@
                 android:layout_width="@dimen/_8sdp"
                 android:layout_height="@dimen/_10sdp"
                 android:src="@drawable/icon_popup"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="@id/PremiseStaffImages"
                 app:layout_constraintTop_toTopOf="@id/PremiseStaffImages">
 
@@ -45,6 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_5sdp"
+                android:scaleType="centerCrop"
                 android:paddingLeft="@dimen/_20sdp"
                 android:paddingRight="@dimen/_20sdp"
                 android:src="@drawable/dummy_proflie"

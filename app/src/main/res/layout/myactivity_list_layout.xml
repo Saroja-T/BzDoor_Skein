@@ -97,6 +97,7 @@
                 android:layout_marginTop="@dimen/_2sdp"
                 android:contentDescription="TODO"
                 android:padding="@dimen/_5sdp"
+                android:scaleType="centerCrop"
                 android:visibility="visible" />
 
         </LinearLayout>

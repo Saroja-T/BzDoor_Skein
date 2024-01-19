@@ -3,7 +3,6 @@ package com.busydoor.app.activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings.Secure
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -29,7 +28,6 @@ import com.google.firebase.auth.PhoneAuthProvider
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
-
 
 class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
     private var mAuth: FirebaseAuth? = null
@@ -70,14 +68,10 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
             finish()
         }
     }
-//    var android_id = Secure.getString(
-//        this.contentResolver,
-//        Secure.ANDROID_ID
-//    )
+
     /** loginApi function... **/
     @RequiresApi(Build.VERSION_CODES.R)
     private fun loginApi() {
-        Log.e("OTPPPP  ","registerApi   "+objSharedPref.getString("FCM_TOKEN")!!.toString())
         if (isOnline(this@LoginHomeActivity)) {
             ApiRequest(
                 this,

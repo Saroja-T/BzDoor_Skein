@@ -47,7 +47,6 @@ data class PremiseUserList (
             @SerializedName("user_first_name" ) var userFirstName : String? = null,
             @SerializedName("user_last_name"  ) var userLastName  : String? = null,
             @SerializedName("user_image"      ) var userImage     : String? = null,
-            @SerializedName("user_access_level") var userAccessLevel : String? = null,
             @SerializedName("user_status"     ) var userStatus    : String? = null
 
         )

@@ -26,8 +26,7 @@
                 android:id="@+id/offsiteDateTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="normal"
-                android:textSize="20sp"
+                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="Fri -13th Oct,2023" />
             <ImageView

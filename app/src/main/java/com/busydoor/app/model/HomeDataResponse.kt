@@ -21,7 +21,6 @@ data class HomeDataResponse(
             @SerializedName("staff_first_name") var staffFirstName: String? = null,
             @SerializedName("staff_last_name") var staffLastName: String? = null,
             @SerializedName("staff_image") var staffImage: String? = null,
-            @SerializedName("staff_access_level") var staffaccesslevel: String? = null,
             @SerializedName("staff_status") var staffStatus: String? = null
 
         )

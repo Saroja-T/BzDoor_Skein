@@ -66,16 +66,16 @@
                         android:orientation="vertical"
                         android:id="@+id/chart3">
 
-                        <!--                        <RelativeLayout-->
-                        <!--                            android:layout_width="match_parent"-->
-                        <!--                            android:layout_height="match_parent"-->
-                        <!--                            android:id="@+id/chart_relative"-->
-                        <!--                            style="@style/pie_chart_rl">-->
+<!--                        <RelativeLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:id="@+id/chart_relative"-->
+<!--                            style="@style/pie_chart_rl">-->
 
 
 
 
-                        <!--                        </RelativeLayout>-->
+<!--                        </RelativeLayout>-->
                         <RelativeLayout
                             android:layout_width="@dimen/_300sdp"
                             android:layout_height="@dimen/_250sdp"
@@ -145,6 +145,7 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
                                 android:paddingLeft="35dp"
+                                android:scaleType="centerCrop"
                                 app:civ_border_width="1.05dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"

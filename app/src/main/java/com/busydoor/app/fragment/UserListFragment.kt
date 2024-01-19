@@ -52,7 +52,6 @@ import com.busydoor.app.databinding.FragmentUserListBinding
 import com.busydoor.app.interfaceD.HomeClick
 import com.busydoor.app.model.AddUserToPremise
 import com.busydoor.app.model.PremiseUserList
-import com.busydoor.app.model.UpdateUserStatus
 import com.busydoor.app.model.UserModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseException
@@ -70,7 +69,7 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
     private lateinit var binding: FragmentUserListBinding
     private var userListPremise: PremiseUserList? = null
     private var userActiveDeactiveRes: ResponseBody? = null
-    private var userActiveDeactiveResponse: UpdateUserStatus? = null
+    private var userActiveDeactiveResponse: AddUserToPremise? = null
     open lateinit var objSharedPref: PrefUtils
     var cryptLib: CryptLib2? = null
     private var otpType = ""
@@ -172,7 +171,6 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
         val tittle = view.findViewById<View>(com.busydoor.app.R.id.dialog_tittle_text) as TextView
         val cancel = view.findViewById<View>(com.busydoor.app.R.id.cancel_action) as Button
         val sw_status = view.findViewById<View>(com.busydoor.app.R.id.sw_status) as SwitchCompat
-        cancel.text="CANCLE"
         sw_status.setOnCheckedChangeListener { buttonView, isChecked ->
             swStatus = if (isChecked){
                 "true"
@@ -191,7 +189,6 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
                     if(mobileNum.text.length>=10){
                         val phone = "+91" + mobileNum.text.toString().trim()
                         Log.e("print123",phone)
-                        ok.text="ADD"
                         otpType = "add_user_to_premise"
                         progress_circular.visibility =View.VISIBLE
                         mobileNumberStr=mobileNum.text.toString()
@@ -208,7 +205,6 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
                 add_user_ll.visibility =View.GONE
                 sw_status.visibility =View.GONE
                 cancel.visibility =View.GONE
-                ok.text=userActiveStatus
                 tittle.text = "Active/Inactive User"
                 content.text="Are you sure want to $userActiveStatus ${userActiverName} User?"
                 ok.setOnClickListener {
@@ -221,7 +217,6 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
                 add_user_ll.visibility =View.GONE
                 sw_status.visibility =View.GONE
                 cancel.visibility =View.GONE
-                ok.text=userActiveStatus
                 tittle.text = "Active/Inactive User"
                 content.text="Are you sure want to $userActiveStatus ${userActiverName} User?"
                 ok.setOnClickListener {
@@ -243,9 +238,9 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
                 }
             }
             "api-failure"->{
-                tittle.visibility=View.GONE
-                content.text=response
-                ok.text= "Done"
+                tittle.text="something went wrong"
+                content.text=userListPremise!!.message.toString();
+                ok.text= "Ok"
                 add_user_ll.visibility =View.GONE
                 sw_status.visibility =View.GONE
                 content.visibility =View.VISIBLE
@@ -306,6 +301,8 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
     fun updateUserStatus(userid:String,status:String) {
         try {
             if (isOnline(requireContext())) {
+                Snackbar.make(binding.root, "Switch state checked ", Snackbar.LENGTH_LONG)
+                    .setAction("ACTION",null).show();
                 Log.e("apiCalled", " yes")
                 Log.d("BDApplication", "the p ${"requestType".toString()}")
                 ApiRequest(
@@ -331,8 +328,7 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
             val userListLayout = GridLayoutManager(requireContext(),2)
             binding.rvUserList.layoutManager =userListLayout
             val userListAdapter=UserListAdapter(
-                requireContext(),data,getUserModel()!!.data!!.userId.toString(), this,
-                userListPremise!!.data!!.userdetails!!.userAccessLevel!!
+                requireContext(),data,getUserModel()!!.data!!.userId.toString(), this
             )
             // create a adapter
             binding.rvUserList.adapter=userListAdapter
@@ -389,11 +385,6 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
 
                         }
                     }
-                    if(userListPremise!!.data!!.userdetails!!.userAccessLevel!!.toLowerCase() !="admin"){
-                        binding.fab.visibility =View.GONE
-                    }else if(userListPremise!!.data!!.userdetails!!.userAccessLevel!!.toLowerCase() =="admin"){
-                        binding.fab.visibility =View.VISIBLE
-                    }
 
                     setUserAdapter(userListPremise!!.data!!.staffdetails)
                     premiseName=userListPremise!!.data!!.premisedetails!!.premiseName.toString()
@@ -421,7 +412,7 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
                 }
             }
             USER_ACTIVE_DEACTIVE ->{
-                userActiveDeactiveResponse = apiResponseManager.response as UpdateUserStatus
+                userActiveDeactiveResponse = apiResponseManager.response as AddUserToPremise
                 if(userActiveDeactiveResponse!!.statusCode== SUCCESS_CODE){
                     getUserListRequest()
                     showAlertBox("api-success",userActiveDeactiveResponse!!.message.toString())

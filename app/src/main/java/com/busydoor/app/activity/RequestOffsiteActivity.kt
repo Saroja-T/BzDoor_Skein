@@ -145,7 +145,7 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
         }
         /** offsiteSend button fun. **/
         binding.offsiteSend.setOnClickListener{
-            checkValidation()
+                checkValidation()
         }
 
     }
@@ -263,11 +263,11 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
         /** Show the time picker time showing added time on that picker after selecting Start Time
          * So that Condition was check and showing the time on time picker **/
         if(type=="start"){
-            TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show()
+        TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show()
         }else{
             cal.add(Calendar.MINUTE, 15)
             TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show()
-        }
+    }
     }
 
     /** Check the validation for selecting END time **/
@@ -290,12 +290,12 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
 
         if (comparison < 0) {
             showAlertBox("timeBefore");
-            //"Second time occurs before the first time"
+        //"Second time occurs before the first time"
         } else if (comparison == 0) {
             showAlertBox("timeSame");
-            // "Both times are the same"
+        // "Both times are the same"
         } else {
-            // "Second time is after the first time"
+        // "Second time is after the first time"
             binding.etEndHour.text = SimpleDateFormat("hh").format(cal.time)
             binding.etEndMin.text = SimpleDateFormat("mm").format(cal.time)
             // Calculate the time difference in milliseconds
@@ -389,10 +389,10 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
             "offsiteSend"->{
                 tittle.text="Send Request";
                 content.text="Do you want to send the offsite request for approval?"
-                ok.setOnClickListener {
-                    alert.dismiss()
-                    sendRequest()
-                }
+                    ok.setOnClickListener {
+                        alert.dismiss()
+                        sendRequest()
+                    }
             }
             "offsiteCancel"->{
                 tittle.text="Cancel Request";
@@ -421,11 +421,11 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
             }
             "api-failure"->{
                 alert.setCancelable(true)
-                tittle.text=""
+                tittle.text="Something went wrong"
                 content.text=requestOffsiteRes!!.message.toString();
-                ok.text= "Done"
+                ok.text= "Ok"
                 cancel.visibility= View.GONE
-                ok.setOnClickListener {
+                    ok.setOnClickListener {
                     alert.dismiss()
                 }
             }

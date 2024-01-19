@@ -24,7 +24,8 @@
             android:layout_margin="@dimen/_2sdp"
             android:layout_marginStart="@dimen/_2sdp"
             android:padding="@dimen/_10sdp"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:scaleType="centerCrop"/>
         <!-- Camera Icon -->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -73,9 +74,10 @@
 
         <pl.droidsonroids.gif.GifImageView
             android:id="@+id/homePremiseUserStatus"
-            android:layout_width="match_parent"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center_horizontal"
-            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
             android:visibility="visible"
             app:civ_border_width="1.05dp"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -16,14 +16,12 @@ import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
-import com.busydoor.app.customMethods.ACTIVITY_PREMISE_ID
 import com.busydoor.app.customMethods.ALL_REQUEST_OFFSITE
 import com.busydoor.app.customMethods.ENCRYPTION_IV
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.SUCCESS_CODE
 import com.busydoor.app.customMethods.convertDate
 import com.busydoor.app.customMethods.encode
-import com.busydoor.app.customMethods.globalDate
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.customMethods.key
 import com.busydoor.app.databinding.FragmentYourActivityBinding
@@ -80,7 +78,7 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
-        getAllActivities(globalDate)
+//        getAllActivities("2024-01-09")
 
     }
 
@@ -99,13 +97,11 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
         // Create adapter object
         binding.rvYourActivities.adapter = YourActivityListAdapter
             binding.rvYourActivities.visibility = View.VISIBLE
-             binding.activityNodataView.visibility = View.GONE
-             YourActivityListAdapter.notifyDataSetChanged()
+        YourActivityListAdapter.notifyDataSetChanged()
 
         } else {
-            binding.activityNodataView.visibility = View.VISIBLE
-             binding.noData.text="No Activities found this Date"
-             binding.rvYourActivities.visibility = View.GONE
+//            binding.premiseNoData.visibility = View.VISIBLE
+            binding.rvYourActivities.visibility = View.GONE
         }
     }
 
@@ -119,7 +115,7 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
                     requireActivity(),
                     ApiInitialize.initialize(ApiInitialize.LOCAL_URL).getYourActivitiesList(
                         "Bearer ${getUserModel()!!.data.token}",
-                        encrypt(ACTIVITY_PREMISE_ID),
+                        encrypt("1"),
                         encrypt(date)
                     ),
                     ALL_REQUEST_OFFSITE,
@@ -168,9 +164,6 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
                         Log.e("zzzzzzzz",requestAllDataGet!!.data.toString())
                     } else {
                         // no data found
-                        binding.activityNodataView.visibility = View.VISIBLE
-                        binding.rvYourActivities.visibility = View.GONE
-
                         Log.e("zzzzzzzz","no data found")
 
                     }

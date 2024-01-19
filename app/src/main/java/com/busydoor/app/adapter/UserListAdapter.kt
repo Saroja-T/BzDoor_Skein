@@ -27,8 +27,7 @@ class UserListAdapter(
     val context: Context,
     private val UsersList: ArrayList<PremiseUserList.Data.Staffdetails>,
     private val userId:String,
-    private var homeClick: HomeClick,
-    private var isAdmin: String
+    private var homeClick: HomeClick
 //    var listener: NotificationsFragment.OnItemClickListener
 ):RecyclerView.Adapter<UserListAdapter.InnerViewHolder>() {
 
@@ -83,7 +82,7 @@ class UserListAdapter(
         circularProgressDrawable.backgroundColor= R.color.app_color
         circularProgressDrawable.start()
 
-        if(userId != model.userId.toString() && isAdmin.toLowerCase()=="admin"){holder.userActive!!.visibility= View.VISIBLE}else{
+        if(userId != model.userId.toString()){holder.userActive!!.visibility= View.VISIBLE}else{
             holder.userActive!!.visibility= View.GONE
         }
         // Set click listener for the userActive ImageView/Button
@@ -139,12 +138,12 @@ class UserListAdapter(
             when (menuItem.title) {
                 "Active" -> {
                     homeClick.homePostionClick(position)
-//                    Toast.makeText(view.context, "User is Active ${activeStatus}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(view.context, "User is Active ${activeStatus}", Toast.LENGTH_SHORT).show()
                     true
                 }
                 "Inactive" -> {
                     homeClick.homePostionClick(position)
-//                    Toast.makeText(view.context, "User is InActive $activeStatus", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(view.context, "User is InActive $activeStatus", Toast.LENGTH_SHORT).show()
                     true
                 }
                 else -> false

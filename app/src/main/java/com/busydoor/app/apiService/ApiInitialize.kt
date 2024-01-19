@@ -10,8 +10,8 @@ import java.util.concurrent.TimeUnit
  */
 
 object ApiInitialize {
-//   private const val BASE_URL ="https://bzboss.app/busydoor_api/public/"
-   private const val BASE_URL ="https://demo.emeetify.com:5100/"
+   private const val BASE_URL ="https://bzboss.app/busydoor_api/public/"
+//   private const val BASE_URL ="https://demo.emeetify.com:5100/"
     const val LOCAL_URL = BASE_URL +"api/"
     const val TERM_AND_CONDITION = BASE_URL +"term/condition"
     const val PRIVACY_POLIVY = BASE_URL +"privecy/policy"
