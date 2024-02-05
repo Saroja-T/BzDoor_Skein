@@ -1,6 +1,0 @@
-<!-- res/menu/active_menu.xml -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/action_active"
-        android:title="Active"/>
-</menu>

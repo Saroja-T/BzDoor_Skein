@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="100dp"
-    android:layout_height="40dp"
+    android:id="@+id/tvPiechart"
+    android:layout_width="150dp"
+    android:layout_height="60dp"
     android:visibility="visible"
-    android:background="@drawable/home_list_back">
+    android:orientation="vertical"
+    android:background="@drawable/home_list_back"
+    android:padding="@dimen/_5sdp">
 
     <TextView
         android:id="@+id/tvContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:text="click"
+        android:textSize="14dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:layout_weight="1"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="click"
         android:textSize="12dp"
         android:gravity="center"
-        android:textColor="@color/black"
-        android:textStyle="bold" />
+        android:textColor="#6F6C6C"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:visibility="visible"
+        />
 
 </LinearLayout>

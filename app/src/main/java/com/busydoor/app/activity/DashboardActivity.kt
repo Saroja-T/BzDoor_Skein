@@ -26,6 +26,7 @@ import com.busydoor.app.apiService.ApiInitialize.TERM_AND_CONDITION
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
+import com.busydoor.app.customMethods.ACTIVITY_PREMISE_ID
 import com.busydoor.app.customMethods.BEACON_DETAILS
 import com.busydoor.app.customMethods.CHECK_DIALOG_OPEN_CLOSE
 import com.busydoor.app.customMethods.HOME_DATA_GET
@@ -75,12 +76,10 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
         binding.DashboardAppbar.refreshBtn.setOnClickListener{
             onRefresh()
         }
-        Log.e("QQQQQ=== ","login  "+objSharedPref.getString(getString(R.string.userResponse)).toString())
-
     }
 
     override fun homePostionClick(postion: Int) {
-        Log.e("original value dash== ",homeDataGet!!.data[postion].premiseId.toString())
+        ACTIVITY_PREMISE_ID=homeDataGet!!.data[postion].premiseId.toString()
         startActivity(
             Intent(
                 this@DashboardActivity,
@@ -166,8 +165,6 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
     ) {
         try {
             if (isOnline(this)) {
-                Log.e("apiCalled", " yes")
-                Log.d("BDApplication", "the premises api!!: ${"region"}")
                 ApiRequest(
                     this,ApiInitialize.initialize(ApiInitialize.LOCAL_URL).staffBluetoothLog(
                         "Bearer ${getUserModel()!!.data.token}",
@@ -177,11 +174,18 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
                     ), STAFF_BLUETOOTH_LOG, false,this
                 )
             } else {
-                Log.e("Application", "offline")
+                showSnackBar(
+                    binding.root,
+                    getString(R.string.noInternet),
+                    ACTIONSNACKBAR.DISMISS
+                )
             }
         } catch (e: Exception) {
             Log.e("APIEXceptions", e.toString())
-
+            showSnackBar(
+                binding.root,
+                e.toString(),
+                ACTIONSNACKBAR.DISMISS)
         }
 
     }

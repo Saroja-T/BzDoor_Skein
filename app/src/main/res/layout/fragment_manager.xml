@@ -23,18 +23,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <include
-                    android:id="@+id/userProfileView"
-                    layout="@layout/activity_user_profileview"
-                    android:visibility="visible" />
-
                 <LinearLayout
                     android:id="@+id/calendarIcon"
-                    android:layout_marginTop="@dimen/_25sdp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/_10sdp">
 
                     <TextView
                         android:id="@+id/offsiteDateTime"
@@ -42,11 +38,13 @@
                         android:layout_height="wrap_content"
                         android:text="Fri -13th Oct,2023"
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
+                        android:textStyle="bold"
+                        android:textSize="@dimen/_13sdp" />
+
                     <ImageView
-                        android:padding="@dimen/_1sdp"
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="match_parent"
+                        android:padding="@dimen/_1sdp"
                         android:src="@drawable/icon_calendartoday" />
                 </LinearLayout>
 
@@ -66,16 +64,16 @@
                         android:orientation="vertical"
                         android:id="@+id/chart3">
 
-<!--                        <RelativeLayout-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:id="@+id/chart_relative"-->
-<!--                            style="@style/pie_chart_rl">-->
+                        <!--                        <RelativeLayout-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="match_parent"-->
+                        <!--                            android:id="@+id/chart_relative"-->
+                        <!--                            style="@style/pie_chart_rl">-->
 
 
 
 
-<!--                        </RelativeLayout>-->
+                        <!--                        </RelativeLayout>-->
                         <RelativeLayout
                             android:layout_width="@dimen/_300sdp"
                             android:layout_height="@dimen/_250sdp"
@@ -143,9 +141,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="20dp"
                                 android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:paddingLeft="35dp"
-                                android:scaleType="centerCrop"
+                                android:layout_weight="2"
+                                android:paddingLeft="20dp"
                                 app:civ_border_width="1.05dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -161,13 +158,13 @@
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
                                 android:letterSpacing="0.05"
-                                android:text="Online"
+                                android:text="Checked-In"
                                 android:textColor="@color/app_color" />
 
                         </LinearLayout>
 
                         <TextView
-                            android:id="@+id/textOnline"
+                            android:id="@+id/tvCheckIn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -196,8 +193,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="20dp"
                                 android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:paddingLeft="35dp"
+                                android:layout_weight="2"
+                                android:paddingLeft="20dp"
                                 android:src="@drawable/icon_profile_status_out" />
 
                             <TextView
@@ -208,13 +205,13 @@
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
                                 android:letterSpacing="0.05"
-                                android:text="Off-Site"
+                                android:text="Checked-Out"
                                 android:textColor="@color/app_color" />
 
                         </LinearLayout>
 
                         <TextView
-                            android:id="@+id/textOffSite"
+                            android:id="@+id/tvCheckOut"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -243,8 +240,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="20dp"
                                 android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:paddingLeft="35dp"
+                                android:layout_weight="2"
+                                android:paddingLeft="20dp"
                                 android:src="@drawable/icon_profile_status_offline" />
 
                             <TextView
@@ -261,7 +258,7 @@
                         </LinearLayout>
 
                         <TextView
-                            android:id="@+id/textOffline"
+                            android:id="@+id/tvOffline"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"

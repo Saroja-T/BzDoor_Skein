@@ -65,7 +65,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        logout()
+        //logout()
         when (remoteMessage.notification!!.channelId) {
             "channel1" -> {
                 sendOnChannel1(remoteMessage, remoteMessage.notification!!.imageUrl)

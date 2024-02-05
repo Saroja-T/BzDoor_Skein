@@ -16,7 +16,6 @@ class SplashActivity : ActivityBase() {
         setContentView(R.layout.activity_main)
         redirectDashBord()
     }
-
     private fun redirectDashBord() {
 
         mRunnable = Runnable {
@@ -45,5 +44,4 @@ class SplashActivity : ActivityBase() {
         mHandler = Handler(Looper.getMainLooper())
         mHandler.postDelayed(mRunnable, screenTimeOut)
     }
-
 }

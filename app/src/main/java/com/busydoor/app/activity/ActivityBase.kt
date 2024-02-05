@@ -10,6 +10,9 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -18,6 +21,7 @@ import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import com.busydoor.app.R
 import com.busydoor.app.customMethods.gContext
 import com.busydoor.app.customMethods.PrefUtils
@@ -80,6 +84,33 @@ ActivityBase : AppCompatActivity() {
             timeZoneSet = tz.id
         } catch (_: Exception) {
 
+        }
+    }
+
+    fun Activity.hideSoftKeyboard() {
+        currentFocus?.let {
+            val inputMethodManager = ContextCompat.getSystemService(this, InputMethodManager::class.java)!!
+            inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+        }
+    }
+
+    open fun setupUI(view: View) {
+
+        // Set up touch listener for non-text box views to hide keyboard.
+        if (view !is EditText) {
+            view.setOnTouchListener { v, event ->
+                hideSoftKeyboard()
+                view.clearFocus()
+                false
+            }
+        }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                val innerView = view.getChildAt(i)
+                setupUI(innerView)
+            }
         }
     }
 
@@ -244,13 +275,5 @@ ActivityBase : AppCompatActivity() {
 
     }
 
-    protected fun goScreen(activityName: Activity) {
-        startActivity(Intent(this@ActivityBase, activityName::class.java))
-    }
 
-
-    fun printDebugLogs(tagClass: AppCompatActivity, printValue: String) {
-        /*  if (BuildConfig.DEBUG)*/
-        Log.e(tagClass.localClassName, printValue)
-    }
 }

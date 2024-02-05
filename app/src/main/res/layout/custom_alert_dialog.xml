@@ -31,7 +31,30 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:id="@+id/dialog_text"/>
+    <LinearLayout
+        android:id="@+id/Activity_comments"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100sdp"
+        android:visibility="gone"
+        android:backgroundTint="@color/colorGreyLight"
+        android:background="@drawable/am_bg"
+        android:orientation="vertical">
+        <com.busydoor.app.customMethods.MyCustomEdittext
+            android:id="@+id/commentsTextView"
+            android:padding="@dimen/_5sdp"
+            android:layout_gravity="left"
+            android:gravity="left"
+            android:stateListAnimator="@null"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="10"
+            android:background="@color/colorGreyLight"
+            android:hint="Type here."
+            android:textSize="@dimen/_8sdp"
+            android:textStyle="italic" />
 
+
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/_48sdp"
@@ -50,7 +73,7 @@
             android:id="@+id/cancel_action"
             android:layout_weight="1"
             android:elevation="@dimen/_3sdp"
-            android:text="NO, CANCEL"
+            android:text="CANCEL"
             android:background="@drawable/button_shapes_with_white_color"
             android:textColor="@color/black"
             android:textAllCaps="false"
@@ -63,7 +86,7 @@
             android:layout_height="@dimen/_38sdp"
             android:layout_weight="1"
             android:elevation="@dimen/_3sdp"
-            android:text="YES, PROCEED"
+            android:text="PROCEED"
             android:background="@drawable/button_shapes_with_app_color"
             android:textColor="@color/white"
             android:textAllCaps="false"

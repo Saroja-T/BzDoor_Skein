@@ -12,7 +12,7 @@
         <ImageView
             android:id="@+id/drawerMenu"
             android:padding="@dimen/_6sdp"
-            android:layout_width="@dimen/_30sdp"
+            android:layout_width="@dimen/_25sdp"
             android:layout_height="match_parent"
             android:src="@drawable/icon_back_arrow" />
 
@@ -23,10 +23,10 @@
             android:layout_weight="1"
             android:padding="@dimen/_5sdp"
             android:gravity="left|center"
-            android:text="Create User"
+            android:text="Create New User"
             android:letterSpacing="0.001"
             android:textColor="@color/black"
-            android:textSize="@dimen/_15sdp"
+            android:textSize="@dimen/_14sdp"
             android:textStyle="bold" />
     </LinearLayout>
     <View

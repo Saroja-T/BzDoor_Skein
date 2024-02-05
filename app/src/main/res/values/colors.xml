@@ -18,6 +18,8 @@
     <color name="location_text_color">#F0BC53</color>
     <color name="d_seleted_back_color">#DCEFFE</color>
     <color name="text_color">#949191</color>
+    <color name="text_color1">#535252</color>
+    <color name="selectedTextColor">#4355E3</color>
 
     <color name="colorGreyLight">#e6e6e6</color>
     <color name="colorGreyLightOne">#B1B0B0</color>

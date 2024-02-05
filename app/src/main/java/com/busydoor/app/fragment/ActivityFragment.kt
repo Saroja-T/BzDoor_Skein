@@ -2,33 +2,32 @@
 package com.busydoor.app.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.app.DatePickerDialog
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
 import com.busydoor.app.activity.CryptLib2
-import com.busydoor.app.activity.EditProfileActivity
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
+import com.busydoor.app.customMethods.ACTIVITY_PREMISE_ID
 import com.busydoor.app.customMethods.ALL_REQUEST_OFFSITE
 import com.busydoor.app.customMethods.ENCRYPTION_IV
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.SUCCESS_CODE
+import com.busydoor.app.customMethods.convertDate
 import com.busydoor.app.customMethods.encode
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.customMethods.key
@@ -37,8 +36,13 @@ import com.busydoor.app.model.UserActivities
 import com.busydoor.app.model.UserModel
 import com.busydoor.app.tabbar.RequestFragment
 import com.busydoor.app.tabbar.YourActivityFragment
+import com.busydoor.app.viewmodel.ProfileViewModel
+import com.busydoor.app.viewmodel.SharedViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 class ActivityFragment : Fragment(),ApiResponseInterface {
@@ -49,6 +53,8 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager
     private var requestAllDataGet: UserActivities? = null
+    private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var profileViewModel: ProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,19 +70,28 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
     ): View? {
         binding = FragmentActivityBinding.inflate(inflater, container, false)
         val root = binding.root
+        profileViewModel = ViewModelProvider(requireActivity()).get(ProfileViewModel::class.java)
         // Inflate the layout for this fragment
         tabLayout =root.findViewById(R.id.tabLayout)
         viewPager = root.findViewById(R.id.viewPager)
         objSharedPref = PrefUtils(requireContext())
         cryptLib = CryptLib2()
+        // Initialize the ViewModel
+        sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
 
-        binding.userProfileView.editProfile.setOnClickListener {
-            startActivity(Intent(requireActivity(), EditProfileActivity::class.java))
-        }
+
         binding.calendarIcon.setOnClickListener{
-            requireActivity().recreate()
+            showDatePicker(sharedViewModel.getSharedData()!!)
         }
-        getAllActivities("2024-01-09")
+
+
+        sharedViewModel.sharedData.observe(viewLifecycleOwner) { data ->
+            Log.e("sharedData", data)
+            binding.offsiteDateTime.text = convertDate(data, "yyyy-MM-dd", "EEE - dd MMM',' yyyy")
+            getAllActivities(data)
+        }
+
+
         val adapter = YourPagerAdapter(childFragmentManager)
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
@@ -87,7 +102,96 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
     @SuppressLint("SuspiciousIndentation")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
 
+    /*** Function to show date picker*/
+    @SuppressLint("NewApi")
+/*
+    private fun showDatePicker() {
+        // Create a Calendar instance for the current date
+        val calendar = Calendar.getInstance()
+        // Create a DatePickerDialog with current year, month, and day as default selections
+        val datePickerDialog = DatePickerDialog(requireContext(),
+            { datePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                // Create a new Calendar instance to hold the selected date
+                val selectedDate = Calendar.getInstance().apply {
+                    // Set the selected date using the values received from the DatePicker dialog
+                    set(year, monthOfYear, dayOfMonth)
+                }
+                // Create a SimpleDateFormat to format the date as "dd/MM/yyyy"
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+                // Format the selected date into a string
+                val formattedDate = dateFormat.format(selectedDate.time)
+
+                // Update the TextView to display the selected date with the format
+                binding.offsiteDateTime.text= convertDate(formattedDate,"yyyy-MM-dd","EEE, MMM dd, yyyy")
+                */
+/*** Function to staffListGet when click datePicker select a date to call api request *//*
+                // Set data in MainFragment
+                sharedViewModel.setSharedData(formattedDate)
+                getAllActivities(formattedDate)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        // Set the maximum date to the current date within the current month
+        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
+        datePickerDialog.show()
+    }
+*/
+
+
+    private fun showDatePicker(initialDate: String) {
+        // Parse the initial date string into year, month, and day
+        val initialCalendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        try {
+            val parsedDate = dateFormat.parse(initialDate)
+            parsedDate?.let {
+                initialCalendar.time = it
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        // Create a Calendar instance for the current date
+        val calendar = Calendar.getInstance()
+
+        // Create a DatePickerDialog with initial year, month, and day
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                // Create a new Calendar instance to hold the selected date
+                val selectedDate = Calendar.getInstance().apply {
+                    // Set the selected date using the values received from the DatePicker dialog
+                    set(year, monthOfYear, dayOfMonth)
+                }
+                // Create a SimpleDateFormat to format the date as "dd/MM/yyyy"
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+                // Format the selected date into a string
+                val formattedDate = dateFormat.format(selectedDate.time)
+
+                // Update the TextView to display the selected date with the format
+                binding.offsiteDateTime.text =
+                    convertDate(formattedDate, "yyyy-MM-dd", "EEE, MMM dd, yyyy")
+                /*** Function to staffListGet when click datePicker select a date to call api request */
+                // Set data in MainFragment
+                sharedViewModel.setSharedData(formattedDate)
+                getAllActivities(formattedDate)
+            },
+            initialCalendar.get(Calendar.YEAR),
+            initialCalendar.get(Calendar.MONTH),
+            initialCalendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+        // Set the maximum date to the current date within the current month
+        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
+
+        datePickerDialog.show()
     }
 
     inner class YourPagerAdapter(fm: FragmentManager) :
@@ -146,7 +250,7 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
                     requireActivity(),
                     ApiInitialize.initialize(ApiInitialize.LOCAL_URL).getYourActivitiesList(
                         "Bearer ${getUserModel()!!.data.token}",
-                        encrypt("1"),
+                        encrypt(ACTIVITY_PREMISE_ID),
                         encrypt(date)
                     ),
                     ALL_REQUEST_OFFSITE,
@@ -172,7 +276,7 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
                     Log.e("apiCalled", " getApiResponse1")
                     if (requestAllDataGet!!.data != null) {
                         Log.e("apiCalled", " getApiResponse2")
-                        setHomeOfferData(requestAllDataGet!!.data as ArrayList<UserActivities.Data>)
+                        setHomeOfferData(requestAllDataGet!!.data)
                         Log.e("zzzzzzzz",requestAllDataGet!!.data.toString())
                     } else {
                         // no data found
@@ -187,46 +291,14 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
 
     }
 
-    private fun setHomeOfferData(userDetails: ArrayList<UserActivities.Data>) {
-        Log.e("apiCalled", " getApiResponse3")
-        binding.userProfileView.userName.text= userDetails[0].userdetails!!.userFirstName+" "+userDetails[0].userdetails!!.userLastName
-        binding.userProfileView.userNumber.text = userDetails[0].premisedetails!!.premiseName+", "+userDetails[0].premisedetails!!.city+","+userDetails[0].premisedetails!!.state
+    private fun setHomeOfferData(dataModel: UserActivities.Data?) {
+        profileViewModel.setProfileData(dataModel!!.userDetails!!.userImage.toString(),
+            dataModel.userDetails!!.userFirstName.toString(),
+            dataModel.userDetails!!.userLastName.toString(),
+            dataModel.userDetails!!.userStatus.toString(),
+            dataModel.premiseDetails!!.premiseName +", "+dataModel.premiseDetails!!.city+", "+dataModel.premiseDetails!!.state,
+        )
 
-
-        val circularProgressDrawable = CircularProgressDrawable(requireContext())
-        circularProgressDrawable.strokeWidth = 5f
-        circularProgressDrawable.centerRadius = 30f
-        circularProgressDrawable.backgroundColor= R.color.app_color
-        circularProgressDrawable.start()
-        if(userDetails[0].userdetails !=null) {
-            Log.e("adapterview",userDetails[0].userdetails.toString())
-
-            Glide.with(requireContext())
-                .load(userDetails[0].userdetails!!.userImage)
-                .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(binding.userProfileView.PremiseStaffImage)
-        }else{
-            Glide.with(requireContext())
-                .load(R.drawable.icon_users)
-                .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(binding.userProfileView.PremiseStaffImage)
-        }
-        when (userDetails[0]!!.userdetails!!.userStatus) {
-            "in" -> {              binding.userProfileView.PremiseStaffImage.setImageResource(R.drawable.premiselist_staff_satus_in)
-            }
-            "inout" -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.premiselist_staff_status_inout)
-            }
-            "out" -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.premiselist_staff_status_out)
-            }
-            "offline" -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.premiselist_staff_status_offline)
-            }
-            else -> {        binding.userProfileView.staffStatus.setImageResource(R.drawable.premiselist_staff_status_offline)
-            }
-        }
     }
 
 }

@@ -56,6 +56,7 @@ class HomeListAdapter(
             Glide.with(context)
                 .load(model.photo)
                 .placeholder(circularProgressDrawable)
+                .timeout(1000)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(holder.premiseImage)
@@ -63,6 +64,7 @@ class HomeListAdapter(
             Glide.with(context)
                 .load(R.drawable.icon_users)
                 .placeholder(circularProgressDrawable)
+                .timeout(1000)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(holder.premiseImage)
@@ -86,21 +88,53 @@ class HomeListAdapter(
 
         when (model.premiseStatus) {
             "in" -> {
+                holder.llImageView.visibility = View.GONE
+                holder.llGifView.visibility = View.VISIBLE
                 holder.premiseUserStatus.setImageResource(R.drawable.premiselist_staff_satus_in)
             }
             "inout" -> {
-                holder.premiseUserStatus.setBackgroundResource(R.drawable.premiselist_staff_status_inout)
+                setIconLinearLayoutVisible(holder.llGifView,holder.llImageView,holder.homePremiseUserStatusImg,R.drawable.premiselist_staff_status_inout)
             }
             "out" -> {
-                holder.premiseUserStatus.setBackgroundResource(R.drawable.premiselist_staff_status_out)
+                setIconLinearLayoutVisible(
+                    holder.llGifView,
+                    holder.llImageView,
+                    holder.homePremiseUserStatusImg,
+                    R.drawable.premiselist_staff_status_out
+                )
+//                holder.homePremiseUserStatusImg.setBackgroundResource(R.drawable.premiselist_staff_status_out)
             }
             "offline" -> {
-                holder.premiseUserStatus.setBackgroundResource(R.drawable.premiselist_staff_status_offline)
+                setIconLinearLayoutVisible(
+                    holder.llGifView,
+                    holder.llImageView,
+                    holder.homePremiseUserStatusImg,
+                    R.drawable.premiselist_staff_status_offline
+                )
+//                holder.premiseUserStatus.setBackgroundResource(R.drawable.premiselist_staff_status_offline)
             }
             else -> {
-    //            holder.premiseUserStatus.setBackgroundResource(R.color.colorGreyLight)
+                setIconLinearLayoutVisible(
+                    holder.llGifView,
+                    holder.llImageView,
+                    holder.homePremiseUserStatusImg,
+                    R.drawable.premiselist_staff_status_offline
+                )
+//                holder.premiseUserStatus.setBackgroundResource(R.drawable.premiselist_staff_status_offline)
             }
         }
+    }
+
+    private fun setIconLinearLayoutVisible(
+        llGifView: LinearLayout,
+        llImageView: LinearLayout,
+        homePremiseUserStatusImg: ImageView,
+        premiselistStaffStatusInout: Int
+    ) {
+        llImageView.visibility = View.VISIBLE
+        llGifView.visibility = View.GONE
+        homePremiseUserStatusImg.setBackgroundResource(premiselistStaffStatusInout)
+
     }
 
     class InnerViewHolder(view: View,context: Context) : RecyclerView.ViewHolder(view) {
@@ -108,8 +142,10 @@ class HomeListAdapter(
         val premiseName: MyCustomTextView = view.findViewById(R.id.premiseName)
         val premiseCity: MyCustomTextView = view.findViewById(R.id.premiseCity)
         val premiseUserStatus: ImageView = view.findViewById(R.id.homePremiseUserStatus)
+        val homePremiseUserStatusImg: ImageView = view.findViewById(R.id.homePremiseUserStatusImg)
         val dashbordView: LinearLayout = view.findViewById(R.id.dashbordView)
-
+        val llImageView: LinearLayout = view.findViewById(R.id.llImageView)
+        val llGifView: LinearLayout = view.findViewById(R.id.llGifView)
 
         fun bind(
             position: Int,

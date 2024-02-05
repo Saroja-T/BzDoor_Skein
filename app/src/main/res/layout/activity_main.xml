@@ -8,7 +8,7 @@
 
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="191dp"
-        android:layout_height="316dp"
-        android:src="@drawable/app_icon_foreground" />
+        android:layout_width="115dp"
+        android:layout_height="142dp"
+        android:src="@drawable/bi_logo" />
 </LinearLayout>

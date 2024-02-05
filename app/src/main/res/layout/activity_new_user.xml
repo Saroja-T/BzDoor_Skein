@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_50sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:orientation="vertical">
 
             <com.busydoor.app.customMethods.MyCustomTextView
@@ -36,6 +36,53 @@
                 android:text="Create New user"
                 android:textColor="@color/black"
                 android:textSize="15dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_height="@dimen/_130sdp">
+                <!-- Image with Border -->
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/PremiseStaffImages"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:paddingLeft="@dimen/_20sdp"
+                    android:paddingRight="@dimen/_20sdp"
+                    android:scaleX="1"
+                    android:scaleY="1"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:src="@drawable/dummy_profile"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+                <!-- Camera Icon -->
+                <ImageView
+                    android:id="@+id/imageViewCameraIcon"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginTop="110dp"
+                    android:layout_marginEnd="120dp"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/icon_upload_img"
+                    android:background="@drawable/blue_radius"
+                    app:layout_constraintEnd_toEndOf="@id/PremiseStaffImages"
+                    app:layout_constraintTop_toTopOf="@id/PremiseStaffImages"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.busydoor.app.customMethods.MyCustomTextView
+                android:id="@+id/premiseName1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/_5sdp"
+                android:textStyle="normal"
+                android:text="Change Photo"
+                android:textColor="@color/text_color"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:textSize="18dp" />
 
 
             <LinearLayout
@@ -177,6 +224,17 @@
                             android:textSize="@dimen/_10sdp" />
 
                     </LinearLayout>
+                    <TextView
+                        android:id="@+id/spinnerError"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/error_spinner_required"
+                        android:textSize="@dimen/_11sdp"
+                        android:layout_marginStart="@dimen/_3sdp"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:textColor="@color/red"
+                        android:visibility="gone"
+                        />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -185,13 +243,13 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:layout_marginBottom="@dimen/_5sdp">
 
-                        <com.busydoor.app.customMethods.MyCustomEdittext
+                        <com.busydoor.app.customMethods.MyCustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_10sdp"
                             android:gravity="start"
                             android:padding="@dimen/_5sdp"
-                            android:text="User Status (active/Inactive)"
+                            android:text="@string/UserStatus"
                             android:textColor="#231F20"
                             android:textSize="@dimen/_12sdp" />
 
@@ -205,8 +263,8 @@
                             android:textStyle="normal"
                             android:layout_gravity="right|center"
                             android:layout_weight="2"
-                            android:textOff="inactive"
-                            android:textOn="active"
+                            android:textOff="@string/InActive"
+                            android:textOn="@string/Active"
                             android:visibility="visible"
                             android:checked="true"
                             android:layout_marginTop="@dimen/_5sdp"
@@ -229,10 +287,12 @@
                 android:backgroundTint="@color/app_color"
                 android:background="@drawable/button_shapes"
                 android:gravity="center"
-                android:text="Create user"
+                android:text="Create New User"
                 android:elevation="@dimen/_15sdp"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_13sdp" />
+                android:textSize="@dimen/_13sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"/>
 
         </LinearLayout>
 

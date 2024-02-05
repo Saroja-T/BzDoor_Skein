@@ -3,12 +3,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginBottom="@dimen/_10sdp">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvYourActivities"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/white"/>
+
+    <LinearLayout
+        android:id="@+id/activityNodataView"
+        android:padding="@dimen/_5sdp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/_10sdp">
+
+        <com.busydoor.app.customMethods.MyCustomTextView
+            android:id="@+id/noData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="#747171"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textStyle="bold|normal"
+            android:textFontWeight="400"
+            android:text="Oct 14 | 09:50 am"
+            android:layout_marginTop="@dimen/_3sdp"/>
+    </LinearLayout>
 
 </LinearLayout>

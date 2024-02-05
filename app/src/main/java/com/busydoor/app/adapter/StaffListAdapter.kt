@@ -11,19 +11,18 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.busydoor.app.R
-import com.busydoor.app.activity.StaffDetailsOnWeekActivity
 import com.busydoor.app.customMethods.MyCustomTextView
+import com.busydoor.app.customMethods.NameConvertion
 import com.busydoor.app.interfaceD.HomeClick
-import com.busydoor.app.model.PremiseUserList
 import com.busydoor.app.model.StaffListOnDate
 import pl.droidsonroids.gif.GifImageView
-import java.util.Locale
 
 
 class StaffListAdapter(
     private val context: Context,
     private val staffList: ArrayList<StaffListOnDate.Data>,
     private var StaffClick: HomeClick,
+    private var isCurrentDateSelected: Boolean,
 ) : RecyclerView.Adapter<StaffListAdapter.InnerViewHolder>() {
 
 
@@ -54,33 +53,50 @@ class StaffListAdapter(
             Log.e("adapterview",model.photo.toString())
             Glide.with(context)
                 .load(model.photo)
+                .timeout(1000)
                 .placeholder(circularProgressDrawable)
                 .into(holder.imStaffImage!!)
         }else{
             Glide.with(context)
                 .load(model.photo)
                 .placeholder(circularProgressDrawable)
+                .timeout(1000)
                 .into(holder.imStaffImage!!)
         }
-
-        holder.tv_staff_name!!.text= model.firstName+" "+model.lastName
-//        Log.e("adapterview",model.status.toString()).toString()
-        when (model.status) {
-            "in" -> {
-                holder.staffStatus!!.setBackgroundResource(R.drawable.icon_staff_profile_in)
-            }
-            "out" -> {
-                holder.staffStatus!!.setBackgroundResource(R.drawable.icon_profile_status_out)
-            }
-            "inout" -> {
-                holder.staffStatus!!.setBackgroundResource(R.drawable.icon_profile_status_inout)
-            }
-            "offline" -> {
-                holder.staffStatus!!.setBackgroundResource(R.drawable.icon_profile_status_offline)
-            }
-            else -> holder.staffStatus!!.setBackgroundResource(R.drawable.icon_profile_status_offline)
+        val fullname=model.firstName+" "+model.lastName
+        holder.tv_staff_name!!.text= NameConvertion().truncateText(fullname)
 
 
+        holder.ll_staff_list.setOnClickListener{
+            StaffClick.homePostionClick(position)
+        }
+
+
+        Log.e("adapterview",isCurrentDateSelected.toString())
+
+        if(!isCurrentDateSelected){
+            holder.staffStatus.visibility = View.GONE
+        }else {
+            when (model.status) {
+                "in" -> {
+                    holder.staffStatus!!.setBackgroundResource(R.drawable.icon_staff_profile_in)
+                }
+
+                "out" -> {
+                    holder.staffStatus!!.setBackgroundResource(R.drawable.icon_profile_status_out)
+                }
+
+                "inout" -> {
+                    holder.staffStatus!!.setBackgroundResource(R.drawable.icon_profile_status_inout)
+                }
+
+                "offline" -> {
+                    holder.staffStatus!!.setBackgroundResource(R.drawable.icon_profile_status_offline)
+                }
+
+                else -> holder.staffStatus!!.setBackgroundResource(R.drawable.icon_profile_status_offline)
+
+            }
         }
 
 

@@ -10,8 +10,11 @@
     android:layout_marginLeft="@dimen/_5sdp"
     android:layout_marginRight="@dimen/_5sdp"
     android:paddingBottom="@dimen/_15sdp"
+    android:id="@+id/requestNotification"
     android:paddingTop="@dimen/_15sdp">
+
     <LinearLayout
+        android:padding="@dimen/_5sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -23,8 +26,10 @@
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/imageLayout"
                 android:layout_width="@dimen/_60sdp"
-                android:layout_height="@dimen/_60sdp">
+                android:layout_height="@dimen/_60sdp"
+                android:visibility="gone">
 
                 <!-- Image with Border -->
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -35,8 +40,7 @@
                     android:layout_marginStart="@dimen/_2sdp"
                     android:padding="@dimen/_3sdp"
                     android:visibility="visible"
-                    android:scaleType="centerCrop"
-                    app:civ_border_color="#A39E9F80"
+                    app:civ_border_color="#E8E6E6"
                     app:civ_border_width="4dp"
                     android:src="@drawable/dummy_premise_img"/>
                 <!-- Camera Icon -->
@@ -51,6 +55,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+                    <View
+                        android:id="@+id/view"
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"/>
                     <com.busydoor.app.customMethods.MyCustomTextView
                         android:id="@+id/tvMessage"
                         android:layout_width="match_parent"
@@ -65,10 +74,12 @@ time from 7:12 pm to 8:30 pm (10/10/2023)"
 
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:src="@android:drawable/arrow_down_float"
+                        android:id="@+id/hideShowView"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="match_parent"
+                        android:paddingRight="@dimen/_10sdp"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:src="@drawable/icon_down_arrow"
                         android:layout_gravity="center"/>
                 </LinearLayout>
                 <View
@@ -81,11 +92,12 @@ time from 7:12 pm to 8:30 pm (10/10/2023)"
 
 
         </LinearLayout>
-
         <LinearLayout
+            android:id="@+id/userCmdView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:visibility="gone"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -96,15 +108,14 @@ time from 7:12 pm to 8:30 pm (10/10/2023)"
 
                 <!-- Image with Border -->
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/cIvImage1"
+                    android:id="@+id/ImageUSer"
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
                     android:layout_margin="@dimen/_2sdp"
                     android:layout_marginStart="@dimen/_2sdp"
                     android:padding="@dimen/_3sdp"
                     android:visibility="visible"
-                    android:scaleType="centerCrop"
-                    app:civ_border_color="#A39E9F80"
+                    app:civ_border_color="#E8E6E6"
                     app:civ_border_width="4dp"
                     android:src="@drawable/dummy_premise_img"/>
                 <!-- Camera Icon -->
@@ -118,64 +129,10 @@ time from 7:12 pm to 8:30 pm (10/10/2023)"
                 android:padding="@dimen/_15sdp"
                 android:layout_marginLeft="@dimen/_5sdp"
                 android:layout_marginRight="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginBottom="@dimen/_10sdp">
                 <com.busydoor.app.customMethods.MyCustomTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="As I went to collect the stocks from the krinshna homes
-supplier at gandhi puram, coimbatore. Please consider
-my offsite request."
-                    android:textSize="@dimen/_12sdp"
-                    android:textColor="#565757"
-                    />
-
-            </FrameLayout>
-
-
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:gravity="center"
-                android:layout_gravity="center">
-
-                <!-- Image with Border -->
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/cIvImageManager"
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_margin="@dimen/_2sdp"
-                    android:layout_marginStart="@dimen/_2sdp"
-                    android:padding="@dimen/_3sdp"
-                    android:visibility="visible"
-                    android:scaleType="centerCrop"
-                    app:civ_border_color="#A39E9F80"
-                    app:civ_border_width="4dp"
-                    android:src="@drawable/dummy_premise_img"/>
-                <!-- Camera Icon -->
-            </LinearLayout>
-
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_plain_grey"
-                android:padding="@dimen/_15sdp"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_10sdp">
-                <com.busydoor.app.customMethods.MyCustomTextView
+                    android:id="@+id/userCmd"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="As I went to collect the stocks from the krinshna homes
@@ -192,66 +149,152 @@ my offsite request."
 
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/approvalCmdView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:gravity="center"
+                android:layout_gravity="center">
+
+                <!-- Image with Border -->
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/ImageManager"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_margin="@dimen/_2sdp"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:padding="@dimen/_3sdp"
+                    android:visibility="visible"
+                    app:civ_border_color="#E8E6E6"
+                    app:civ_border_width="2dp"
+                    android:src="@drawable/dummy_profile"/>
+                <!-- Camera Icon -->
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_plain_grey"
+                android:padding="@dimen/_15sdp"
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_10sdp">
+                <com.busydoor.app.customMethods.MyCustomTextView
+                    android:id="@+id/tvReasonTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    />
+                <com.busydoor.app.customMethods.MyCustomTextView
+                    android:id="@+id/approvalCmd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="@dimen/_12sdp"
+                    android:textColor="#565757"
+                    />
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/accept_rejectView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginBottom="@dimen/_10sdp">
+            android:padding="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginBottom="@dimen/_5sdp">
             <FrameLayout
                 android:layout_width="@dimen/_60sdp"
                 android:layout_height="wrap_content"/>
             <androidx.appcompat.widget.AppCompatButton
-                android:layout_width="wrap_content"
+                android:id="@+id/reject_btn"
+                android:layout_width="@dimen/_70sdp"
                 android:layout_height="@dimen/_30sdp"
                 android:background="@drawable/button_shapes_with_white_color"
-                android:elevation="@dimen/_5sdp"
+                android:elevation="@dimen/_15sdp"
                 android:textColor="#8B8A8A"
+                android:textStyle="bold"
                 android:textSize="@dimen/_12sdp"
-                android:textFontWeight="700"
+                android:textFontWeight="800"
                 android:text="REJECT"/>
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/accept_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_30sdp"
                 android:background="@drawable/button_shapes_with_app_color"
                 android:elevation="@dimen/_5sdp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_12sdp"
-                android:textFontWeight="700"
+                android:textFontWeight="800"
                 android:layout_marginLeft="@dimen/_15sdp"
                 android:text="ACCEPT"/>
         </LinearLayout>
+
         <LinearLayout
+            android:id="@+id/approvalStatusView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <FrameLayout
+                android:id="@+id/layoutStatus"
                 android:layout_width="@dimen/_60sdp"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:id="@+id/layoutStatus1"
+                android:layout_width="@dimen/_16sdp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/_5sdp">
-                <com.busydoor.app.customMethods.MyCustomTextView
+                android:layout_marginStart="@dimen/_2sdp">
+
+                <TextView
+                    android:id="@+id/approvalStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/_14sdp"
+                    android:text="You have accepted !"
                     android:textColor="#16984A"
                     android:textFontWeight="400"
-                    android:text="You have accepted !"/>
+                    android:textSize="@dimen/_12sdp" />
+
                 <com.busydoor.app.customMethods.MyCustomTextView
+                    android:id="@+id/approvalTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/_12sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:text="Oct 14 | 09:50 am"
                     android:textColor="#747171"
                     android:textFontWeight="400"
-                    android:text="Oct 14 | 09:50 am"
-                    android:layout_marginTop="@dimen/_3sdp"/>
+                    android:textSize="@dimen/_12sdp" />
 
             </LinearLayout>
 
         </LinearLayout>
+
         <com.busydoor.app.customMethods.MyCustomTextView
             android:id="@+id/tvTime"
             android:layout_width="match_parent"
@@ -259,12 +302,11 @@ my offsite request."
             android:layout_gravity="bottom"
             android:gravity="end"
             android:layout_marginRight="@dimen/_10sdp"
-            android:layout_weight="2"
             android:text="1:30 pm"
             android:textColor="#747171"
             android:textFontWeight="400"
-            android:textSize="@dimen/_10sdp"
-            android:layout_marginBottom="@dimen/_25sdp"
+            android:textSize="@dimen/_11sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
             android:visibility="visible"
             />
     </LinearLayout>

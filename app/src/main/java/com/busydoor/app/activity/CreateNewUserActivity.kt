@@ -1,42 +1,67 @@
 package com.busydoor.app.activity
 
+import ImageUtils
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.ViewModelProvider
 import com.busydoor.app.R
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
+import com.busydoor.app.apiService.UserRegistrationRequest
 import com.busydoor.app.customMethods.CREATE_NEW_USER
 import com.busydoor.app.customMethods.ERROR_CODE
+import com.busydoor.app.customMethods.PermissionUtils
+import com.busydoor.app.customMethods.PhoneAuthUtil
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.SUCCESS_CODE
+import com.busydoor.app.customMethods.ValidationHelper
 import com.busydoor.app.customMethods.activity
 import com.busydoor.app.customMethods.forceResendingTokenGbl
 import com.busydoor.app.customMethods.gContext
 import com.busydoor.app.customMethods.isOnline
+import com.busydoor.app.customMethods.userSelectedImage
 import com.busydoor.app.databinding.ActivityNewUserBinding
-import com.google.firebase.FirebaseException
+import com.busydoor.app.fragment.OnUserCreatedListener
+import com.busydoor.app.viewmodel.OTPViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import java.util.Locale
-import java.util.concurrent.TimeUnit
+
 
 class CreateNewUserActivity : ActivityBase(), ApiResponseInterface, AdapterView.OnItemSelectedListener {
     private var premiseID: String = ""
@@ -44,31 +69,47 @@ class CreateNewUserActivity : ActivityBase(), ApiResponseInterface, AdapterView.
     private var accessLevelList: ArrayList<String>? = null
     private var accessLevelName: String = ""
     private var mAuth: FirebaseAuth? = null
-    private var verifyCode: String = ""
-    private var verificationId: String = ""
     private var swStatus: String = ""
+    lateinit var popUpView:View
     private val binding by lazy { ActivityNewUserBinding.inflate(layoutInflater) }
+    private lateinit var listener: OnUserCreatedListener
+    private lateinit var otpViewModel : OTPViewModel
+
+
+
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        setupUI(binding.root)
         gContext = this@CreateNewUserActivity
         activity = this@CreateNewUserActivity
         objSharedPref = PrefUtils(this@CreateNewUserActivity)
         mAuth = FirebaseAuth.getInstance()
         accessLevelList = ArrayList()
-        swStatus="true"
+        swStatus = "true"
         accessLevelList!!.add("")
         accessLevelList!!.add("Manager")
         accessLevelList!!.add("Staff")
+        if(intent.getStringExtra("isAdmin")=="true"){
+            accessLevelList!!.add("Admin")
+        }
+
         premiseID = intent?.getStringExtra("premise_id").toString()
         premiseName = intent?.getStringExtra("premiseName").toString()
+        Log.e("orui",premiseID)
+        otpViewModel = ViewModelProvider(this).get(OTPViewModel::class.java)
+        otpViewModel.sethomeData("sdsds")
+
+
+//        val wrapper = intent.getSerializableExtra("listener",ListenerWrapper::class.java) as ListenerWrapper
+//        listener = wrapper.listener
 
         val sw_status = findViewById<View>(com.busydoor.app.R.id.sw_status) as SwitchCompat
         sw_status.setOnCheckedChangeListener { buttonView, isChecked ->
-            swStatus = if (isChecked){
+            swStatus = if (isChecked) {
                 "true"
-            }else{
+            } else {
                 "false"
             }
         }
@@ -76,12 +117,19 @@ class CreateNewUserActivity : ActivityBase(), ApiResponseInterface, AdapterView.
         /** set premise name here... **/
         premiseName= getColoredSpanned(premiseName, "#4355E3")
         binding.premiseName.text= HtmlCompat.fromHtml(
-            "Create new User to $premiseName",
+            "Create new user to $premiseName",
             HtmlCompat.FROM_HTML_MODE_COMPACT
         )
 
+        binding.imageViewCameraIcon.setOnClickListener {
+            popUpView = it
+            if(checkPermissions()) {
+                showActivePopupMenu(it)
+            }
+        }
+
         /** Access Level set fun here... **/
-        setSpinner1(binding.spAccessLevel,accessLevelList!!)
+        setSpinner1(binding.spAccessLevel, accessLevelList!!)
 
         /** Back button fun... **/
         binding.backPagetoUserList.drawerMenu.setOnClickListener {
@@ -89,21 +137,16 @@ class CreateNewUserActivity : ActivityBase(), ApiResponseInterface, AdapterView.
         }
         /** verify button fun here ... **/
         binding.btnRegister.setOnClickListener {
-            if(binding.edLastName.text!!.isNotEmpty()&& binding.etFirstName.text!!.isNotEmpty()&& accessLevelName.isNotEmpty()){
-                if(binding.edMobileNumber.text!!.length==10){
-                    if(binding.etFirstName.text!!.length>=3){
-                        registerApi()
-                    }else{
-                        binding.etFirstName.error="Please enter valid first name"
-                    }
-                }else{
-                    binding.edMobileNumber.error="Please enter valid mobile number"
-                }
-
-            }else{
-                binding.edMobileNumber.error="Please enter valid MobileNumber"
-                binding.etFirstName.error="Please enter valid FirstName"
-                binding.edLastName.error="Please enter valid LastName"
+            if (ValidationHelper.isRegistrationDataValid(
+                    binding.etFirstName,
+                    binding.edLastName,
+                    binding.edMobileNumber,
+                    binding.spinnerError,
+                    accessLevelName,
+                    this
+                )) {
+                // Your registration logic or API call
+                registerApi()
             }
 
         }
@@ -113,6 +156,7 @@ class CreateNewUserActivity : ActivityBase(), ApiResponseInterface, AdapterView.
     private fun getColoredSpanned(text: String, color: String): String {
         return "<font color=$color>$text</font>"
     }
+
     /** onResume fun... **/
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
@@ -148,39 +192,59 @@ class CreateNewUserActivity : ActivityBase(), ApiResponseInterface, AdapterView.
         when (parent) {
             binding.spAccessLevel -> {
                 accessLevelName = accessLevelList!![position]
-                Log.e("accessLevelName",accessLevelName)
+                binding.spinnerError.visibility = View.GONE
+                Log.e("accessLevelName", accessLevelName)
             }
         }
     }
 
 
+    private fun showPermissionAlertBox(){
+        val dialog = AlertDialog.Builder(this)
+        val view: View = layoutInflater.inflate(com.busydoor.app.R.layout.custom_alert_dialog, null)
+        dialog.setView(view)
+        val alert = dialog.create()
+        alert.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val cancel = view.findViewById<View>(com.busydoor.app.R.id.cancel_action) as Button
+        val title = view.findViewById<View>(com.busydoor.app.R.id.dialog_tittle_text) as TextView
+        val content = view.findViewById<View>(com.busydoor.app.R.id.dialog_text) as TextView
+        title.text= "Permission Denied!"
+        content.text="Camera permission has been denied,Please make sure want enable access to upload image in your profile"
+        cancel.setOnClickListener { alert.dismiss() }
+        val ok = view.findViewById<View>(com.busydoor.app.R.id.ok_action) as Button
+        ok.text="Setting"
+        cancel.text="No,thanks"
+        ok.setOnClickListener {
+            alert.dismiss()
+        }
+        alert.show()
+    }
+
+    // Override onRequestPermissionsResult to handle the permission request result
     override fun onNothingSelected(p0: AdapterView<*>?) {
     }
 
     /** If user was a new to u need to register so call this fun... **/
     @RequiresApi(Build.VERSION_CODES.R)
     private fun registerApi() {
-        Log.d("TAG", "Register# " + objSharedPref.getString("FCM_TOKEN")!!)
         if (isOnline(this@CreateNewUserActivity)) {
-            Log.e("Register#em", encrypt(binding.edMobileNumber.text.toString()))
-            Log.e("Register#ef", encrypt(binding.etFirstName.text.toString()))
-            Log.e("Register#el", encrypt(binding.edLastName.text.toString()))
-            Log.e("Register#al", accessLevelName)
-            Log.e("Register#dt", swStatus)
-            Log.e("Register#ft", premiseID)
-            Log.e("Register#ck", "check")
             ApiRequest(
                 this,
                 ApiInitialize.initialize(ApiInitialize.LOCAL_URL).createUser(
                     "Bearer ${getUserModel()!!.data.token}",
-                    encrypt(binding.edMobileNumber.text.toString()),
-                    encrypt(binding.etFirstName.text.toString()),
-                    encrypt(binding.edLastName.text.toString()),
-                    encrypt(accessLevelName.lowercase(Locale.ROOT)),
-                    "check",
-                    encrypt(premiseID),
-                    encrypt(swStatus),
-
+                    UserRegistrationRequest(
+                        encrypt(binding.etFirstName.text.toString()),
+                        encrypt(binding.edLastName.text.toString()),
+                        encrypt(binding.edMobileNumber.text.toString()),
+                        userSelectedImage,
+                        encrypt(accessLevelName.lowercase(Locale.ROOT)),
+                        encrypt(premiseID),
+                        encrypt(swStatus),
+                        encrypt("Android"),
+                        encrypt(objSharedPref.getString("FCM_TOKEN")!!),
+                        encrypt(timeZoneSet),
+                        "check"
+                        )
                 ),
                 CREATE_NEW_USER, true, this
             )
@@ -200,7 +264,6 @@ class CreateNewUserActivity : ActivityBase(), ApiResponseInterface, AdapterView.
             CREATE_NEW_USER -> {
                 val model = apiResponseManager.response as ResponseBody
                 val responseValue = model.string()
-                Log.e(TAG, "response LOGIN:-$responseValue")
                 val response = JSONObject(responseValue)
                 when (response.optInt("status_code")) {
                     SUCCESS_CODE -> {
@@ -221,47 +284,17 @@ class CreateNewUserActivity : ActivityBase(), ApiResponseInterface, AdapterView.
     }
 
     /** sendNotification here ... **/
+    @SuppressLint("SuspiciousIndentation")
     private fun sendVerificationCode(number: String) {
         //this method is used for getting OTP on user phone number.
-        Log.e("login","jio")
-        val options = mAuth?.let {
-            PhoneAuthOptions.newBuilder(it)
-                .setPhoneNumber(number)       // Phone number to verify
-                .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-                .setActivity(this)                 // Activity (for callback binding)
-                .setCallbacks(mCallBack)          // OnVerificationStateChangedCallbacks
-                .build()
-        }
-        if (options != null) {
-            PhoneAuthProvider.verifyPhoneNumber(options)
-        }
-        /*PhoneAuthProvider.getInstance().verifyPhoneNumber(
-            number,  //first parameter is user's mobile number
-            60,  //second parameter is time limit for OTP verification which is 60 seconds in our case.
-            TimeUnit.SECONDS,  // third parameter is for initializing units for time period which is in seconds in our case.
-            TaskExecutors.MAIN_THREAD,  //this task will be excuted on Main thread.
-            mCallBack //we are calling callback method when we recieve OTP for auto verification of user.
-        )*/
-    }
-
-    /** callback function here ... **/
-    private val   //initializing our callbacks for on verification callback method.
-            mCallBack: PhoneAuthProvider.OnVerificationStateChangedCallbacks =
-        object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            //below method is used when OTP is sent from Firebase
-            override fun onCodeSent(
-                s: String,
-                forceResendingToken: PhoneAuthProvider.ForceResendingToken
-            ) {
-                super.onCodeSent(s, forceResendingToken)
-                forceResendingTokenGbl = forceResendingToken
-                dismissProgress()
-                // customDismissDialog(this@LoginActivity, getProgressDialog(this@LoginActivity))
-                //when we recieve the OTP it contains a unique id wich we are storing in our string which we have already created.
-                verificationId = s
-                Log.e("login","jio")
+        Log.e("login","jio");
+        PhoneAuthUtil.sendVerificationCode(
+            this,
+            this@CreateNewUserActivity,
+            number, {
+                forceResendingTokenGbl = PhoneAuthUtil.getForceResendingToken()
                 val getStartedIntent = Intent(this@CreateNewUserActivity, OtpVerifyActivity::class.java)
-                getStartedIntent.putExtra("verificationId", verificationId)
+                getStartedIntent.putExtra("verificationId", PhoneAuthUtil.getVerificationId())
                 getStartedIntent.putExtra("phone_number", binding.edMobileNumber.text.toString())
                 getStartedIntent.putExtra("otp_type","add_user")
                 getStartedIntent.putExtra("first_name", binding.etFirstName.text.toString())
@@ -272,32 +305,98 @@ class CreateNewUserActivity : ActivityBase(), ApiResponseInterface, AdapterView.
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
                 startActivity(getStartedIntent)
                 finish()
-            }
+            }, { errorMessage ->
+                // Error callback, show a message or handle the error accordingly
+                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
 
-            //this method is called when user recieve OTP from Firebase.
-            override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
-                //below line is used for getting OTP code which is sent in phone auth credentials.
-                val code = phoneAuthCredential.smsCode
-                //checking if the code is null or not.
-                if (code != null) {
-                    //if the code is not null then we are setting that code to our OTP edittext field.
-                    //   edtOTP!!.setText(code)
-                    //after setting this code to OTP edittext field we are calling our verifycode method.
-                    //  verifyCode(code)
-                    verifyCode = code
+            })
+
+    }
+
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                // Handle the result from the gallery
+                val data: Intent? = result.data
+                val selectedImageUri = data?.data
+                // Do something with the selected image URI
+                val base64Img= ImageUtils.convertImageToBase64(this,selectedImageUri!!)
+                userSelectedImage= "data:image/jpeg;base64,$base64Img"
+                Log.e("image data22", base64Img)
+                binding.PremiseStaffImages.setImageURI(selectedImageUri as Uri?)
+            }
+        }
+    private fun openGallery() {
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val chooserIntent = Intent.createChooser(galleryIntent, "Select Image from")
+        galleryLauncher.launch(chooserIntent)
+    }
+    @SuppressLint("SuspiciousIndentation")
+    private fun showActivePopupMenu(view: View) {
+        val popupMenu = PopupMenu(view.context, view)
+        popupMenu.menu.add("Take a picture")
+        popupMenu.menu.add("Galley")
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.title) {
+                "Take a picture" -> {
+                    getFromCamera()
+                    true
                 }
-            }
-
-            //this method is called when firebase doesnot sends our OTP code due to any error or issue.
-            override fun onVerificationFailed(e: FirebaseException) {
-                Toast.makeText(this@CreateNewUserActivity, e.message, Toast.LENGTH_LONG).show()
+                "Galley" -> {
+                    openGallery()
+                    true
+                }
+                else -> false
             }
         }
 
-    @RequiresApi(Build.VERSION_CODES.R)
+        popupMenu.show()
+    }
+
+    private val REQUEST_IMAGE_CAPTURE = 1
+    private fun getFromCamera() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (takePictureIntent.resolveActivity(packageManager) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+        }
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.e("onactivityresult","result added")
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as? Bitmap
 
+            binding.PremiseStaffImages.setImageBitmap(imageBitmap)
+            // Do something with the selected image URI
+            val base64Img= ImageUtils.convertImageToBase64(this,imageBitmap!!)
+            userSelectedImage="data:image/jpeg;base64,$base64Img"
+            Log.e("image data11",base64Img)
+            // Here, you can use the 'imageBitmap' as needed (e.g., display it in an ImageView)
+        }
     }
+    // Check if the app has camera and storage permissions
+    private fun checkPermissions(): Boolean {
+        return PermissionUtils.requestCameraAndStoragePermissions(this)
+    }
+    // Override onRequestPermissionsResult to handle the permission request result
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 101) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera and storage permissions granted, proceed with camera intent
+                if(::popUpView.isInitialized){
+                    showActivePopupMenu(popUpView)
+                }
+            } else {
+                // Permissions denied by the user, handle accordingly (e.g., show a message)
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+
 }

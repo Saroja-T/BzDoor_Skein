@@ -21,22 +21,22 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <include
-                    android:id="@+id/userProfileView"
-                    layout="@layout/activity_user_profileview"
-                    android:visibility="visible" />
+<!--                <include-->
+<!--                    android:id="@+id/userProfileView"-->
+<!--                    layout="@layout/activity_user_profileview"-->
+<!--                    android:visibility="visible" />-->
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_85sdp"
+                    android:layout_height="@dimen/_100sdp"
                     android:orientation="vertical"
                     android:visibility="visible"
                     android:padding="@dimen/_5sdp"
-                    android:layout_marginTop="@dimen/_8sdp">
+                    android:layout_marginTop="@dimen/_4sdp">
                     <ImageView
                         android:id="@+id/iv_calendar_previous"
                         android:layout_width="@dimen/_25sdp"
-                        android:layout_height="25dp"
+                        android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="1dp"
                         android:visibility="gone"
@@ -62,11 +62,12 @@
                         style="@style/TextAppearance.MaterialComponents.Subtitle2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/_14sdp"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="MissingConstraints"
                         tools:layout_editor_absoluteX="6dp"
-                        tools:text="December 2020" />
+                        tools:text="December 2020"
+                        android:layout_marginBottom="@dimen/_6sdp"/>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
@@ -120,61 +121,67 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_alignParentBottom="true"
                                     android:orientation="vertical"
-                                    android:layout_marginBottom="@dimen/_70sdp"
+                                    android:layout_marginBottom="@dimen/_80sdp"
                                     android:gravity="center" >
+
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
+                                        android:gravity="center"
                                         android:orientation="horizontal">
 
-                                        <com.busydoor.app.customMethods.MyCustomTextView
+                                        <TextView
                                             android:id="@+id/centerHourTime"
                                             android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginBottom="@dimen/_10sdp"
+                                            android:layout_height="match_parent"
+                                            android:layout_marginStart="@dimen/_3sdp"
+                                            android:gravity="bottom"
                                             android:text="00"
                                             android:textColor="@color/black"
-                                            android:textSize="28sp">
+                                            android:textSize="26sp">
 
-                                        </com.busydoor.app.customMethods.MyCustomTextView>
+                                        </TextView>
 
-                                        <com.busydoor.app.customMethods.MyCustomTextView
+                                        <TextView
                                             android:id="@+id/centerHourText"
                                             android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginLeft="@dimen/_2sdp"
-                                            android:layout_marginBottom="@dimen/_10sdp"
-                                            android:text="hrs "
+                                            android:layout_height="match_parent"
+                                            android:layout_marginStart="@dimen/_1sdp"
+                                            android:layout_marginBottom="@dimen/_3sdp"
+                                            android:gravity="bottom"
+                                            android:text="hrs"
                                             android:textColor="@color/black"
-                                            android:textSize="14sp"
+                                            android:textSize="13sp"
                                             android:textStyle="normal">
 
-                                        </com.busydoor.app.customMethods.MyCustomTextView>
+                                        </TextView>
 
-                                        <com.busydoor.app.customMethods.MyCustomTextView
+                                        <TextView
                                             android:id="@+id/centerMinsTime"
                                             android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginBottom="@dimen/_10sdp"
+                                            android:layout_height="match_parent"
+                                            android:layout_marginStart="@dimen/_3sdp"
+                                            android:gravity="bottom"
                                             android:text="00"
                                             android:textColor="@color/black"
-                                            android:textSize="28sp">
+                                            android:textSize="26sp">
 
-                                        </com.busydoor.app.customMethods.MyCustomTextView>
+                                        </TextView>
 
-                                        <com.busydoor.app.customMethods.MyCustomTextView
+                                        <TextView
                                             android:id="@+id/centerMinsText"
                                             android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginLeft="@dimen/_2sdp"
-                                            android:layout_marginBottom="@dimen/_10sdp"
+                                            android:layout_height="match_parent"
+                                            android:layout_marginStart="@dimen/_1sdp"
+                                            android:layout_marginBottom="@dimen/_3sdp"
+                                            android:gravity="bottom"
                                             android:text="mins"
                                             android:textColor="@color/black"
-                                            android:textSize="14sp"
+                                            android:textSize="13sp"
                                             android:textStyle="normal">
 
-                                        </com.busydoor.app.customMethods.MyCustomTextView>
+                                        </TextView>
 
                                     </LinearLayout>
 
@@ -198,7 +205,7 @@
                                 <LinearLayout
                                     android:id="@+id/checkInDetails"
                                     android:layout_width="@dimen/_110sdp"
-                                    android:layout_height="@dimen/_70sdp"
+                                    android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:layout_marginEnd="@dimen/_5sdp"
                                     android:gravity="center"
@@ -208,16 +215,16 @@
                                     <LinearLayout
                                         android:layout_width="wrap_content"
                                         android:layout_height="@dimen/_16sdp"
-                                        android:layout_marginBottom="@dimen/_2sdp"
+                                        android:layout_marginBottom="@dimen/_4sdp"
                                         android:orientation="horizontal">
 
-                                        <TextView
+                                        <ImageView
                                             android:layout_width="@dimen/_8sdp"
                                             android:layout_height="@dimen/_8sdp"
                                             android:layout_gravity="right|center"
                                             android:layout_marginTop="@dimen/_2sdp"
                                             android:background="@drawable/icon_checkouttime"
-                                            android:letterSpacing="0.1"></TextView>
+                                            />
 
                                         <TextView
                                             android:layout_width="match_parent"
@@ -235,34 +242,20 @@
 
                                     </LinearLayout>
 
-                                    <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="@dimen/_18sdp"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_width="@dimen/_10sdp"
-                                            android:layout_height="@dimen/_10sdp"
-                                            android:layout_gravity="right|center"
-                                            android:letterSpacing="0.1"
-                                            android:visibility="gone"></TextView>
-
-                                        <TextView
-                                            android:id="@+id/checkInTime"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:layout_marginLeft="@dimen/_5sdp"
-                                            android:layout_weight="1"
-                                            android:gravity="center"
-                                            android:letterSpacing="0.08"
-                                            android:maxLength="24"
-                                            android:text=" --:-- "
-                                            android:textColor="#000000"
-                                            android:textSize="20sp"
-                                            android:textStyle="normal" />
-
-                                    </LinearLayout>
+                                    <TextView
+                                        android:id="@+id/checkInTime"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="@dimen/_5sdp"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
+                                        android:letterSpacing="0.08"
+                                        android:maxLength="24"
+                                        android:text=" --:-- "
+                                        android:textColor="#000000"
+                                        android:textSize="20sp"
+                                        android:textStyle="normal" />
 
                                 </LinearLayout>
                                 <LinearLayout
@@ -276,7 +269,7 @@
                                 <LinearLayout
                                     android:id="@+id/checkOutDetails"
                                     android:layout_width="@dimen/_110sdp"
-                                    android:layout_height="@dimen/_70sdp"
+                                    android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:layout_marginStart="@dimen/_5sdp"
                                     android:gravity="center"
@@ -289,13 +282,13 @@
                                         android:layout_marginBottom="@dimen/_2sdp"
                                         android:orientation="horizontal">
 
-                                        <TextView
+                                        <ImageView
                                             android:layout_width="@dimen/_8sdp"
                                             android:layout_height="@dimen/_8sdp"
                                             android:layout_gravity="right|center"
                                             android:layout_marginTop="@dimen/_2sdp"
                                             android:background="@drawable/icon_check_intime"
-                                            android:letterSpacing="0.1"></TextView>
+                                            android:letterSpacing="0.1"/>
 
                                         <TextView
                                             android:layout_width="match_parent"
@@ -312,33 +305,21 @@
                                             android:textStyle="normal" />
                                     </LinearLayout>
 
-                                    <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="@dimen/_18sdp"
-                                        android:orientation="horizontal">
+                                    <TextView
+                                        android:id="@+id/checkOutTime"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="@dimen/_5sdp"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
+                                        android:letterSpacing="0.08"
+                                        android:maxLength="24"
+                                        android:text=" --:-- "
+                                        android:textColor="#000000"
+                                        android:textSize="20sp"
+                                        android:textStyle="normal" />
 
-                                        <TextView
-                                            android:layout_width="@dimen/_10sdp"
-                                            android:layout_height="@dimen/_10sdp"
-                                            android:layout_gravity="right|center"
-                                            android:letterSpacing="0.1"
-                                            android:visibility="gone"></TextView>
-
-                                        <TextView
-                                            android:id="@+id/checkOutTime"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:layout_marginLeft="@dimen/_5sdp"
-                                            android:layout_weight="1"
-                                            android:gravity="center"
-                                            android:letterSpacing="0.08"
-                                            android:maxLength="24"
-                                            android:text=" --:-- "
-                                            android:textColor="#000000"
-                                            android:textSize="20sp"
-                                            android:textStyle="normal" />
-                                    </LinearLayout>
                                 </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>

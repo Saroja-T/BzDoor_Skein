@@ -25,11 +25,10 @@
                 android:id="@+id/cIvImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/_2sdp"
-                android:layout_marginStart="@dimen/_2sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:layout_marginStart="@dimen/_5sdp"
                 android:padding="@dimen/_3sdp"
                 android:visibility="visible"
-                android:scaleType="centerCrop"
                 app:civ_border_color="#A39E9F80"
                 app:civ_border_width="4dp"
                 android:src="@drawable/dummy_premise_img"/>
@@ -40,7 +39,8 @@
             android:id="@+id/tvMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_13sdp"
+            android:textSize="@dimen/_12sdp"
+            android:textStyle="bold|normal"
             android:textColor="#747171"
             android:layout_weight="1"
             android:text="Your now CHECKED-OUT from

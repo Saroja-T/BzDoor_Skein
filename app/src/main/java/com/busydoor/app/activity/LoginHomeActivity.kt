@@ -7,27 +7,15 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.busydoor.app.R
-import com.busydoor.app.apiService.ApiInitialize
-import com.busydoor.app.apiService.ApiRequest
-import com.busydoor.app.apiService.ApiResponseInterface
-import com.busydoor.app.apiService.ApiResponseManager
-import com.busydoor.app.customMethods.DEVICE_TYPE
-import com.busydoor.app.customMethods.ERROR_CODE
-import com.busydoor.app.customMethods.LOGIN
-import com.busydoor.app.customMethods.SUCCESS_CODE
-import com.busydoor.app.customMethods.activity
-import com.busydoor.app.customMethods.forceResendingTokenGbl
-import com.busydoor.app.customMethods.gContext
-import com.busydoor.app.customMethods.isOnline
+import com.busydoor.app.apiService.*
+import com.busydoor.app.customMethods.*
 import com.busydoor.app.databinding.ActivityLoginBinding
 import com.google.firebase.FirebaseException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.*
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
+
 
 class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
     private var mAuth: FirebaseAuth? = null
@@ -35,12 +23,12 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
     private var verificationId: String = ""
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
 
-
     /** Main Function... **/
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        setupUI(binding.root)
         gContext = this@LoginHomeActivity
         activity = this@LoginHomeActivity
 
@@ -53,13 +41,7 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
                 loginApi()
             }else{
                 binding.phoneNumber.error="Please enter Valid number"
-//                showSnackBar(
-//                    binding.root,
-//                    "Please enter Valid number",
-//                    ACTIONSNACKBAR.DISMISS
-//                )
             }
-
         }
 
         binding.textSignUp.setOnClickListener {
@@ -95,62 +77,27 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
     /** sendVerificationCode fun... **/
     private fun sendVerificationCode(number: String) {
         //this method is used for getting OTP on user phone number.
-        val options = mAuth?.let {
-            PhoneAuthOptions.newBuilder(it)
-                .setPhoneNumber(number)       // Phone number to verify
-                .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-                .setActivity(this)                 // Activity (for callback binding)
-                .setCallbacks(mCallBack)          // OnVerificationStateChangedCallbacks
-                .build()
-        }
-        if (options != null) {
-            PhoneAuthProvider.verifyPhoneNumber(options)
-        }
-    }
+        PhoneAuthUtil.sendVerificationCode(
+            this,
+            this@LoginHomeActivity,
+            number, {
 
-
-    /** initializing our callbacks for on verification callback method.... **/
-    private val mCallBack: PhoneAuthProvider.OnVerificationStateChangedCallbacks =
-        object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            //below method is used when OTP is sent from Firebase
-            override fun onCodeSent(
-                s: String,
-                forceResendingToken: PhoneAuthProvider.ForceResendingToken
-            ) {
-                super.onCodeSent(s, forceResendingToken)
-                dismissProgress()
-                forceResendingTokenGbl = forceResendingToken
-                // customDismissDialog(this@LoginActivity, getProgressDialog(this@LoginActivity))
-                //when we receive the OTP it contains a unique id which we are storing in our string which we have already created.
-                verificationId = s
-                Log.e("send code","test")
-                val getStartedIntent = Intent(this@LoginHomeActivity, OtpVerifyActivity::class.java)
-                getStartedIntent.putExtra("verificationId", verificationId)
-                getStartedIntent.putExtra("phone_number", binding.phoneNumber.text.toString())
-                getStartedIntent.putExtra("otp_type","Login")
-                startActivity(getStartedIntent)
+                // Success callback, navigate to the next activity or perform other actions
+                forceResendingTokenGbl = PhoneAuthUtil.getForceResendingToken()
+                val intent = Intent(this@LoginHomeActivity, OtpVerifyActivity::class.java)
+                // Pass necessary data to the next activity
+                intent.putExtra("verificationId", PhoneAuthUtil.getVerificationId())
+                intent.putExtra("phone_number", binding.phoneNumber.text.toString())
+                intent.putExtra("otp_type","Login")
+                startActivity(intent)
                 finish()
+            },
+            { errorMessage ->
+                // Error callback, show a message or handle the error accordingly
+                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
             }
-            //this method is called when user receive OTP from Firebase.
-            override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
-                //below line is used for getting OTP code which is sent in phone auth credentials.
-                val code = phoneAuthCredential.smsCode
-                //checking if the code is null or not.
-                if (code != null) {
-                    //if the code is not null then we are setting that code to our OTP edittext field.
-                    //   edtOTP!!.setText(code)
-                    //after setting this code to OTP edittext field we are calling our verification code method.
-                    //  verifyCode(code)
-                    verifyCode = code
-                }
-            }
-
-            //This method is called when firebase does not sends our OTP code due to any error or issue.
-            override fun onVerificationFailed(e: FirebaseException) {
-                //displaying error message with firebase exception.
-                Toast.makeText(this@LoginHomeActivity, e.message, Toast.LENGTH_LONG).show()
-            }
-        }
+        )
+    }
 
 
     /** getApiResponse function... **/
@@ -159,16 +106,13 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
             LOGIN -> {
                 val model = apiResponseManager.response as ResponseBody
                 val responseValue = model.string()
-                Log.e(TAG, "response LOGIN:-$responseValue")
                 val response = JSONObject(responseValue)
-                Log.e(TAG, "response LOGINxx:-${response.optInt("status_code")}")
                 when (response.optInt("status_code")) {
                     SUCCESS_CODE -> {
                         objSharedPref.putString(getString(R.string.userResponse), responseValue)
                         val phone = "+91" + binding.phoneNumber.text.toString()
                         sendVerificationCode(phone)
                         showProgress()
-
                     }
                     ERROR_CODE -> {
                         val data = response.getJSONObject("data")

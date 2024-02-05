@@ -2,13 +2,16 @@
 package com.busydoor.app.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Binder
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,9 +22,11 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
@@ -29,7 +34,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
 import com.busydoor.app.activity.CreateNewUserActivity
 import com.busydoor.app.activity.CryptLib2
-import com.busydoor.app.activity.EditProfileActivity
 import com.busydoor.app.activity.OtpVerifyActivity
 import com.busydoor.app.adapter.UserListAdapter
 import com.busydoor.app.apiService.ApiInitialize
@@ -38,8 +42,12 @@ import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
 import com.busydoor.app.customMethods.ADD_USER_RESPONSE
 import com.busydoor.app.customMethods.ADD_USER_TO_PREMISE
+import com.busydoor.app.customMethods.Activate
+import com.busydoor.app.customMethods.ActiveInActivate
 import com.busydoor.app.customMethods.ENCRYPTION_IV
 import com.busydoor.app.customMethods.ERROR_CODE
+import com.busydoor.app.customMethods.InActivate
+import com.busydoor.app.customMethods.PhoneAuthUtil
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.SUCCESS_CODE
 import com.busydoor.app.customMethods.USER_ACTIVE_DEACTIVE
@@ -47,13 +55,17 @@ import com.busydoor.app.customMethods.USER_LIST_DATA
 import com.busydoor.app.customMethods.encode
 import com.busydoor.app.customMethods.forceResendingTokenGbl
 import com.busydoor.app.customMethods.isOnline
+import com.busydoor.app.customMethods.isRefresh
 import com.busydoor.app.customMethods.key
 import com.busydoor.app.databinding.FragmentUserListBinding
 import com.busydoor.app.interfaceD.HomeClick
-import com.busydoor.app.model.AddUserToPremise
+import com.busydoor.app.interfaceD.OnOtpVerifiedListener
+import com.busydoor.app.interfaceD.OtpVerifiedListenerHolder
 import com.busydoor.app.model.PremiseUserList
+import com.busydoor.app.model.UpdateUserStatus
 import com.busydoor.app.model.UserModel
-import com.google.android.material.snackbar.Snackbar
+import com.busydoor.app.viewmodel.OTPViewModel
+import com.busydoor.app.viewmodel.ProfileViewModel
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -62,14 +74,18 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 import org.json.JSONObject
+import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
+interface OnUserCreatedListener : Serializable {
+    fun onUserCreated()
+}
 
 class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
     private lateinit var binding: FragmentUserListBinding
     private var userListPremise: PremiseUserList? = null
     private var userActiveDeactiveRes: ResponseBody? = null
-    private var userActiveDeactiveResponse: AddUserToPremise? = null
+    private var userActiveDeactiveResponse: UpdateUserStatus? = null
     open lateinit var objSharedPref: PrefUtils
     var cryptLib: CryptLib2? = null
     private var otpType = ""
@@ -87,11 +103,20 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
     lateinit var pd : ProgressDialog
     private var mAuth: FirebaseAuth? = null
     lateinit var dialog : AlertDialog.Builder
+    private var isAdmin:String = ""
+    // to check whether sub FABs are visible or not
+    var isAllFabsVisible: Boolean? = null
+    var isShowAdmin: Boolean? = null
+    private lateinit var profileViewModel: ProfileViewModel
+    private lateinit var otpViewModel : OTPViewModel
 
-
-
-
-
+    @RequiresApi(Build.VERSION_CODES.R)
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            getUserListRequest()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,7 +125,7 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
-    @SuppressLint("ResourceType")
+    @SuppressLint("ResourceType", "SuspiciousIndentation")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -109,30 +134,157 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
         val root: View = binding.root
         objSharedPref = PrefUtils(requireContext())
         cryptLib = CryptLib2()
+        profileViewModel = ViewModelProvider(requireActivity()).get(ProfileViewModel::class.java)
+        otpViewModel = ViewModelProvider(this).get(OTPViewModel::class.java)
+        otpViewModel.homeData.observe(requireActivity()) { data ->
+            // Handle changes to the shared data in BottomBarFragment
+            // The 'data' variable contains the updated value
+            // Handle the updated profile data
+            if (data != null) {
+                // Access individual values like profileData["profileImage"], profileData["firstName"], etc.
+                Log.e("OTPTrigggererd","djdkjfjdfi")
+            }
+        }
+
         swStatus="true"
         premiseId=activity?.intent?.getStringExtra("premiseId").toString()
+        isAdmin = getUserModel()?.data?.isAdmin.toString()
         Log.e("original value userList== ",premiseId.toString())
         mAuth = FirebaseAuth.getInstance()
         pd = ProgressDialog(requireContext())
         pd.setMessage("Please wait...")
 
-        binding.userProfileView.editProfile.setOnClickListener {
-            startActivity(Intent(requireActivity(), EditProfileActivity::class.java))
+        if(isAdmin=="1") binding.addFab.visibility = View.VISIBLE else binding.addFab.visibility = View.GONE
+
+        // Now set all the FABs and all the action name
+        // texts as GONE
+        binding.createUser.setVisibility(View.GONE)
+        binding.addUser.setVisibility(View.GONE)
+        binding.addAlarmActionText.setVisibility(View.GONE)
+        binding.addPersonActionText.setVisibility(View.GONE)
+
+        binding.addAlarmActionText.setOnClickListener {
+            createNewUserPage()
         }
-        binding.userProfileView.backPage.setOnClickListener {
-            requireActivity().finish()
-        }
-        binding.first.setOnClickListener {
+        binding.addPersonActionText.setOnClickListener {
             showAlertBox("adduser","")
-            Log.e("user_list","first")
-        }
-        binding.second.setOnClickListener {
-            startActivity(Intent(requireContext(),CreateNewUserActivity::class.java).putExtra("premiseName",premiseName).putExtra("premise_id",premiseId))
         }
 
+        // make the boolean variable as false, as all the
+        // action name texts and all the sub FABs are
+        // invisible
+
+
+        isAllFabsVisible = false
+
+        // Set the Extended floating action button to
+        // shrinked state initially
+
+        binding.addFab.shrink()
+
+        // We will make all the FABs and action name texts
+        // visible only when Parent FAB button is clicked So
+        // we have to handle the Parent FAB button first, by
+        // using setOnClickListener you can see below
+
+        binding.addFab.setOnClickListener(
+            View.OnClickListener {
+                setFabIcon()
+            })
+        binding.closeFab.setOnClickListener(
+            View.OnClickListener {
+                setFabIcon()
+            })
+
+        //  below is the sample action to handle add user
+        //  FAB. Here it shows simple alert box. The alert box
+        //  will be shown only when they are visible and only
+        //  when user clicks on them
+
+        binding.addUser.setOnClickListener {
+            showAlertBox("adduser","")
+        }
+
+        // below is the sample action to handle create user
+        // FAB. Here it redirects to create new user page. Redirection
+        // will be available only when they are visible and only
+        // when user clicks on them
+
+        binding.createUser.setOnClickListener {
+            createNewUserPage()
+        }
         getUserListRequest()
         // Inflate the layout for this fragment
         return root
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private fun setFabIcon() {
+        if (!isAllFabsVisible!!) {
+
+            // when isAllFabsVisible becomes
+            // true make all the action name
+            // texts and FABs VISIBLE.
+            binding.createUser.show()
+            binding.addUser.show()
+            binding.addAlarmActionText.setVisibility(View.VISIBLE)
+            binding.addPersonActionText.setVisibility(View.VISIBLE)
+
+            // Now extend the parent FAB, as
+            // user clicks on the shrinked
+            // parent FAB
+            binding.addFab.extend()
+            // binding.addFab.setIconResource(R.drawable.icon_close)
+            binding.clFab.background = resources.getDrawable(android.R.drawable.screen_background_light_transparent)
+//                    binding.clFab.setBackgroundColor(R.)
+            // make the boolean variable true as
+            // we have set the sub FABs
+            // visibility to GONE
+            isAllFabsVisible = true
+
+            binding.addFab.visibility= View.GONE
+            binding.closeFab.visibility= View.VISIBLE
+        } else {
+            binding.clFab.setBackgroundColor(android.R.color.transparent)
+
+            // when isAllFabsVisible becomes
+            // true make all the action name
+            // texts and FABs GONE.
+            binding.createUser.hide()
+            binding.addUser.hide()
+            binding.addAlarmActionText.visibility = View.GONE
+            binding.addPersonActionText.visibility = View.GONE
+            binding.addFab.setIconResource(R.drawable.user_add)
+            // Set the FAB to shrink after user
+            // closes all the sub FABs
+            binding.addFab.shrink()
+
+            // make the boolean variable false
+            // as we have set the sub FABs
+            // visibility to GONE
+            isAllFabsVisible = false
+            binding.addFab.visibility= View.VISIBLE
+            binding.closeFab.visibility= View.GONE
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    override fun onResume() {
+        super.onResume()
+        Log.e("tewq","yes come in userList fragment")
+        if(isRefresh){
+            isRefresh=false
+            setFabIcon()
+            getUserListRequest()
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun createNewUserPage(){
+        val intent= Intent(requireContext(), CreateNewUserActivity::class.java)
+        intent.putExtra("premiseName",premiseName)
+        intent.putExtra("premise_id",premiseId)
+        intent.putExtra("isAdmin",isShowAdmin.toString())
+        resultLauncher.launch(intent)
     }
     @RequiresApi(Build.VERSION_CODES.R)
     override fun homePostionClick(postion: Int) {
@@ -141,16 +293,16 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
         userActiverName=userListPremise!!.data!!.staffdetails!![postion].firstName.toString()
         when (userActiveStatus) {
             "true" -> {
-                userActiveStatus="Inactive"
+                userActiveStatus= InActivate
                 showAlertBox("true",userListPremise!!.data!!.staffdetails!![postion].userId.toString())
             }
             "false" -> {
-                userActiveStatus="Active"
+                userActiveStatus= Activate
                 showAlertBox("false",userListPremise!!.data!!.staffdetails!![postion].userId.toString())
             }
             else -> {
                 userActiveStatus=""
-                showAlertBox("activate",userListPremise!!.data!!.staffdetails!![postion].userId.toString())
+                showAlertBox("",userListPremise!!.data!!.staffdetails!![postion].userId.toString())
             }
         }
 
@@ -166,11 +318,12 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
         dialog.setCancelable(true)
         val alert = dialog.create()
         alert.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        val content = view.findViewById<View>(com.busydoor.app.R.id.dialog_text) as TextView
-        val mobileNum = view.findViewById<View>(com.busydoor.app.R.id.phoneNumber) as TextView
-        val tittle = view.findViewById<View>(com.busydoor.app.R.id.dialog_tittle_text) as TextView
-        val cancel = view.findViewById<View>(com.busydoor.app.R.id.cancel_action) as Button
-        val sw_status = view.findViewById<View>(com.busydoor.app.R.id.sw_status) as SwitchCompat
+        val content = view.findViewById<View>(R.id.dialog_text) as TextView
+        val mobileNum = view.findViewById<View>(R.id.phoneNumber) as TextView
+        val tittle = view.findViewById<View>(R.id.dialog_tittle_text) as TextView
+        val cancel = view.findViewById<View>(R.id.cancel_action) as Button
+        val sw_status = view.findViewById<View>(R.id.sw_status) as SwitchCompat
+        cancel.text="CANCEL"
         sw_status.setOnCheckedChangeListener { buttonView, isChecked ->
             swStatus = if (isChecked){
                 "true"
@@ -187,8 +340,9 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
             "adduser"->{
                 ok.setOnClickListener{
                     if(mobileNum.text.length>=10){
-                        val phone = "+91" + mobileNum.text.toString().trim()
+                        val phone = mobileNum.text.toString().trim()
                         Log.e("print123",phone)
+                        ok.text="ADD"
                         otpType = "add_user_to_premise"
                         progress_circular.visibility =View.VISIBLE
                         mobileNumberStr=mobileNum.text.toString()
@@ -196,7 +350,7 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
                         alert.dismiss();
                     }else{
                         Log.e("print123",swStatus)
-                        mobileNum.error = "Please enter valid mobile number"
+                        mobileNum.error = getString(R.string.validMobileNumber)
                     }
                 }
             }
@@ -205,8 +359,9 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
                 add_user_ll.visibility =View.GONE
                 sw_status.visibility =View.GONE
                 cancel.visibility =View.GONE
-                tittle.text = "Active/Inactive User"
-                content.text="Are you sure want to $userActiveStatus ${userActiverName} User?"
+                ok.text="Yes"
+                tittle.text = ActiveInActivate
+                content.text="Do you want to set $userActiverName as $userActiveStatus?"
                 ok.setOnClickListener {
                     updateUserStatus(response,"true")
                     alert.dismiss()
@@ -217,8 +372,9 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
                 add_user_ll.visibility =View.GONE
                 sw_status.visibility =View.GONE
                 cancel.visibility =View.GONE
-                tittle.text = "Active/Inactive User"
-                content.text="Are you sure want to $userActiveStatus ${userActiverName} User?"
+                ok.text="Yes"
+                tittle.text = ActiveInActivate
+                content.text="Do you want to set $userActiverName as $userActiveStatus?"
                 ok.setOnClickListener {
                     updateUserStatus(response,"false")
                     alert.dismiss()
@@ -226,6 +382,13 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
             }
 
             "api-success"->{
+                // automatically close the AlertDialog after 2 seconds
+                val handler = Handler()
+                handler.postDelayed({
+                    if (alert.isShowing) {
+                        alert.dismiss()
+                    }
+                }, 2000)
                 content.visibility =View.VISIBLE
                 add_user_ll.visibility =View.GONE
                 sw_status.visibility =View.GONE
@@ -238,9 +401,17 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
                 }
             }
             "api-failure"->{
-                tittle.text="something went wrong"
-                content.text=userListPremise!!.message.toString();
-                ok.text= "Ok"
+                // automatically close the AlertDialog after 2 seconds
+                val handler = Handler()
+                handler.postDelayed({
+                    if (alert.isShowing) {
+                        alert.dismiss()
+                    }
+                }, 2000)
+                tittle.visibility=View.VISIBLE
+                tittle.text="Alert!"
+                content.text=response
+                ok.text= "Done"
                 add_user_ll.visibility =View.GONE
                 sw_status.visibility =View.GONE
                 content.visibility =View.VISIBLE
@@ -278,7 +449,6 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
     fun addUserRequest(phone:String,status:String) {
         try {
             if (isOnline(requireContext())) {
-
                 Log.e("apiCalled", " yes")
                 Log.d("apiCalled", "values==>> ${"mnumber $phone status $status id $premiseId"}")
                 ApiRequest(
@@ -301,8 +471,6 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
     fun updateUserStatus(userid:String,status:String) {
         try {
             if (isOnline(requireContext())) {
-                Snackbar.make(binding.root, "Switch state checked ", Snackbar.LENGTH_LONG)
-                    .setAction("ACTION",null).show();
                 Log.e("apiCalled", " yes")
                 Log.d("BDApplication", "the p ${"requestType".toString()}")
                 ApiRequest(
@@ -328,7 +496,8 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
             val userListLayout = GridLayoutManager(requireContext(),2)
             binding.rvUserList.layoutManager =userListLayout
             val userListAdapter=UserListAdapter(
-                requireContext(),data,getUserModel()!!.data!!.userId.toString(), this
+                requireContext(),data,getUserModel()!!.data!!.userId.toString(), this,
+                userListPremise!!.data!!.userDetails!!.userAccessLevel!!
             )
             // create a adapter
             binding.rvUserList.adapter=userListAdapter
@@ -345,49 +514,16 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
             USER_LIST_DATA ->{
                 userListPremise = apiResponseManager.response as PremiseUserList
                 if(userListPremise!!.statusCode== SUCCESS_CODE){
-                    val circularProgressDrawable = CircularProgressDrawable(requireContext())
-                    circularProgressDrawable.strokeWidth = 5f
-                    circularProgressDrawable.centerRadius = 30f
-                    circularProgressDrawable.start()
-
-                    binding.userProfileView.userName.text=userListPremise!!.data!!.userdetails!!.userFirstName+" "+userListPremise!!.data!!.userdetails!!.userLastName
-                    binding.userProfileView.userNumber.text=userListPremise!!.data!!.premisedetails!!.premiseName+", "+userListPremise!!.data!!.premisedetails!!.city+", "+userListPremise!!.data!!.premisedetails!!.state
-                    if(userListPremise!!.data!!.userdetails!! !=null) {
-                        Glide.with(requireContext())
-                            .load(userListPremise!!.data!!.userdetails!!.userImage)
-                            .placeholder(circularProgressDrawable)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(binding.userProfileView!!.PremiseStaffImage)
-                    }else{
-                        Glide.with(requireContext())
-                            .load(R.drawable.icon_users)
-                            .placeholder(circularProgressDrawable)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(binding.userProfileView!!.PremiseStaffImage)
+                    setHomeOfferData(userListPremise!!.data!!)
+                    if(userListPremise!!.data!!.userDetails!!.userAccessLevel!!.toLowerCase() !="admin"){
+                        binding.addFab.visibility =View.GONE
+                        isShowAdmin=false
+                    }else if(userListPremise!!.data!!.userDetails!!.userAccessLevel!!.toLowerCase() =="admin"){
+                        binding.addFab.visibility =View.VISIBLE
+                        isShowAdmin=true
                     }
-                    when (userListPremise!!.data!!.userdetails!!.userStatus) {
-                        "in" -> {
-                            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_staff_profile_in)
-                        }
-                        "inout" -> {
-                            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_inout)
-                        }
-                        "out" -> {
-                            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_out)
-                        }
-                        "out" -> {
-                            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-                        }
-                        else -> {
-                            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-
-                        }
-                    }
-
                     setUserAdapter(userListPremise!!.data!!.staffdetails)
-                    premiseName=userListPremise!!.data!!.premisedetails!!.premiseName.toString()
+                    premiseName=userListPremise!!.data!!.premiseDetails!!.premiseName.toString()
 
                 }else{
                     showAlertBox("api-failure",userListPremise!!.message.toString())
@@ -412,7 +548,7 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
                 }
             }
             USER_ACTIVE_DEACTIVE ->{
-                userActiveDeactiveResponse = apiResponseManager.response as AddUserToPremise
+                userActiveDeactiveResponse = apiResponseManager.response as UpdateUserStatus
                 if(userActiveDeactiveResponse!!.statusCode== SUCCESS_CODE){
                     getUserListRequest()
                     showAlertBox("api-success",userActiveDeactiveResponse!!.message.toString())
@@ -423,74 +559,30 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     private fun sendVerificationCode(number: String, response: JSONObject) {
-        //this method is used for getting OTP on user phone number.
         pd.show()
-        val options = mAuth?.let {
-            PhoneAuthOptions.newBuilder(it)
-                .setPhoneNumber(number)       // Phone number to verify
-                .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-                .setActivity(requireActivity())                 // Activity (for callback binding)
-                .setCallbacks(mCallBack)          // OnVerificationStateChangedCallbacks
-                .build()
-        }
-        if (options != null) {
-            PhoneAuthProvider.verifyPhoneNumber(options)
-        }
-        /*PhoneAuthProvider.getInstance().verifyPhoneNumber(
-            number,  //first parameter is user's mobile number
-            60,  //second parameter is time limit for OTP verification which is 60 seconds in our case.
-            TimeUnit.SECONDS,  // third parameter is for initializing units for time period which is in seconds in our case.
-            TaskExecutors.MAIN_THREAD,  //this task will be excuted on Main thread.
-            mCallBack //we are calling callback method when we recieve OTP for auto verification of user.
-        )*/
-    }
-    private val   //initializing our callbacks for on verification callback method.
-            mCallBack: PhoneAuthProvider.OnVerificationStateChangedCallbacks =
-        object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            //below method is used when OTP is sent from Firebase
-            @RequiresApi(Build.VERSION_CODES.R)
-            override fun onCodeSent(
-                s: String,
-                forceResendingToken: PhoneAuthProvider.ForceResendingToken
-            ) {
-                super.onCodeSent(s, forceResendingToken)
-                forceResendingTokenGbl = forceResendingToken
+        //this method is used for getting OTP on user phone number.
+        PhoneAuthUtil.sendVerificationCode(
+            requireContext(),
+            requireActivity(),
+            number, {
+                // Success callback, navigate to the next activity or perform other actions
+                forceResendingTokenGbl = PhoneAuthUtil.getForceResendingToken()
                 pd.dismiss()
-                // customDismissDialog(this@LoginActivity, getProgressDialog(this@LoginActivity))
-                //when we recieve the OTP it contains a unique id wich we are storing in our string which we have already created.
-                verificationId = s
-
                     val getStartedIntent = Intent(requireContext(), OtpVerifyActivity::class.java)
-                    getStartedIntent.putExtra("verificationId", verificationId)
+                    getStartedIntent.putExtra("verificationId", PhoneAuthUtil.getVerificationId())
                     getStartedIntent.putExtra("phone_number", mobileNumberStr)
                     getStartedIntent.putExtra("otp_type",otpType)
                     getStartedIntent.putExtra("premiseID",premiseId)
                     getStartedIntent.putExtra("status",swStatus)
                     getStartedIntent.putExtra("premise_id",premiseId)
-                    getStartedIntent.putExtra("status",swStatus)
-                    requireActivity().startActivityForResult(getStartedIntent,111)
-            }
+                    resultLauncher.launch(getStartedIntent)
 
-            //this method is called when user recieve OTP from Firebase.
-            override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
-                //below line is used for getting OTP code which is sent in phone auth credentials.
-                val code = phoneAuthCredential.smsCode
-                //checking if the code is null or not.
-                if (code != null) {
-                    //if the code is not null then we are setting that code to our OTP edittext field.
-                    //   edtOTP!!.setText(code)
-                    //after setting this code to OTP edittext field we are calling our verifycode method.
-                    //  verifyCode(code)
-                    verifyCode = code
-                }
-            }
-
-            //this method is called when firebase does not sends our OTP code due to any error or issue.
-            override fun onVerificationFailed(e: FirebaseException) {
-                Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
-                pd.dismiss()
-            }
+            },{ errorMessage ->
+                // Error callback, show a message or handle the error accordingly
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+            })
         }
 
     open fun encrypt(value: String): String {
@@ -515,10 +607,17 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.e("onactivityresult","result added")
-        getUserListRequest()
+
+    private fun setHomeOfferData(dataModel: PremiseUserList.Data) {
+        profileViewModel.setProfileData(dataModel!!.userDetails!!.userImage.toString(),
+            dataModel.userDetails!!.userFirstName.toString(),
+            dataModel.userDetails!!.userLastName.toString(),
+            dataModel.userDetails!!.userStatus.toString(),
+            dataModel.premiseDetails!!.premiseName +", "+dataModel.premiseDetails!!.city+", "+dataModel.premiseDetails!!.state,
+        )
+
     }
+
+
+
 }

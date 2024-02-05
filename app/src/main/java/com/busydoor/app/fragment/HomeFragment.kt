@@ -14,24 +14,22 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
 import com.busydoor.app.activity.ActivityBase
 import com.busydoor.app.activity.AllOffsiteRequestActivity
 import com.busydoor.app.activity.CryptLib2
-import com.busydoor.app.activity.EditProfileActivity
 import com.busydoor.app.activity.RequestOffsiteActivity
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
@@ -44,6 +42,9 @@ import com.busydoor.app.customMethods.*
 import com.busydoor.app.databinding.FragmentHomeBinding
 import com.busydoor.app.model.HomeDataResponse
 import com.busydoor.app.model.UserModel
+import com.busydoor.app.viewmodel.HomeViewModel
+import com.busydoor.app.viewmodel.ProfileViewModel
+import com.busydoor.app.viewmodel.SharedViewModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.MarkerView
@@ -94,6 +95,10 @@ class HomeFragment : Fragment(),ApiResponseInterface {
     private var tempMaxDays : Int=0
     private var pageNo: Int=0
     lateinit var customMarkerView :CustomMarkerView
+    private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var profileViewModel: ProfileViewModel
+    val donutStatus: MutableMap<Float, String> = mutableMapOf()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,14 +123,24 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         objSharedPref = PrefUtils(requireContext())
         /*** set current data and change format to the Api ("yyyy-MM-dd") here  */
         val cDate = Date()
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+        homeViewModel = ViewModelProvider(requireActivity()).get(HomeViewModel::class.java)
+        profileViewModel = ViewModelProvider(requireActivity()).get(ProfileViewModel::class.java)
+
         apiFormatedDate = SimpleDateFormat("yyyy-MM-dd").format(cDate)
+        if(homeViewModel.gethomeData()==null){
+            homeViewModel.sethomeData(apiFormatedDate)
+        }
+        if(sharedViewModel.getSharedData()==null){
+            sharedViewModel.setSharedData(apiFormatedDate)
+        }
         userID = getUserModel()?.data?.userId.toString()
         premiseID = activity?.intent?.getStringExtra("premiseId").toString()
         Log.e("original value home== ",premiseID.toString())
 
-        binding.userProfileView.editProfile.setOnClickListener {
-            startActivity(Intent(requireContext(), EditProfileActivity::class.java))
-        }
+//        binding.userProfileView.editProfile.setOnClickListener {
+//            startActivity(Intent(requireContext(), EditProfileActivity::class.java))
+//        }
         /*** Function to setup Date view */
         binding. recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -167,7 +182,7 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         // Inflate the layout for this fragment
         chart = binding.chart1
         /*** Function to Show Tooltip on PIE-chart */
-        customMarkerView = CustomMarkerView(requireContext(), R.layout.piechart_toolbar)
+
         chart?.clear()
         chart?.setUsePercentValues(false)
         chart?.getDescription()?.setEnabled(false)
@@ -183,31 +198,35 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         chart?.setRotationEnabled(true)
         chart?.setHighlightPerTapEnabled(true)
         // Make sure it's clickable.
-        chart?.setClickable(true)
+        chart?.isClickable = true
         chart?.setMinAngleForSlices(20f)
         /*** Function to Call premise-Api */
         globalDate = apiFormatedDate
-        homeDataGet(apiFormatedDate)
         /*** Function to navigate dashboard page */
-        binding.userProfileView.backPage.setOnClickListener{
-            requireActivity().finish()
-        }
         binding.requestOffcite.setOnClickListener{
             if(!isShowAllRequest) {
                 startActivity(
                     Intent(
                         requireActivity(),
                         RequestOffsiteActivity::class.java
-                    ).putExtra("userSelectDate", apiFormatedDate).putExtra("premise_id", premiseID)
+                    ).putExtra("userSelectDate", apiFormatedDate).putExtra("premise_id", premiseID).putExtra("home","yess")
                 )
             }else{
                 startActivity(
                     Intent(
                         requireActivity(),
                         AllOffsiteRequestActivity::class.java
-                    ).putExtra("userSelectDate", apiFormatedDate).putExtra("premise_id", premiseID)
+                    ).putExtra("userSelectDate", homeViewModel.gethomeData()).putExtra("premise_id", premiseID)
                 )
             }
+        }
+        homeViewModel.homeData.observe(viewLifecycleOwner) { data ->
+            // Handle changes to the shared data in TabBarFragment
+            // The 'data' variable contains the updated value
+            Log.e("sharedData", data)
+            apiDate = data
+            globalDate=data
+            homeDataGet(data)
         }
         return root
 
@@ -263,24 +282,7 @@ class HomeFragment : Fragment(),ApiResponseInterface {
     }
 
     /*** Function to navigate the request offsite page */
-    private fun callRequestOffsiteActivity() {
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
-        val sdf1 = SimpleDateFormat("EEEE, MMM dd,yyyy")
-        val myDate: Date = sdf.parse(apiDate)
-        val cal = Calendar.getInstance()
-        cal.time = myDate
-        cal.add(Calendar.DAY_OF_MONTH, -6)
-        val starDate1 = convertDate(sdf1.format(cal.time), "EEEE, MMM dd,yyyy", "yyyy-MM-dd")
-        startActivity(
-            Intent(
-                context,
-                RequestOffsiteActivity::class.java
-            ).putExtra("start_date",apiFormatedDate)
-                .putExtra("premiseId", premiseID)
-                .putExtra("status",homePremisedata!!.data!!.donutDetails.toString())
 
-        )
-    }
 
     /*** Set up click listener to click the Date on date Picker */
     private fun setUpClickListener() {
@@ -319,12 +321,14 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         snapHelper.attachToRecyclerView(binding.recyclerView)
         adapter = CalendarAdapter { calendarDateModel: CalendarDateModel, position: Int ->
             calendarList2.forEachIndexed { index, calendarModel ->
-
                 calendarModel.isSelected = index == position
                 if(calendarModel.isSelected){
                     apiFormatedDate = parseDateFormat(calendarDateModel.calendarDateStr).toString()
-                    globalDate =apiFormatedDate
-                    homeDataGet(apiFormatedDate)
+                    sharedViewModel.setSharedData(apiFormatedDate)
+                    homeViewModel.sethomeData(apiFormatedDate)
+                    globalDate = apiFormatedDate
+                    chart?.marker=null
+                    chart?.isHighlightPerTapEnabled=false
                 }
 
             }
@@ -345,27 +349,6 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         binding.tvDateMonth.text = sdf.format(date)
     }
 
-    /*** Function to setup calendar for every month */
-    private fun getDatesFromInput(inputDateString: String, numberOfDays: Int): List<String> {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val inputDate = dateFormat.parse(inputDateString)
-
-        if (inputDate != null) {
-            val calendar2 = Calendar.getInstance()
-            calendar2.time = inputDate
-
-            val dateList = mutableListOf<String>()
-
-            for (i in 0 until numberOfDays) {
-                dateList.add(dateFormat.format(calendar2.time))
-                calendar2.add(Calendar.DAY_OF_MONTH, 1)
-            }
-
-            return dateList
-        }
-
-        return emptyList()
-    }
 
     /*** Function to setup calculateDifference */
     private fun calculateDifference(fromDate: String,toDate: String): Long {
@@ -602,56 +585,6 @@ class HomeFragment : Fragment(),ApiResponseInterface {
             Utils.dismissDialog(activity, mProgressDialog!!)
         }
     }
-    /*** Function to setup setPremiseData */
-    fun setPremiseData(
-        dataModel: HomeDataResponse.Data
-    ) {
-
-        val circularProgressDrawable = CircularProgressDrawable(requireContext())
-        circularProgressDrawable.strokeWidth = 5f
-        circularProgressDrawable.centerRadius = 30f
-        circularProgressDrawable.start()
-
-        if(binding.userProfileView.PremiseStaffImage !=null) {
-            Glide.with(requireContext())
-                .load(dataModel.userDetails!!.staffImage)
-                .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(binding.userProfileView.PremiseStaffImage)
-        }else{
-            Glide.with(requireContext())
-                .load(R.drawable.icon_users)
-                .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(binding.userProfileView.PremiseStaffImage)
-        }
-
-        when (dataModel.userDetails!!.staffStatus) {
-            "in" -> {
-                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_staff_profile_in)
-                binding.checkOutTime.setTextColor(Color.GRAY)
-            }
-            "inout" -> {
-                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_inout)
-            }
-            "out" -> {
-                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_out)
-            }
-            "offline" -> {
-                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-            }
-            else -> {
-    //            binding.userProfileView.staffStatus.visibility= View.GONE
-                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-    //            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-            }
-        }
-
-        binding.userProfileView.userName.text =homePremisedata!!.data!!.userDetails!!.staffFirstName +" "+homePremisedata!!.data!!.userDetails!!.staffLastName;
-        binding.userProfileView.userNumber.text =homePremisedata!!.data!!.premiseDetails!!.premiseName +", "+homePremisedata!!.data!!.premiseDetails!!.city+", "+homePremisedata!!.data!!.premiseDetails!!.state
-    }
 
     /*** Function to setup all getApiResponse here */
     override fun getApiResponse(apiResponseManager: ApiResponseManager<*>) {
@@ -663,7 +596,7 @@ class HomeFragment : Fragment(),ApiResponseInterface {
                     homePremisedata = apiResponseManager.response as HomeDataResponse
                     if (homePremisedata!!.statusCode == SUCCESS_CODE) {
                         if (homePremisedata!!.data != null) {
-                            setPremiseData(homePremisedata!!.data!!)
+                           setPremiseData(homePremisedata!!.data!!)
                             if(homePremisedata!!.data !=null && homePremisedata!!.data!!.donutDetails  !=null &&
                                 homePremisedata!!.data!!.donutDetails.toString().length !=null){
                                 Log.e("donutdetails", homePremisedata!!.data!!.donutDetails.toString());
@@ -695,6 +628,21 @@ class HomeFragment : Fragment(),ApiResponseInterface {
             }
         }
     }
+
+    private fun setPremiseData(dataModel: HomeDataResponse.Data) {
+        if(dataModel.userDetails!!.staffStatus=="in") {
+            binding.checkOutTime.setTextColor(Color.LTGRAY)
+        }
+        profileViewModel.setProfileData(
+            dataModel.userDetails!!.staffImage.toString(),
+            dataModel.userDetails!!.staffFirstName.toString(),
+            dataModel.userDetails!!.staffLastName.toString(),
+            dataModel.userDetails!!.staffStatus.toString(),
+            dataModel.premiseDetails!!.premiseName + ", " + dataModel.premiseDetails!!.city + ", " + dataModel.premiseDetails!!.state,
+        )
+
+    }
+
     /*** Function to setup all text and images */
     private fun setDataToUI(dataModel: HomeDataResponse.Data.DonutDetails) {
         if(dataModel!!.firstInTime ==null){
@@ -710,7 +658,8 @@ class HomeFragment : Fragment(),ApiResponseInterface {
     }
     /*** Function to setup PIE Chart */
     private fun setDataLine(dataModel: HomeDataResponse.Data.DonutDetails) {
-        val xAxisLabelList  = java.util.ArrayList<String>()
+        chart?.isHighlightPerTapEnabled = true
+        customMarkerView = CustomMarkerView(requireContext(), R.layout.piechart_toolbar)
         chart?.setExtraOffsets(35f, 0f, 35f, 0f)
         val timeHHMMSS = dataModel.totalInHours.toString().split(":")
         if( timeHHMMSS.size > 2 ) {
@@ -721,11 +670,8 @@ class HomeFragment : Fragment(),ApiResponseInterface {
             binding.centerHourTime.text = "Incorrect time format detected"
 
         // Custom renderer used to add dots at the end of value lines.
-        val entries: java.util.ArrayList<PieEntry> = java.util.ArrayList()
-        for (y in xAxisLabelList) {
-            Log.e("lable-value",y);
-        }
-        // Blue - #convertDate
+        val entries: ArrayList<PieEntry> = ArrayList()
+               // Blue - #convertDate
         val in_Color = intArrayOf(
             Color.rgb(45, 100, 188),
         )
@@ -741,12 +687,16 @@ class HomeFragment : Fragment(),ApiResponseInterface {
 
         // orange - #ffffff
         val Offsite_color = intArrayOf(
-            Color.rgb(251, 169, 96, )
+            Color.rgb(251, 169, 96)
         )
 
         val colors = java.util.ArrayList<Int>()
-
+        if(donutStatus.isNotEmpty()){
+            donutStatus.clear()
+        }
+        var tempFloat:Float =  0.0f
         if(dataModel.totalInPercentage!! >0){
+            donutStatus[tempFloat]= "Online"
             entries.add(
                 PieEntry(
                     dataModel.totalInPercentage!!.toFloat(),
@@ -759,6 +709,12 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         }
 
         if(dataModel.totalOfflinePercentage!! >0){
+            Log.e("fdffdfdfd",tempFloat.toString())
+            if(donutStatus.size>0)
+                tempFloat += 1.0f
+            else
+                tempFloat = 0.0f
+            donutStatus[tempFloat]= "Offline"
             entries.add(
                 PieEntry(
                     dataModel.totalOfflinePercentage!!.toFloat(),
@@ -768,6 +724,13 @@ class HomeFragment : Fragment(),ApiResponseInterface {
             for (c in Offline_Color) colors.add(c)}
 
         if(dataModel.totalRequestOffsitePercentage!! >0){
+            Log.e("fdffdfdfd",tempFloat.toString())
+            if(donutStatus.size>0)
+                tempFloat += 1.0f
+            else
+                tempFloat = 0.0f
+
+            donutStatus[tempFloat]= "Offsite"
             entries.add(
                 PieEntry(
                     dataModel.totalRequestOffsitePercentage!!.toFloat(),
@@ -779,69 +742,49 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         }
 
         if(dataModel.totalRemainingPercentage!! >0) {
+            Log.e("fdffdfdfd",tempFloat.toString())
+            if(donutStatus.size>0)
+                tempFloat += 1.0f
+            else
+                tempFloat = 0.0f
+            donutStatus[tempFloat]= "Remaining"
             entries.add(
                 PieEntry(
                     dataModel.totalRemainingPercentage!!.toFloat(),
-                    "remaining"
+                    "Remaining"
                 )
             )
             for (c in Remaining_Color) colors.add(c)
         }
-
-
-//        for(y in dataModel.){
-//            if(y.Status == "Open"){
-//                for (c in Open_Color) colors.add(c)
-//            }
-//            else if(y.Status == "Offline"){
-//                for (c in Offline_Color) colors.add(c)
-//            }
-//            else if(y.Status == "Closed"){
-//                for (c in Closed_Color) colors.add(c)
-//            }else if(y.Status == "Remaining"){
-//                for (c in Remaining_Color) colors.add(c)
-//            }
-//        }
-
-
-//        for (c in Offline_Color) colors.add(c)
-//        for (c in Offsite_Color) colors.add(c)
-//        for (c in Remaining_Color) colors.add(c)
+        println("Percentage == >${donutStatus.size}")
 
         val dataSet = PieDataSet(entries, "sds")
-        dataSet.setGradientColor(Color.RED,Color.GREEN);
-
-//        dataSet.colors = colors
-        // Set the number of colors needed
-//        chart?.renderer = CustomPieChartRendererLine(chart!!)
-//        dataSet.setGradientColors(colorss)
-        //dataSet.setValueTextColors(colors)
-        // Value lines
-//        dataSet.valueLinePart1Length = 0.5f
-//        dataSet.valueLinePart2Length = 0.2f
-//        dataSet.valueLineWidth = 1.5f
-//        dataSet.valueLinePart1OffsetPercentage = 115f  // Line starts outside of chart
-//        dataSet.isUsingSliceColorAsValueLineColor = true
-
-        // Value text appearance
-//        dataSet.xValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
-//        dataSet.valueTypeface = Typeface.DEFAULT_BOLD
-//        dataSet.setValueFormatter(HourYAxisValueFormatter())
-
-
-
+        dataSet.setGradientColor(Color.RED,Color.GREEN)
         chart?.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-
             override fun onValueSelected(e: Entry?, h: Highlight?) {
-                if (e != null) {
-                    Log.e("onValueSelected", (e.x + e.y).toString())
-                    customMarkerView.refreshContent(e,h)
-                    chart?.marker = customMarkerView
+                try {
+                    if (e != null) {
+                        Log.e("onValueSelected123", (h).toString())
+                    donutStatus.forEach { (xValue, status) ->
+                        println("${h?.x},$xValue status===: $status")
+                        if (h != null) {
+                            if(xValue == h.x){
+                                donutStatusValue = status
+                            }
+                        }
+                    }
+                        customMarkerView.refreshContent(e,h)
+                        customMarkerView.show()
+                        chart?.marker = customMarkerView
+                    }
+                }catch (e:Exception){
+                    println("Exception===>$e")
                 }
+
             }
 
             override fun onNothingSelected() {
-
+                customMarkerView.hide()
             }
         })
         dataSet.selectionShift = 3f
@@ -851,15 +794,11 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         chart?.isRotationEnabled = false
         chart?.dragDecelerationFrictionCoef = 0.9f
         chart?.rotationAngle = 270f
-        chart?.isHighlightPerTapEnabled = true
+        //chart?.isHighlightPerTapEnabled = true
         chart?.animateY(1400, Easing.EaseInOutQuad)
         // Hole
         chart?.isDrawHoleEnabled = true
         chart?.holeRadius = 85f
-//        chart?.setEntryLabelTextSize(9f)
-//        // Center text
-//        chart?.setEntryLabelColor(Color.BLACK)
-//        chart?.setEntryLabelTypeface(Typeface.DEFAULT_BOLD)
         chart?.setDrawEntryLabels(false)
         chart?.setDrawCenterText(false)
         chart?.setCenterTextSize(20f)
@@ -867,7 +806,7 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         chart?.setCenterTextColor(Color.parseColor("#222222"))
         chart?.centerText = pieTitleDate
         dataSet.colors = colors
-        chart?.setMinAngleForSlices(20f);
+        chart?.minAngleForSlices = 20f;
 
         // Disable legend & description
         chart?.legend?.isEnabled = false
@@ -885,6 +824,8 @@ class CustomMarkerView(context: Context?, layoutResource: Int) : MarkerView(
     layoutResource
 ) {
     private val tvContent: TextView = findViewById<View>(R.id.tvContent) as TextView
+    private val tvStatus: TextView = findViewById<View>(R.id.tvStatus) as TextView
+    private val tvPiechart: LinearLayout = findViewById<View>(R.id.tvPiechart) as LinearLayout
 
     // callbacks everytime the MarkerView is redrawn, can be used to update the
     // content (user-interface)
@@ -896,26 +837,25 @@ class CustomMarkerView(context: Context?, layoutResource: Int) : MarkerView(
         val minutes = e.y.toInt()
         val h = minutes / 60 + startTime.substring(0, 1).toInt()
         val m = minutes % 60 + startTime.substring(3, 4).toInt()
-        val newtime = "$h:$m hrs"
+        val newtime = "$h hrs $m mins"
         // set the entry-value as the display text
         tvContent.text = newtime
+        tvStatus.text = donutStatusValue
     }
-
 
     override fun getOffset(): MPPointF {
         return MPPointF((-(width / 2)).toFloat(), (-height).toFloat()) // place the midpoint of marker over the bar
     }
 
-
-    fun conVertDateTimeToTimeStarp(date: String): String {
-        var tempDate:String = ""
-        if(date!=""){
-            val sdf = SimpleDateFormat("HH:mm:ss")
-            val date: Date = sdf.parse(date)
-            println("Given Time in milliseconds : " + date.time)
-            tempDate = date.time.toString() + "f"
-        }
-
-        return tempDate
+    fun show() {
+        visibility = View.VISIBLE
+        tvPiechart.visibility = View.VISIBLE
     }
+
+    fun hide() {
+        visibility = View.GONE
+        tvPiechart.visibility = View.GONE
+    }
+
 }
+

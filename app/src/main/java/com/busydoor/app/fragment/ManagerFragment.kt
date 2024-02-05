@@ -1,6 +1,5 @@
 package com.busydoor.app.fragment
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Color
@@ -16,13 +15,13 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
 import com.busydoor.app.activity.ActivityBase
 import com.busydoor.app.activity.CryptLib2
-import com.busydoor.app.activity.EditProfileActivity
 import com.busydoor.app.activity.StaffDetailsOnWeekActivity
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
@@ -38,8 +37,10 @@ import com.busydoor.app.customMethods.globalDate
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.customMethods.key
 import com.busydoor.app.databinding.FragmentManagerBinding
+import com.busydoor.app.interfaceD.HomeClick
 import com.busydoor.app.model.StaffCountResponse
 import com.busydoor.app.model.UserModel
+import com.busydoor.app.viewmodel.ProfileViewModel
 import com.github.mikephil.charting.charts.PieChart
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -49,9 +50,10 @@ import java.util.Locale
 
 /**
  */
-class ManagerFragment : Fragment(),ApiResponseInterface {
+class ManagerFragment : Fragment(),ApiResponseInterface{
     private var userID: String =""
     private var premiseID: String=""
+    private var date: String=""
     private var staffCountData: StaffCountResponse? = null
     lateinit var objSharedPref: PrefUtils
     private var chart: PieChart? = null
@@ -61,7 +63,12 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
 
     private var percentage = 0
     private var presentStaffCount = 0
+    private var checkedInStaffCount = 0
+    private var checkedOutStaffCount = 0
+    private var offlineStaffCount = 0
     private var totalStaffCount = 0
+    private lateinit var profileViewModel: ProfileViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -79,76 +86,76 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
         // Inflate the layout for this fragment
         /*** initialize encrypt fun here  */
         cryptLib = CryptLib2()
+        profileViewModel = ViewModelProvider(requireActivity()).get(ProfileViewModel::class.java)
         /*** initialize shared-preference here  */
         objSharedPref = PrefUtils(requireContext())
         /*** set userId premiseID  here  */
         userID = getUserModel()?.data?.userId.toString()
         premiseID = activity?.intent?.getStringExtra("premiseId").toString()
+        /*** global date was set by the home fragment selected date on scroll date_picker and
+         * then "date" get value from global its passed to next pages staffGraphPage  */
+        date= globalDate
         Log.e("original value home== ",premiseID.toString())
-        staffCountGet(globalDate)
-        binding.userProfileView.editProfile.setOnClickListener {
-            startActivity(Intent(requireActivity(), EditProfileActivity::class.java))
-        }
-
-        binding.userProfileView.backPage.setOnClickListener {
-            requireActivity().finish();
-        }
+        /*** api call */
+        staffCountGet(date)
         binding.calendarIcon.setOnClickListener {
-            showDatePicker()
+            showDatePicker(date)
         }
 
         binding.pgbStaffs.setOnClickListener {
-            startActivity(Intent(requireContext(),StaffDetailsOnWeekActivity::class.java).putExtra("premiseId",premiseID))
+            startActivity(Intent(requireContext(),StaffDetailsOnWeekActivity::class.java).putExtra("premiseId",premiseID).putExtra("selectDate",date))
         }
-        binding.offsiteDateTime.text= convertDate(globalDate,"yyyy-MM-dd","EEE - dd 'th' MMM',' yyyy")
+        binding.offsiteDateTime.text= convertDate(globalDate,"yyyy-MM-dd","EEE, MMM dd, yyyy")
         return root
     }
 
 
-    @SuppressLint("NewApi")
-    private fun showDatePicker() {
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun showDatePicker(initialDate: String) {
+        // Parse the initial date string into year, month, and day
+        val initialCalendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        try {
+            val parsedDate = dateFormat.parse(initialDate)
+            parsedDate?.let {
+                initialCalendar.time = it
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         // Create a Calendar instance for the current date
         val calendar = Calendar.getInstance()
-
-        // Create a DatePickerDialog with current year, month, and day as default selections
+        // Create a DatePickerDialog with initial year, month, and day
         val datePickerDialog = DatePickerDialog(
-            requireActivity(),
-            { datePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+            requireContext(),
+            { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
                 // Create a new Calendar instance to hold the selected date
                 val selectedDate = Calendar.getInstance().apply {
                     // Set the selected date using the values received from the DatePicker dialog
                     set(year, monthOfYear, dayOfMonth)
                 }
-
                 // Create a SimpleDateFormat to format the date as "dd/MM/yyyy"
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
                 // Format the selected date into a string
                 val formattedDate = dateFormat.format(selectedDate.time)
-
-                // Update the TextView to display the selected date with the "Selected Date: " prefix
+                date= formattedDate
                 // Update the TextView to display the selected date with the format
-//                displayCurrentDate= outputFormat.format(inputFormat.parse(formattedDate))
-                binding.offsiteDateTime.text= convertDate(formattedDate,"yyyy-MM-dd","EEE - dd 'th' MMM',' yyyy")
+                binding.offsiteDateTime.text =
+                    convertDate(formattedDate, "yyyy-MM-dd", "EEE - dd MMM',' yyyy")
+                /*** Function to staffListGet when click datePicker select a date to call api request */
                 staffCountGet(formattedDate)
             },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
+            initialCalendar.get(Calendar.YEAR),
+            initialCalendar.get(Calendar.MONTH),
+            initialCalendar.get(Calendar.DAY_OF_MONTH)
         )
 
         // Set the maximum date to the current date within the current month
         datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-
-//        // Set the minimum date to the first day of the current month
-//        val minCalendar = Calendar.getInstance().apply {
-//            set(Calendar.DAY_OF_MONTH, 1)
-//        }
-//        datePickerDialog.datePicker.minDate = minCalendar.timeInMillis
-
-        // Show the DatePicker dialog
         datePickerDialog.show()
     }
+
     /*** Function to api staffCountGet api request */
     @RequiresApi(Build.VERSION_CODES.R)
     private fun staffCountGet(date:String) {
@@ -208,14 +215,28 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
                     if (staffCountData!!.statusCode == SUCCESS_CODE) {
                         if (staffCountData!!.data!! != null) {
                             if (staffCountData!!.data!!.count !=null) {
-                                setStaffCountData(staffCountData!!.data!!)
-                                presentStaffCount =
-                                    staffCountData!!.data!!.count!!.totalPresentCount!!.toInt()
+                                setHomeOfferData(staffCountData!!.data!!)
+
                                 totalStaffCount =
                                     staffCountData!!.data!!.count!!.totalCount!!.toInt()
+                                presentStaffCount =
+                                    staffCountData!!.data!!.count!!.checkedInCount!!.toInt() + staffCountData!!.data!!.count!!.checkedOutCount!!.toInt()
+                                checkedInStaffCount = staffCountData!!.data!!.count!!.checkedInCount!!.toInt()
+                                checkedOutStaffCount = staffCountData!!.data!!.count!!.checkedOutCount!!.toInt()
+                                //offlineStaffCount = staffCountData!!.data!!.count!!.offlineCount!!.toInt()
+                                // If the staff did not check-in then, that staff's info will not be included in the calculation
+                                // so, use the total staff and presentstaffcount to calculate offline staff
+                                offlineStaffCount = totalStaffCount - presentStaffCount
 
                                 binding.staffCountView.text= "$presentStaffCount"
-                                binding.textOnline.text= "$presentStaffCount"
+                                binding.tvCheckIn.text= staffCountData!!.data!!.checkInCount
+                                binding.tvCheckOut.text= staffCountData!!.data!!.checkOutCount
+                                binding.tvOffline.text= staffCountData!!.data!!.offlineCount
+
+                                //binding.textCheckedIn.text= "$checkedInStaffCount"
+                               // binding.textCheckedOut.text= "$checkedOutStaffCount"
+                                //binding.textOffline.text= "$offlineStaffCount"
+
                                 if (presentStaffCount != 0 && presentStaffCount != null) {
                                     percentage = ((100 * presentStaffCount)
                                             / totalStaffCount)
@@ -224,10 +245,14 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
                             } else {
                                 chart?.clear()
                                 binding.staffCountView.text ="No staffs"
-                                binding.textOnline.text= "0"
+                                binding.tvCheckIn.text= "0"
+                                binding.tvCheckOut.text= "0"
+                                binding.tvOffline.text= "0"
                             }
                         }
+                        chart?.clear()
                         }
+                    chart?.clear()
 
                     }
                 }
@@ -236,52 +261,6 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
         }
 
     /*** Function to setup setProfileData */
-    private fun setStaffCountData(dataModel: StaffCountResponse.Data) {
-
-        val circularProgressDrawable = CircularProgressDrawable(requireContext())
-        circularProgressDrawable.strokeWidth = 5f
-        circularProgressDrawable.centerRadius = 30f
-        circularProgressDrawable.start()
-
-        if(dataModel.userdetails !=null) {
-            Glide.with(requireContext())
-                .load(dataModel.userdetails!!.userImage)
-                .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(binding.userProfileView.PremiseStaffImage)
-        }else{
-            Glide.with(requireContext())
-                .load(R.drawable.icon_users)
-                .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(binding.userProfileView.PremiseStaffImage)
-        }
-
-        when (dataModel.userdetails!!.userStatus) {
-            "in" -> {
-                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_staff_profile_in)
-            }
-            "inout" -> {
-                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_inout)
-            }
-            "out" -> {
-                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_out)
-            }
-            "offline" -> {
-                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-            }
-            else -> {
-    //            binding.userProfileView.staffStatus.visibility= View.GONE
-                binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-    //            binding.userProfileView.staffStatus.setImageResource(R.drawable.icon_profile_status_offline)
-            }
-        }
-
-        binding.userProfileView.userName.text =dataModel.userdetails!!.userFirstName +" "+staffCountData!!.data!!.userdetails!!.userFirstName;
-        binding.userProfileView.userNumber.text =dataModel.premisedetails!!.premiseName+","+ dataModel.premisedetails!!.city+","+dataModel.premisedetails!!.state
-    }
 
     /*** Function to setup showSnackBar */
     private fun showSnackBar(view: View, message: String, action: ActivityBase.ACTIONSNACKBAR) {
@@ -308,6 +287,15 @@ class ManagerFragment : Fragment(),ApiResponseInterface {
         }
         snackBar.setActionTextColor(Color.WHITE)
         snackBar.show()
+    }
+    private fun setHomeOfferData(dataModel: StaffCountResponse.Data) {
+        profileViewModel.setProfileData(dataModel!!.userDetails!!.userImage.toString(),
+            dataModel.userDetails!!.userFirstName.toString(),
+            dataModel.userDetails!!.userLastName.toString(),
+            dataModel.userDetails!!.userStatus.toString(),
+            dataModel.premiseDetails!!.premiseName +", "+dataModel.premiseDetails!!.city+", "+dataModel.premiseDetails!!.state,
+        )
+
     }
 
 }

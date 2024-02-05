@@ -14,8 +14,8 @@ data class PremiseUserList (
 
     data class Data (
 
-        @SerializedName("userdetails"    ) var userdetails    : Userdetails?            = Userdetails(),
-        @SerializedName("premisedetails" ) var premisedetails : Premisedetails?         = Premisedetails(),
+        @SerializedName("userdetails"    ) var userDetails    : Userdetails?            = Userdetails(),
+        @SerializedName("premisedetails" ) var premiseDetails : Premisedetails?         = Premisedetails(),
         @SerializedName("staffdetails"   ) var staffdetails   : ArrayList<Staffdetails> = arrayListOf()
 
     ) {
@@ -47,6 +47,7 @@ data class PremiseUserList (
             @SerializedName("user_first_name" ) var userFirstName : String? = null,
             @SerializedName("user_last_name"  ) var userLastName  : String? = null,
             @SerializedName("user_image"      ) var userImage     : String? = null,
+            @SerializedName("user_access_level") var userAccessLevel : String? = null,
             @SerializedName("user_status"     ) var userStatus    : String? = null
 
         )

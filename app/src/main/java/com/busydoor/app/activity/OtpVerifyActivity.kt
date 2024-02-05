@@ -16,14 +16,19 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import com.busydoor.app.R
 import com.busydoor.app.apiService.ApiInitialize
+import com.busydoor.app.apiService.ApiInterface
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
+import com.busydoor.app.apiService.CommonRegistrationRequest
+import com.busydoor.app.apiService.UserRegistrationRequest
+import com.busydoor.app.apiService.editUserRequest
 import com.busydoor.app.customMethods.ADD_USER
 import com.busydoor.app.customMethods.ADD_USER_PREMISE
 import com.busydoor.app.customMethods.ADD_USER_RESPONSE
@@ -31,11 +36,17 @@ import com.busydoor.app.customMethods.DEVICE_TYPE
 import com.busydoor.app.customMethods.ERROR_CODE
 import com.busydoor.app.customMethods.REGISTER
 import com.busydoor.app.customMethods.SUCCESS_CODE
+import com.busydoor.app.customMethods.UPDATE_USER
 import com.busydoor.app.customMethods.activity
 import com.busydoor.app.customMethods.forceResendingTokenGbl
 import com.busydoor.app.customMethods.gContext
 import com.busydoor.app.customMethods.isOnline
+import com.busydoor.app.customMethods.isRefresh
+import com.busydoor.app.customMethods.userSelectedImage
 import com.busydoor.app.databinding.ActivityOtpVerifyBinding
+import com.busydoor.app.fragment.OnUserCreatedListener
+import com.busydoor.app.interfaceD.OnOtpVerifiedListener
+import com.busydoor.app.interfaceD.OtpVerifiedListenerHolder
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -61,14 +72,16 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        // Retrieve the listener instance
         gContext = this@OtpVerifyActivity
         activity = this@OtpVerifyActivity
         mAuth = FirebaseAuth.getInstance()
-
+        Log.e("OTPPPP  ",objSharedPref.getString("FCM_TOKEN")!!.toString())
         verificationId = intent.getStringExtra("verificationId").toString()
         phone_number = intent.getStringExtra("phone_number").toString()
         register_type = intent.getStringExtra("otp_type").toString()
         createUser = intent.getStringExtra("premise_id").toString()
+        Log.e("onCreate:: ",intent.getStringExtra("otp_type").toString())
 
         binding.btnOtpVerify.setOnClickListener {
             if (TextUtils.isEmpty(binding.OTP.text.toString())) {
@@ -77,6 +90,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
             } else {
                 //if OTP field is not empty calling method to verify the OTP.
                 verifyCode(binding.OTP.text.toString())
+
             }
         }
 
@@ -158,6 +172,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
         val credential = PhoneAuthProvider.getCredential(verificationId, code)
 
         Log.e("TAG", "Verify cation id is$verificationId")
+
         //after getting credential we are calling sign in method.
         signInWithCredential(credential)
     }
@@ -192,19 +207,25 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
     @RequiresApi(Build.VERSION_CODES.R)
     private fun registerNewApi() {
         Log.d(TAG, "onCreate: " + objSharedPref.getString("FCM_TOKEN")!!)
+        Log.d(TAG, "onCreate: " + userSelectedImage)
 
         if (isOnline(this@OtpVerifyActivity)) {
             ApiRequest(
                 this,
                 ApiInitialize.initialize(ApiInitialize.LOCAL_URL).createUser(
                     "Bearer " + getUserModel()!!.data.token,
-                    encrypt(phone_number),
-                    encrypt(intent.getStringExtra("first_name").toString()),
-                    encrypt(intent.getStringExtra("last_name").toString()),
-                    encrypt(intent.getStringExtra("accessLevelName").toString()),
-                    "register",
-                    encrypt(createUser),
-                    encrypt(intent.getStringExtra("userStatus").toString())
+                    UserRegistrationRequest(
+                        encrypt(intent.getStringExtra("first_name").toString()),
+                        encrypt(intent.getStringExtra("last_name").toString()),
+                        encrypt(phone_number),
+                        userSelectedImage,
+                        encrypt(intent.getStringExtra("accessLevelName").toString()),
+                        encrypt(intent.getStringExtra("premise_id").toString()),
+                        encrypt(intent.getStringExtra("userStatus").toString()),
+                        encrypt("Android"),
+                        encrypt(objSharedPref.getString("FCM_TOKEN")!!),
+                        encrypt(timeZoneSet),
+                        "register"),
                 ),
                 ADD_USER, true, this
             )
@@ -220,18 +241,22 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
     /** normal register user functionality fun here ... **/
     @RequiresApi(Build.VERSION_CODES.R)
     private fun registerApi() {
+        Log.d(TAG, "onCreate: " + objSharedPref.getString("FCM_TOKEN")!!)
         if (isOnline(this@OtpVerifyActivity)) {
+            Log.e("OTPPPP  ","registerApi   "+objSharedPref.getString("FCM_TOKEN")!!.toString())
             ApiRequest(
                 this,
                 ApiInitialize.initialize(ApiInitialize.LOCAL_URL).userRegisterFunction(
-                    encrypt(phone_number),
-                    encrypt(intent.getStringExtra("first_name").toString()),
-                    encrypt(intent.getStringExtra("last_name").toString()),
-                    encrypt(intent.getStringExtra("accessLevelName").toString()),
-                    encrypt(DEVICE_TYPE),
-                    objSharedPref.getString("FCM_TOKEN")!!,
-                    encrypt(timeZoneSet),
-                    "register"
+                    CommonRegistrationRequest(
+                        encrypt(intent.getStringExtra("first_name").toString()),
+                        encrypt(intent.getStringExtra("last_name").toString()),
+                        encrypt(phone_number),
+                        userSelectedImage,
+                        encrypt(intent.getStringExtra("accessLevelName").toString()),
+                        encrypt("Android"),
+                        encrypt(objSharedPref.getString("FCM_TOKEN")!!),
+                        encrypt(timeZoneSet),
+                        "register"),
                 ),
                 REGISTER, true, this
             )
@@ -260,6 +285,9 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
                         }
                         "Register" -> {
                             registerApi()
+                        }
+                        "edituser" ->{
+                            updateProfile()
                         }
                         else -> {
                             objSharedPref.putBoolean(getString(R.string.isLogin), true)
@@ -377,14 +405,12 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
             }
             ADD_USER_PREMISE -> {
                 val model = apiResponseManager.response as ResponseBody
-
                 val responseValue = model.string()
                 Log.e(TAG, "response LOGIN:-$responseValue")
                 val response = JSONObject(responseValue)
                 when (response.optInt("status_code")) {
                     SUCCESS_CODE -> {
                         ADD_USER_RESPONSE = 1
-                        setResult(Activity.RESULT_OK)
                         showAlertBox("approved",response.optString("message"))
                     }
                     ERROR_CODE -> {
@@ -400,6 +426,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
                 val response = JSONObject(responseValue)
                 when (response.optInt("status_code")) {
                     SUCCESS_CODE -> {
+                        isRefresh=true
                         showAlertBox("approved",response.optString("message"))
                         ADD_USER_RESPONSE = 1
                     }
@@ -410,6 +437,56 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
                     }
                 }
             }
+            UPDATE_USER ->{
+                val model = apiResponseManager.response as ResponseBody
+                val responseValue = model.string()
+                val response = JSONObject(responseValue)
+                when (response.optInt("status_code")) {
+                    SUCCESS_CODE -> {
+                        showAlertBox("approved",response.optString("message"))
+                    }
+                    ERROR_CODE -> {
+                        val data = response.getJSONObject("data")
+                        showAlertBox("rejected",data.optString("all"))
+
+                    }
+                }
+
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun updateProfile() {
+        try {
+            if (isOnline(this)) {
+                Log.e("updateProfile",intent.getStringExtra("firstName")!!)
+                Log.e("updateProfile",intent.getStringExtra("lastName")!!)
+                Log.e("updateProfile",intent.getStringExtra("phone_number")!!)
+                Log.e("updateProfile", userSelectedImage!!)
+                ApiRequest(
+                    this, ApiInitialize.initialize(ApiInitialize.LOCAL_URL).editUser(
+                        "Bearer ${getUserModel()!!.data.token}",
+                        editUserRequest(
+                            encrypt(intent.getStringExtra("firstName")!!),
+                            encrypt(intent.getStringExtra("lastName")!!),
+                            encrypt(intent.getStringExtra("phone_number")!!),
+                            userSelectedImage,
+                            "edituser",
+                        ),
+
+                        ), UPDATE_USER, true, this
+                )
+            }else {
+                showSnackBar(
+                    binding.root,
+                    getString(R.string.noInternet),
+                    ACTIONSNACKBAR.DISMISS
+                )
+                Log.e("Application", "offline")
+            }
+        } catch (e: Exception) {
+            Log.e("APIEXceptions", e.toString())
         }
     }
 
@@ -435,12 +512,14 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
                 tittle.text = "Success"
                 if(reason!=null){content.text = reason}
                 ok.setOnClickListener {
+                    val intent=Intent()
+                    setResult(RESULT_OK,intent)
                     alert.dismiss();
                     finish();
                 }
             }
             "rejected"->{
-                tittle.text = "Something went wrong"
+                tittle.text = "Alert!"
                 if(reason!=null){content.text = reason}
                 ok.setOnClickListener {
                     finish();

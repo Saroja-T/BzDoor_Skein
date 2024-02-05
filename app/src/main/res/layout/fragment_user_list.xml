@@ -11,10 +11,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
-        <include
-            android:id="@+id/userProfileView"
-            layout="@layout/activity_user_profileview"></include>
         <androidx.core.widget.NestedScrollView
             android:layout_marginTop="@dimen/_8sdp"
             android:layout_width="match_parent"
@@ -49,32 +45,156 @@
         </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fab"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="TODO">
 
-        <com.getbase.floatingactionbutton.AddFloatingActionButton
-            android:id="@+id/first"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/icon_req_alarm_"
-            app:fab_icon="@drawable/icon_req_alarm_">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clFab"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom|end">
 
-        </com.getbase.floatingactionbutton.AddFloatingActionButton>
-        <com.getbase.floatingactionbutton.AddFloatingActionButton
-            android:id="@+id/second"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/icon_req_alarm_"
-            app:fab_icon="@drawable/icon_users">
-        </com.getbase.floatingactionbutton.AddFloatingActionButton>
+        <!--This will be the parent Floating Action Button-->
+        <!--After the implementation the Floating Action Button at
+             the bottom right corner as we have constrained accordingly-->
+        <!--After clicking the above button the
+            following two buttons will pop up.
+             So this button is considered as parent FAB-->
+        <!--After opening the application it looks like regular
+            FAB but after user clicks it, it extends-->
+        <!--This functionality has been handled in the MainActivity.java-->
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/add_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:theme="@style/MyMaterialTheme"
+            app:icon="@drawable/user_add"
+            app:iconTint="@color/white"
+            app:backgroundTint="@color/app_color"
+            style="@style/Floating"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="visible"
+            />
 
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/close_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:theme="@style/MyMaterialTheme"
+            app:icon="@drawable/user_add"
+            app:iconTint="@color/white"
+            app:backgroundTint="@color/app_color"
+            style="@style/Floating1"
+            app:layout_constraintBottom_toTopOf="@+id/add_fab"
+            app:layout_constraintEnd_toEndOf="@+id/add_fab"
+            android:visibility="gone"
+            />
+
+        <!--Floating action button for add alarm-->
+        <!--Make sure that you are constraining this
+            button to the parent button-->
+        <!--Make sure to add backgroundTint attribute to match
+             the entire application color-->
+        <!--because after changing the base application theme the color
+             of the FAB is set Blue as default-->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/create_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/white"
+            app:fabSize="normal"
+            app:borderWidth="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/close_fab"
+            app:layout_constraintEnd_toEndOf="@+id/close_fab"
+            app:srcCompat="@drawable/add_user"/>
+
+        <!--Action name text for the add alarm button-->
+        <!--Make sure that you are constraining this
+            Text to the add Alarm FAB button-->
+        <TextView
+            android:id="@+id/add_alarm_action_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Create new user"
+            android:textColor="#2F2D2D"
+            android:textSize="@dimen/_13sdp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/create_user"
+            app:layout_constraintEnd_toStartOf="@+id/create_user"
+            app:layout_constraintTop_toTopOf="@+id/create_user" />
+
+        <!--Floating action button for add person-->
+        <!--Make sure that you are constraining this button
+            to the add Alarm FAB button-->
+        <!--Make sure to add backgroundTint attribute to match
+             the entire application color-->
+        <!--because after changing the base application theme
+             the color of the FAB is set Blue as default-->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/white"
+            app:fabSize="normal"
+            app:borderWidth="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/create_user"
+            app:layout_constraintEnd_toEndOf="@+id/create_user"
+            app:layout_constraintStart_toStartOf="@+id/create_user"
+            app:srcCompat="@drawable/create_user" />
+
+        <!--Action name text for the add person button-->
+        <!--Make sure that you are constraining this Text
+             to the add Person FAB button-->
+        <TextView
+            android:id="@+id/add_person_action_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Add existing user"
+            android:textColor="#2F2D2D"
+            android:textSize="@dimen/_13sdp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/add_user"
+            app:layout_constraintEnd_toStartOf="@+id/add_user"
+            app:layout_constraintTop_toTopOf="@+id/add_user" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--    <com.getbase.floatingactionbutton.FloatingActionsMenu-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/fab"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:layout_marginEnd="@dimen/_20sdp"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        android:contentDescription="TODO">-->
+
+<!--        <com.getbase.floatingactionbutton.AddFloatingActionButton-->
+<!--            android:id="@+id/first"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@drawable/icon_req_alarm_"-->
+<!--            app:src="@drawable/icon_req_alarm_">-->
+
+<!--        </com.getbase.floatingactionbutton.AddFloatingActionButton>-->
+<!--        <com.getbase.floatingactionbutton.AddFloatingActionButton-->
+<!--            android:id="@+id/second"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@drawable/icon_req_alarm_"-->
+<!--            app:src="@drawable/icon_users">-->
+<!--        </com.getbase.floatingactionbutton.AddFloatingActionButton>-->
+
+<!--    </com.getbase.floatingactionbutton.FloatingActionsMenu>-->
 
 
 </FrameLayout>

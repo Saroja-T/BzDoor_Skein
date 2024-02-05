@@ -37,13 +37,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
-                    android:scaleType="centerCrop"
                     android:paddingLeft="@dimen/_20sdp"
                     android:paddingRight="@dimen/_20sdp"
                     android:layout_marginTop="@dimen/_20sdp"
                     android:layout_marginBottom="@dimen/_20sdp"
-                    android:src="@drawable/dummy_proflie"
                     android:visibility="visible"
+                    android:src="@drawable/dummy_profile"
                     app:layout_constraintBottom_toBottomOf="parent"
                   />
                 <!-- Camera Icon -->
@@ -225,7 +224,7 @@
 
 
             <com.busydoor.app.customMethods.MyCustomButton
-                android:id="@+id/btn_register"
+                android:id="@+id/btn_update"
                 android:layout_width="@dimen/_290sdp"
                 android:layout_height="@dimen/_35sdp"
                 android:layout_gravity="center"

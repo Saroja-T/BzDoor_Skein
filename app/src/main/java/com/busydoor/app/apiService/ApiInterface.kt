@@ -1,5 +1,6 @@
 package com.busydoor.app.apiService
 
+import com.busydoor.app.model.AcceptOffsiteRes
 import com.busydoor.app.model.AddUserToPremise
 import com.busydoor.app.model.AttendanceResponse
 import com.busydoor.app.model.EmitterDetailsRespons
@@ -9,11 +10,15 @@ import com.busydoor.app.model.PremiseUserList
 import com.busydoor.app.model.SendRequestOffsiteResponse
 import com.busydoor.app.model.RequestAllOffsiteResponse
 import com.busydoor.app.model.StaffCountResponse
+import com.busydoor.app.model.StaffGraphDetails
 import com.busydoor.app.model.StaffGraphcount
 import com.busydoor.app.model.StaffListOnDate
+import com.busydoor.app.model.UpdateUserStatus
 import com.busydoor.app.model.UserActivities
+import com.busydoor.app.model.UserDetails
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -35,7 +40,7 @@ interface ApiInterface {
     fun userLoginFunction(
         @Field("phone_number") first_name: String,
         @Field("device_type") device_type: String,
-        @Field("device_token") device_token: String,
+        @Field("fcm_token") device_token: String,
         @Field("time_zone") time_zone: String,
     ): Call<ResponseBody>
     @FormUrlEncoded
@@ -46,21 +51,13 @@ interface ApiInterface {
         @Field("status") status: String,
         @Field("premise_id") premiseId: String,
         @Field("user_id") userId: String
-    ): Call<AddUserToPremise>
+    ): Call<UpdateUserStatus>
 
     // Function for registering a user in the application
-    @FormUrlEncoded
     @Headers("Accept:application.json")
     @POST("user/register")
     fun userRegisterFunction(
-        @Field("phone_number") phone_number: String,
-        @Field("first_name") first_name: String,
-        @Field("last_name") last_name: String,
-        @Field("access_level") access_level: String,
-        @Field("device_type") device_type: String,
-        @Field("device_token") device_token: String,
-        @Field("time_zone") time_zone: String,
-        @Field("type") type: String,
+       @Body request: CommonRegistrationRequest
     ): Call<ResponseBody>
 
     // Function to get home data
@@ -88,6 +85,21 @@ interface ApiInterface {
         @Query("premise_id") premise_id: String,
         @Query("date") date: String
     ): Call<HomeDataResponse>
+    @Headers("Accept:application/json")
+    @GET("user/get7daysstatistics")
+    fun staffGraphOn7days(
+        @Header("Authorization") inToken: String,
+        @Query("premise_id") premise_id: String,
+        @Query("enddate") date: String
+    ): Call<StaffGraphDetails>
+    @Headers("Accept:application/json")
+    @GET("user/get7daysstatistics")
+    fun staffDetailGraphOn7days(
+        @Header("Authorization") inToken: String,
+        @Query("premise_id") premise_id: String,
+        @Query("enddate") date: String,
+        @Query("user_id") userId: String
+    ): Call<StaffGraphDetails>
 
 //
 //    // Function to get bar graph data details
@@ -144,21 +156,13 @@ interface ApiInterface {
 //
 //
 //
-//    // Function to get user access data
-//    @FormUrlEncoded
-//    @Headers("Accept:application/json")
-//    @POST("user/useraccess")
-//    fun userAccess(
-//        // @Header("Authorization") inToken: String,
-//        @Field("user_id") id: String,
-//    ): Call<UserAccessData>
 //
-//    // Function to get user lists
-//    @Headers("Accept:application/json")
-//    @GET("user/userPremiseLinkData")
-//    fun getUserLists(
-//        @Header("Authorization") inToken: String,
-//    ): Call<UserListData>
+    // Function to get user details
+    @Headers("Accept:application/json")
+    @GET("user/getuserdetails")
+    fun getUserDetail(
+        @Header("Authorization") inToken: String,
+    ): Call<UserDetails>
 //
 //    // Function to get user lists by premise ID
 //    @FormUrlEncoded
@@ -170,31 +174,20 @@ interface ApiInterface {
 //    ): Call<UserListData>
 //
     // Function to create a user
-    @FormUrlEncoded
     @Headers("Accept:application/json")
     @POST("user/register")
     fun createUser(
         @Header("Authorization") inToken: String,
-        @Field("phone_number") phone_number: String,
-        @Field("first_name") first_name: String,
-        @Field("last_name") last_name: String,
-        @Field("access_level") access_level: String,
-        @Field("type") type: String,
-        @Field("premise_id") id: String,
-        @Field("status") userStatus: String,
+        @Body request:UserRegistrationRequest
     ): Call<ResponseBody>
-//
-//    // Function to update a user
-//    @FormUrlEncoded
-//    @Headers("Accept:application/json")
-//    @PUT("user/updateUser")
-//    fun updateUser(
-//        @Header("Authorization") inToken: String,
-//        @Field("user_id") id: String,
-//        @Field("status") status: String,
-//        @Field("premise_id") premiseId: String,
-//    ): Call<ResponseBody>
-//
+
+    @Headers("Accept:application/json")
+    @PUT("user/edituserdetails")
+    fun editUser(
+        @Header("Authorization") inToken: String,
+        @Body request:editUserRequest
+    ): Call<ResponseBody>
+
     // Function to link a user to a premise
     @FormUrlEncoded
     @Headers("Accept:application/json")
@@ -230,12 +223,22 @@ interface ApiInterface {
     ): Call<RequestAllOffsiteResponse>
 
     @Headers("Accept:application/json")
-    @GET("user/getRequestOffsite")
+    @GET("user/getuseractivitiesoffsitelist")
     fun getYourActivitiesList(
         @Header("Authorization") inToken: String,
         @Query("premise_id") premiseId: String,
         @Query("date") date: String,
     ): Call<UserActivities>
+
+    @FormUrlEncoded
+    @Headers("Accept:application/json")
+    @PUT("user/approverejectoffsite")
+    fun setPermissionoffsite(
+        @Header("Authorization") inToken: String,
+        @Field("staff_time_permission_id") permissionId: String,
+        @Field("time_permission_status") permissionStatus: String,
+        @Field("comments") comments: String,
+    ): Call<AcceptOffsiteRes>
 
     @Headers("Accept:application/json")
     @GET("user/getstaffcount")
@@ -296,5 +299,35 @@ interface ApiInterface {
         @Field("device_type") deviceType: String
     ): Call<AttendanceResponse>
 
-
 }
+data class UserRegistrationRequest(
+    val first_name: String,
+    val last_name: String,
+    val phone_number: String,
+    val photo: String, // Assuming this is a Base64-encoded image
+    val access_level: String,
+    val premise_id: String,
+    val status: String,
+    val device_type: String,
+    val device_token: String,
+    val time_zone: String,
+    val type: String
+)
+data class CommonRegistrationRequest(
+    val first_name: String,
+    val last_name: String,
+    val phone_number: String,
+    val photo: String, // Assuming this is a Base64-encoded image
+    val access_level: String,
+    val device_type: String,
+    val device_token: String,
+    val time_zone: String,
+    val type: String
+)
+data class editUserRequest(
+    val first_name: String,
+    val last_name: String,
+    val phone_number: String,
+    val photo: String,
+    val type: String
+)

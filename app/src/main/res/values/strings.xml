@@ -14,6 +14,9 @@
 
     <!--shreference-->
     <string name="isLogin">isLogin</string>
+    <string name="Active">Activate</string>
+    <string name="InActive">In-Activate</string>
+    <string name="UserStatus">"User Status (activate/In-Activate)"</string>
     <string name="isServerRun">isServiceRun</string>
     <string name="isExample1">isExample1</string>
     <string name="isExample3">isExample3</string>
@@ -39,8 +42,8 @@
     <!--test mate-->
     <string name="change_location"><u>Change location</u></string>
     <string name="waitingPermissionAccess">Waiting for the administrator to provide you the access.</string>
-    <string name="addUser">Add user</string>
-    <string name="createUser">Create user</string>
+    <string name="addUser">Add an existing user</string>
+    <string name="createUser">Create a new user</string>
     <string name="title_activity_dashboard_drawer">DashboardDrawerActivity</string>
     <string name="drawerOpen">Open navigation drawer</string>
     <string name="drawerClose">Close navigation drawer</string>
@@ -119,4 +122,12 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
+    <!---Error Message-->
+    <string name="error_empty_first_name">First name cannot be empty.</string>
+    <string name="error_short_first_name">First name should be at least 3 characters long.</string>
+    <string name="error_last_name_required">Last name should not be empty and must have at least one character.</string>
+    <string name="error_spinner_required">Please select an option.</string>
+    <string name="validMobileNumber">Please enter valid mobile number</string>
+    <string name="title_activity_staff_detail_graph">StaffDetailGraphActivity</string>
 </resources>

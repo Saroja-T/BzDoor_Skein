@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.busydoor.app.activity.CryptLib2
 import com.busydoor.app.adapter.YourActivityListAdapter
@@ -16,6 +17,7 @@ import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
+import com.busydoor.app.customMethods.ACTIVITY_PREMISE_ID
 import com.busydoor.app.customMethods.ALL_REQUEST_OFFSITE
 import com.busydoor.app.customMethods.ENCRYPTION_IV
 import com.busydoor.app.customMethods.PrefUtils
@@ -27,6 +29,7 @@ import com.busydoor.app.customMethods.key
 import com.busydoor.app.databinding.FragmentYourActivityBinding
 import com.busydoor.app.model.UserActivities
 import com.busydoor.app.model.UserModel
+import com.busydoor.app.viewmodel.SharedViewModel
 import com.google.gson.Gson
 
 
@@ -38,7 +41,7 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
     open lateinit var objSharedPref: PrefUtils
     var cryptLib: CryptLib2? = null
     private var requestAllDataGet: UserActivities? = null
-
+    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +68,14 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
         userSelectedDate= activity?.intent?.getStringExtra("userSelectDate")
 //        displayCurrentDate = convertDate(userSelectedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
 //        binding.offsiteSelectedDate.text= displayCurrentDate
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
+        sharedViewModel.sharedData.observe(viewLifecycleOwner, { data ->
+            // Handle changes to the shared data in TabBarFragment
+            // The 'data' variable contains the updated value
+            Log.e("sharedData1",data)
+            getAllActivities(data)
+        })
         return root
     }
 
@@ -78,7 +89,7 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
-//        getAllActivities("2024-01-09")
+//        getAllActivities(globalDate)
 
     }
 
@@ -97,11 +108,13 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
         // Create adapter object
         binding.rvYourActivities.adapter = YourActivityListAdapter
             binding.rvYourActivities.visibility = View.VISIBLE
-        YourActivityListAdapter.notifyDataSetChanged()
+             binding.activityNodataView.visibility = View.GONE
+             YourActivityListAdapter.notifyDataSetChanged()
 
         } else {
-//            binding.premiseNoData.visibility = View.VISIBLE
-            binding.rvYourActivities.visibility = View.GONE
+            binding.activityNodataView.visibility = View.VISIBLE
+             binding.noData.text="No activities were found for this date"
+             binding.rvYourActivities.visibility = View.GONE
         }
     }
 
@@ -115,7 +128,7 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
                     requireActivity(),
                     ApiInitialize.initialize(ApiInitialize.LOCAL_URL).getYourActivitiesList(
                         "Bearer ${getUserModel()!!.data.token}",
-                        encrypt("1"),
+                        encrypt(ACTIVITY_PREMISE_ID),
                         encrypt(date)
                     ),
                     ALL_REQUEST_OFFSITE,
@@ -164,6 +177,9 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
                         Log.e("zzzzzzzz",requestAllDataGet!!.data.toString())
                     } else {
                         // no data found
+                        binding.activityNodataView.visibility = View.VISIBLE
+                        binding.rvYourActivities.visibility = View.GONE
+
                         Log.e("zzzzzzzz","no data found")
 
                     }

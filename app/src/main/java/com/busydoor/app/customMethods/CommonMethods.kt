@@ -2,6 +2,7 @@ package com.busydoor.app.customMethods
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.*
@@ -13,6 +14,9 @@ import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDialog
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
+import com.busydoor.app.viewmodel.ProfileViewModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -181,3 +185,4 @@ fun calculateDateDifference(pastDateString: String,): Long {
     println("differenceInDays $differenceInDays")
     return differenceInDays
 }
+

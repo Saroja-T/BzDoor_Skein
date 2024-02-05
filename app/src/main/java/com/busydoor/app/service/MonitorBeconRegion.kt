@@ -18,7 +18,6 @@ import com.busydoor.app.customMethods.STAFF_BLUETOOTH_LOG
 import com.busydoor.app.customMethods.key
 import com.busydoor.app.R
 import com.busydoor.app.activity.CryptLib2
-import com.busydoor.app.activity.MacAddressActivity
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequestForBecon
 import com.busydoor.app.customMethods.PrefUtils
@@ -120,26 +119,6 @@ class MonitorBeaconsRegion(beaconManagerParam: BeaconManager,
         }
     }
 
-    private fun sendNotification(notificationText: String) {
-        if(isNotificationPermissionGranted(this.pagecontext)) {
-            count += 1
-            val contentText = notificationText + count.toString()
-            val builder = NotificationCompat.Builder(pagecontext, "bdapp-notification-id")
-                .setContentTitle("Business-i")
-                .setContentText(contentText)
-                .setSmallIcon(R.drawable.app_icon_notification)
-            val stackBuilder = TaskStackBuilder.create(pagecontext)
-            stackBuilder.addNextIntent(Intent(pagecontext, MacAddressActivity::class.java))
-            val resultPendingIntent = stackBuilder.getPendingIntent(
-                0,
-                PendingIntent.FLAG_UPDATE_CURRENT + PendingIntent.FLAG_IMMUTABLE
-            )
-            builder.setContentIntent(resultPendingIntent)
-            val notificationManager =
-                pagecontext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(1, builder.build())
-        }
-    }
 
     // Check if the notification permission is granted
     private fun isNotificationPermissionGranted(context: Context): Boolean {

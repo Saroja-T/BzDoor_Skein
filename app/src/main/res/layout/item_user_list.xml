@@ -44,7 +44,7 @@
                     android:visibility="visible"
                     android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_marginEnd="@dimen/_6sdp"
-                    tools:text="Active" />
+                    tools:text="Activate" />
             </LinearLayout>
 
             <LinearLayout

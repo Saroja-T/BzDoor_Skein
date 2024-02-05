@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/first_fragment"
+        android:title="Home"
+        android:icon="@drawable/icon_home"/>
+
+    <item
+        android:id="@+id/second_fragment"
+        android:title="Statistics"
+        android:icon="@drawable/icon_statistics"
+        />
+    <item
+        android:id="@+id/fourth_fragment"
+        android:title="User"
+        android:icon="@drawable/icon_users"/>
+    <item
+        android:id="@+id/fifth_fragment"
+        android:title="Activities"
+        android:icon="@drawable/icon_activity"/>
+
+</menu>

@@ -25,7 +25,8 @@
             android:layout_gravity="center"
             android:text="Fri -13th Oct,2023"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textStyle="bold"
+            android:textSize="@dimen/_13sdp" />
         <ImageView
             android:padding="@dimen/_1sdp"
             android:layout_width="@dimen/_20sdp"

@@ -154,8 +154,11 @@ class BeaconScanPermissionsActivity: PermissionsActivity()  {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-
+        // Add your custom behavior here
+        // For example, you can navigate to another activity or finish the current activity
+        // super.onBackPressed() will still finish the current activity by default
+        Log.d(TAG, "Back button pressed")
+        // Add your custom behavior here
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -237,6 +240,7 @@ class BeaconScanPermissionsActivity: PermissionsActivity()  {
 
         setContentView(layout)
     }
+
 
     private fun dp(value: Int): Int {
         return (value * scale + 0.5f).toInt()

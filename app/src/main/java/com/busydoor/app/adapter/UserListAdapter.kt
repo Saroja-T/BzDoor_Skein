@@ -16,7 +16,11 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
+import com.busydoor.app.customMethods.Activate
+import com.busydoor.app.customMethods.ActiveInActivate
+import com.busydoor.app.customMethods.InActivate
 import com.busydoor.app.customMethods.MyCustomTextView
+import com.busydoor.app.customMethods.NameConvertion
 import com.busydoor.app.interfaceD.HomeClick
 import com.busydoor.app.model.PremiseUserList
 import de.hdodenhof.circleimageview.CircleImageView
@@ -27,24 +31,19 @@ class UserListAdapter(
     val context: Context,
     private val UsersList: ArrayList<PremiseUserList.Data.Staffdetails>,
     private val userId:String,
-    private var homeClick: HomeClick
+    private var homeClick: HomeClick,
+    private var isAdmin: String
 //    var listener: NotificationsFragment.OnItemClickListener
 ):RecyclerView.Adapter<UserListAdapter.InnerViewHolder>() {
-
-
 
     class InnerViewHolder(View: View):RecyclerView.ViewHolder(View) {
 
         // Add a variable to track if the switch was clicked programmatically
-        var isSwitchClickedProgrammatically = false
-        val popupMenu = PopupMenu(View.context, View)
 
         val userImage: CircleImageView? = View.findViewById(R.id.PremiseStaffImages)
         val userStatus: GifImageView? = View.findViewById(R.id.imageViewCameraIcon)
         val userActive: ImageView? = View.findViewById(R.id.user_Active)
         val userName: MyCustomTextView? = View.findViewById(R.id.tv_staff_name)
-        val cardView: CardView? = View.findViewById(R.id.userCardView)
-
 
         fun bind(
             position: Int,
@@ -82,11 +81,10 @@ class UserListAdapter(
         circularProgressDrawable.backgroundColor= R.color.app_color
         circularProgressDrawable.start()
 
-        if(userId != model.userId.toString()){holder.userActive!!.visibility= View.VISIBLE}else{
+        if(userId != model.userId.toString() && isAdmin.toLowerCase()=="admin"){holder.userActive!!.visibility= View.VISIBLE}else{
             holder.userActive!!.visibility= View.GONE
         }
         // Set click listener for the userActive ImageView/Button
-        // Set click listener for the userActive ImageView/Button in onBindViewHolder
         holder.userActive?.setOnClickListener { view ->
             if(userId != model.userId.toString()){
             showActivePopupMenu(view,homeClick,model.userActiveStatus!!,position)}
@@ -101,11 +99,13 @@ class UserListAdapter(
         }else{
             Glide.with(context)
                 .load(model.photo)
+                .timeout(1000)
                 .placeholder(circularProgressDrawable)
                 .into(holder.userImage!!)
         }
 
-        holder.userName!!.text= model.firstName+" "+model.lastName
+        val fullname=model.firstName+" "+model.lastName
+        holder.userName!!.text= NameConvertion().truncateText(fullname)
 //        Log.e("adapterview",model.status.toString()).toString()
         when (model.userStatus) {
             "in" -> {
@@ -129,21 +129,21 @@ class UserListAdapter(
     private fun showActivePopupMenu(view: View,homeClick: HomeClick,activeStatus:String,position: Int) {
         val popupMenu = PopupMenu(view.context, view)
         if(activeStatus=="true"){
-            popupMenu.menu.add("Inactive")
+            popupMenu.menu.add(InActivate)
 
         }else if(activeStatus=="false"){
-            popupMenu.menu.add("Active")
+            popupMenu.menu.add(Activate)
         }
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.title) {
-                "Active" -> {
+                Activate -> {
                     homeClick.homePostionClick(position)
-                    Toast.makeText(view.context, "User is Active ${activeStatus}", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(view.context, "User is Active ${activeStatus}", Toast.LENGTH_SHORT).show()
                     true
                 }
-                "Inactive" -> {
+                InActivate -> {
                     homeClick.homePostionClick(position)
-                    Toast.makeText(view.context, "User is InActive $activeStatus", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(view.context, "User is InActive $activeStatus", Toast.LENGTH_SHORT).show()
                     true
                 }
                 else -> false

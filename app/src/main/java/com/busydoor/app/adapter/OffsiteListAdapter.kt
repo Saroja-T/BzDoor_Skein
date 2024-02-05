@@ -54,6 +54,7 @@ class OffsiteListAdapter(
         if(model.commentsByRequester !=null){
             holder.comments.text =model.commentsByRequester;
         }
+
         if(model.timePermissionReason !=null){
             if(model.timePermissionReason =="personal"){
                 holder.requestType.text = "Request "+model.timePermissionReason+" time"
@@ -76,7 +77,7 @@ class OffsiteListAdapter(
                 if(model.commentsByApprover !=null && model.commentsByApprover !=""){
                     holder.viewReasonText.visibility= View.VISIBLE
                 }
-                holder.approvedByDateTime.text= model.approvedBy+" have accepted on "+convertDate(model.approvedDate,"yyyy-MM-dd","MMM',' dd")+"|"+convertDate(model.approvedTime,"HH:mm:ss","hh:mm:a")
+                holder.approvedByDateTime.text= model.approverFirstName+" has accepted on "+convertDate(model.approvedDate,"yyyy-MM-dd","MMM',' dd")+"|"+convertDate(model.approvedTime,"HH:mm:ss","hh:mm:a")
                 holder.approvalStatus.setTextColor(ContextCompat.getColor(context, R.color.approved))
                 holder.approvalStatus.text= model.timePermissionStatus.toString().toUpperCase(Locale.ROOT)
             }
@@ -87,7 +88,11 @@ class OffsiteListAdapter(
                 if(model.commentsByApprover !=null && model.commentsByApprover !=""){
                     holder.viewReasonText.visibility= View.VISIBLE
                 }
-                holder.approvedByDateTime.text= model.approvedBy+" have rejected on "+convertDate(model.approvedDate,"yyyy-MM-dd","MMM',' dd")+"|"+convertDate(model.approvedTime,"HH:mm:ss","hh:mm:a")
+                if(model.approverLastName.toString() ==null||model.approverFirstName.toString() ==""){
+                    holder.approvedByDateTime.text= "Your has been rejected automatically "+convertDate(model.approvedDate,"yyyy-MM-dd","MMM',' dd")+"|"+convertDate(model.approvedTime,"HH:mm:ss","hh:mm:a")
+                }else{
+                    holder.approvedByDateTime.text= model.approverFirstName+" has rejected on "+convertDate(model.approvedDate,"yyyy-MM-dd","MMM',' dd")+"|"+convertDate(model.approvedTime,"HH:mm:ss","hh:mm:a")
+                }
                 holder.approvalStatus.setTextColor(ContextCompat.getColor(context, R.color.reject))
                 holder.approvalStatus.text=model.timePermissionStatus.toString().toUpperCase(Locale.ROOT)
             }

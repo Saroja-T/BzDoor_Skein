@@ -5,13 +5,17 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+
 
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -35,10 +39,14 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-<!--    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
 
     <uses-feature
         android:name="android.hardware.bluetooth"
@@ -56,19 +64,25 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/app_icon_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:theme="@style/AppTheme"
         tools:replace="android:allowBackup"
         tools:targetApi="31">
+
+        <activity
+            android:name=".activity.StaffDetailGraphActivity"
+            android:exported="false" />
+
         <activity
             android:name=".activity.StaffDetailsOnWeekActivity"
             android:exported="false" />
         <activity
             android:name=".activity.BottomNavigationBarActivity"
             android:exported="false"
-            android:label="@string/title_activity_bottom_navigation" />
+            android:label="@string/title_activity_bottom_navigation"
+            android:theme="@style/AppTheme" />
         <activity
-        android:name=".activity.EditProfileActivity"
-        android:exported="true" />
+            android:name=".activity.EditProfileActivity"
+            android:exported="true" />
         <activity
             android:name=".activity.RequestOffsiteActivity"
             android:exported="false" />
@@ -83,9 +97,6 @@
             android:exported="false" />
         <activity
             android:name=".activity.CreateNewUserActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.SignupActivity"
             android:exported="false" />
         <activity
             android:name=".activity.RegisterActivity"
@@ -111,6 +122,7 @@
         <activity
             android:name=".activity.BeaconScanPermissionsActivity"
             android:exported="true" />
+
         <service
             android:name=".fcm.MyFirebaseMessagingService"
             android:exported="true">
@@ -118,7 +130,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name="org.altbeacon.beacon.service.BeaconService"
             android:exported="false">
@@ -133,6 +144,17 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/icon_req_alarm_" />
+
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

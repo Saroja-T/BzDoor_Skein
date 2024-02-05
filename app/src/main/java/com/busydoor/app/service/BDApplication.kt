@@ -18,7 +18,6 @@ import com.busydoor.app.customMethods.STAFF_BLUETOOTH_LOG
 import com.busydoor.app.customMethods.STAFF_BLUETOOTH_OUT
 import com.busydoor.app.customMethods.apiTriggered
 import com.busydoor.app.activity.CryptLib2
-import com.busydoor.app.activity.MacAddressActivity
 import com.busydoor.app.activity.SplashActivity
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequestForBecon
@@ -70,7 +69,7 @@ class BDApplication: Application() {
         beaconManager = BeaconManager.getInstanceForApplication(this)
         beaconManager.beaconParsers.clear()
         beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(BeaconParser.EDDYSTONE_UID_LAYOUT))
-        startMyOwnForeground("bsboss")
+        startMyOwnForeground("business-i")
         beaconManager.setEnableScheduledScanJobs(false)
         beaconManager.backgroundBetweenScanPeriod = 60000
         beaconManager.backgroundScanPeriod = 1100
@@ -169,7 +168,7 @@ class BDApplication: Application() {
     fun startMyOwnForeground(message: String) {
         objSharedPref!!.putBoolean("isServiceRun", true)
         val builder = Notification.Builder(this, "BDApp")
-        builder.setSmallIcon(R.drawable.app_icon_foreground)
+        builder.setSmallIcon(R.drawable.app_icon_notification)
         builder.setContentTitle("Bi Service to Auto Check-In and Check-Out")
         val intent = Intent(this, SplashActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(

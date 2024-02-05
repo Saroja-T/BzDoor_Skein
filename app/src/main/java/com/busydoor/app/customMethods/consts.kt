@@ -26,7 +26,7 @@ const val USER_CONFIG_DATA=15
 const val USER_ACCESSS=15
 const val STATUS_GRAPH_DATA =18
 const val USER_LIST_DATA =19
-const val ATTENDANCE =23
+const val GET_USERDETAIL =23
 const val QR_RESPONSE =24
 const val BEACON_DETAILS =25
 const val STAFF_BLUETOOTH_LOG= 26
@@ -35,7 +35,7 @@ const val REQUEST_OFFSITE= 28
 const val ALL_REQUEST_OFFSITE= 29
 
 
-const val SerachUSER_LIST_DATA =20
+const val AcceptRejectOffsite=20
 const val UPDATE_USER =21
 const val ADD_USER =22
 var ADD_USER_RESPONSE =1
@@ -67,10 +67,22 @@ const val key = "12345678901234561234567890123456"
 const val ENCRYPTION_IV = "12345678901234561234567890123456"
 var END_DATE = ""
 var DATE_OPTION = ""
+var ACTIVITY_DATE = ""
+var ACTIVITY_PREMISE_ID = ""
 var DEVICE_TYPE: String = "Android"
 var forceResendingTokenGbl: PhoneAuthProvider.ForceResendingToken? =null
 lateinit var activity: Activity
 lateinit var gContext:Context
 var apiTriggered = true
 var globalDate =""
+var userSelectedImage =""
+var Activate ="Activate"
+var InActivate ="In-Activate"
+var ActiveInActivate ="Activate/In-Activate User"
+var donutStatusValue: String = ""
+var isRefresh: Boolean = false
+
+
+
+
 

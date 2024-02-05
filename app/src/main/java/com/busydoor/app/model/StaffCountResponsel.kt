@@ -12,16 +12,22 @@ data class StaffCountResponse (
 ){
     data class Data (
 
-        @SerializedName("userdetails"    ) var userdetails    : Userdetails?    = Userdetails(),
-        @SerializedName("premisedetails" ) var premisedetails : Premisedetails? = Premisedetails(),
-        @SerializedName("count"          ) var count          : Count?          = Count()
+        @SerializedName("userdetails"    ) var userDetails    : Userdetails?    = Userdetails(),
+        @SerializedName("premisedetails" ) var premiseDetails : Premisedetails? = Premisedetails(),
+        @SerializedName("count"          ) var count          : Count?          = Count(),
+        @SerializedName("checkedin_count") var checkInCount: String? = null,
+        @SerializedName("checkedout_count") var checkOutCount: String? = null,
+        @SerializedName("offline_count") var offlineCount: String? = null,
 
     ) {
 
         data class Count(
 
             @SerializedName("total_count") var totalCount: Int? = null,
-            @SerializedName("total_present_count") var totalPresentCount: Int? = null
+            @SerializedName("total_present_count") var totalPresentCount: Int? = null,
+            @SerializedName("checked_in_count") var checkedInCount: Int? = null,
+            @SerializedName("checked_out_count") var checkedOutCount: Int? = null,
+            @SerializedName("offline_count") var offlineCount: Int? = null
 
         )
 
@@ -31,6 +37,7 @@ data class StaffCountResponse (
             @SerializedName("user_first_name") var userFirstName: String? = null,
             @SerializedName("user_last_name") var userLastName: String? = null,
             @SerializedName("user_image") var userImage: String? = null,
+            @SerializedName("user_access_level") var userAccessLevel: String? = null,
             @SerializedName("user_status") var userStatus: String? = null
 
         )

@@ -13,6 +13,8 @@ object ApiInitialize {
    private const val BASE_URL ="https://bzboss.app/busydoor_api/public/"
 //   private const val BASE_URL ="https://demo.emeetify.com:5100/"
     const val LOCAL_URL = BASE_URL +"api/"
+    const val IMAGE_URL = BASE_URL +"uploads/"
+    const val DUMMY_IMAGE_URL = IMAGE_URL +"dummyuser.png"
     const val TERM_AND_CONDITION = BASE_URL +"term/condition"
     const val PRIVACY_POLIVY = BASE_URL +"privecy/policy"
     const val ABOUTS_US = BASE_URL +"about/us"
