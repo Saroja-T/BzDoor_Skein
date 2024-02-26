@@ -9,13 +9,14 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
-
 
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -42,6 +43,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
     <queries>
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
@@ -67,11 +69,9 @@
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup"
         tools:targetApi="31">
-
         <activity
             android:name=".activity.StaffDetailGraphActivity"
             android:exported="false" />
-
         <activity
             android:name=".activity.StaffDetailsOnWeekActivity"
             android:exported="false" />
@@ -79,7 +79,12 @@
             android:name=".activity.BottomNavigationBarActivity"
             android:exported="false"
             android:label="@string/title_activity_bottom_navigation"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name=".activity.BottomNavigationBarActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.EditProfileActivity"
             android:exported="true" />
@@ -88,7 +93,8 @@
             android:exported="false" />
         <activity
             android:name=".activity.LoginHomeActivity"
-            android:exported="false" />
+            android:exported="false" >
+        </activity>
         <activity
             android:name=".activity.OtpVerifyActivity"
             android:exported="false" />
@@ -106,7 +112,8 @@
             android:exported="false" />
         <activity
             android:name=".activity.DashboardActivity"
-            android:exported="false" />
+            android:exported="false" >
+        </activity>
         <activity
             android:name=".activity.SplashActivity"
             android:exported="true">
@@ -120,12 +127,18 @@
             android:name=".activity.PermissionsActivity"
             android:exported="true" />
         <activity
+            android:name=".activity.DialogActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.GpsDialogActivity"
+            android:exported="false"></activity>
+        <activity
             android:name=".activity.BeaconScanPermissionsActivity"
             android:exported="true" />
 
         <service
             android:name=".fcm.MyFirebaseMessagingService"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -145,7 +158,6 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/icon_req_alarm_" />
 
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -155,6 +167,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
     </application>
 
 </manifest>

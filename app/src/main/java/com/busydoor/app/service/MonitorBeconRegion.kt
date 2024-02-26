@@ -1,22 +1,16 @@
 package com.busydoor.app.service
 
-import android.app.Activity
 import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.text.TextUtils
 
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
 import com.busydoor.app.customMethods.ENCRYPTION_IV
 import com.busydoor.app.customMethods.STAFF_BLUETOOTH_LOG
 import com.busydoor.app.customMethods.key
-import com.busydoor.app.R
 import com.busydoor.app.activity.CryptLib2
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequestForBecon

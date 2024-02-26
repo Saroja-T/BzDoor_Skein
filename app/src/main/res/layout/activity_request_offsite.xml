@@ -23,6 +23,7 @@
                 android:layout_marginTop="@dimen/_15sdp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -44,10 +45,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="5dp"
-                android:layout_marginTop="@dimen/_13sdp">
+                android:layout_marginTop="@dimen/_10sdp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <RadioGroup
@@ -61,24 +62,30 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/app_color"
-                            android:padding="@dimen/_5sdp"
                             android:text="Offsite Work"
-                            android:textSize="20sp" />
+                            android:textSize="@dimen/_15sdp" />
 
                         <RadioButton
                             android:id="@+id/radioButtonPersonal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/app_color"
-                            android:padding="@dimen/_5sdp"
                             android:text="Personal"
-                            android:textSize="20sp" />
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:textSize="@dimen/_15sdp" />
                     </RadioGroup>
                 </LinearLayout>
             </LinearLayout>
-
+            <TextView
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:text="Enter the start and end time entry"
+                android:textSize="@dimen/_14sdp"/>
             <LinearLayout
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -86,7 +93,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:padding="@dimen/_5sdp"
                     android:orientation="vertical">
 
                     <TextView
@@ -94,7 +100,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:textSize="@dimen/_12sdp"
+                        android:textSize="@dimen/_13sdp"
                         android:textColor="@color/black"
                         android:padding="@dimen/_5sdp"
                         android:text="Start time" />
@@ -114,13 +120,13 @@
                             <com.busydoor.app.customMethods.MyCustomTextView
                                 android:id="@+id/etStartHour"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_35sdp"
+                                android:layout_height="@dimen/_45sdp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_weight="1"
                                 android:background="@drawable/rectangle_grey"
                                 android:gravity="center"
                                 android:text="00"
-                                android:textSize="24sp"
+                                android:textSize="@dimen/_20sdp"
                                 android:timePickerMode="spinner" />
 
                             <TextView
@@ -128,6 +134,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
+                                android:textSize="@dimen/_13sdp"
                                 android:text="hrs" />
                         </LinearLayout>
 
@@ -152,19 +159,20 @@
                             <com.busydoor.app.customMethods.MyCustomTextView
                                 android:id="@+id/etStartMins"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_35sdp"
+                                android:layout_height="@dimen/_45sdp"
                                 android:layout_weight="1"
                                 android:background="@drawable/rectangle_grey"
                                 android:ems="10"
                                 android:gravity="center"
                                 android:text="00"
-                                android:textSize="24sp" />
+                                android:textSize="@dimen/_20sdp" />
 
                             <TextView
                                 android:id="@+id/textView7"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
+                                android:textSize="@dimen/_13sdp"
                                 android:text="mins" />
                         </LinearLayout>
 
@@ -191,7 +199,7 @@
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/_9sdp"
+                                    android:textSize="@dimen/_13sdp"
                                     android:text="AM" />
                             </LinearLayout>
 
@@ -211,7 +219,7 @@
                                     android:layout_weight="1"
                                     android:textStyle="bold"
                                     android:textColor="@color/app_color"
-                                    android:textSize="@dimen/_9sdp"
+                                    android:textSize="@dimen/_13sdp"
                                     android:text="PM" />
                             </LinearLayout>
 
@@ -225,7 +233,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:padding="@dimen/_5sdp"
                     android:orientation="vertical">
 
                     <TextView
@@ -233,7 +240,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:textSize="@dimen/_12sdp"
+                        android:textSize="@dimen/_13sdp"
                         android:padding="@dimen/_5sdp"
                         android:textColor="@color/black"
                         android:text="End time" />
@@ -253,13 +260,13 @@
                             <com.busydoor.app.customMethods.MyCustomTextView
                                 android:id="@+id/et_end_hour"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_35sdp"
+                                android:layout_height="@dimen/_45sdp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_weight="1"
                                 android:background="@drawable/rectangle_grey"
                                 android:gravity="center"
                                 android:text="00"
-                                android:textSize="24sp"
+                                android:textSize="@dimen/_20sdp"
                                 android:timePickerMode="spinner" />
 
                             <TextView
@@ -267,6 +274,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
+                                android:textSize="@dimen/_13sdp"
                                 android:text="hrs" />
                         </LinearLayout>
 
@@ -291,19 +299,20 @@
                             <com.busydoor.app.customMethods.MyCustomTextView
                                 android:id="@+id/et_end_min"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_35sdp"
+                                android:layout_height="@dimen/_45sdp"
                                 android:layout_weight="1"
                                 android:background="@drawable/rectangle_grey"
                                 android:gravity="center"
                                 android:inputType="text"
                                 android:text="00"
-                                android:textSize="24sp" />
+                                android:textSize="@dimen/_20sdp" />
 
                             <TextView
                                 android:id="@+id/textView71"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
+                                android:textSize="@dimen/_13sdp"
                                 android:text="mins" />
                         </LinearLayout>
 
@@ -329,7 +338,7 @@
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/_9sdp"
+                                    android:textSize="@dimen/_13sdp"
                                     android:textStyle="bold"
                                     android:text="AM" />
                             </LinearLayout>
@@ -350,7 +359,7 @@
                                     android:layout_weight="1"
                                     android:textStyle="bold"
                                     android:textColor="@color/app_color"
-                                    android:textSize="@dimen/_9sdp"
+                                    android:textSize="@dimen/_13sdp"
                                     android:text="PM" />
                             </LinearLayout>
 
@@ -363,10 +372,17 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="47dp"
-                android:layout_marginTop="@dimen/_25sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:orientation="horizontal"
-                android:padding="@dimen/_2sdp">
+                android:layout_marginLeft="@dimen/_5sdp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Total offsite time - "
+                    android:textSize="@dimen/_14sdp"
+                    android:visibility="gone"
+                    android:gravity="center"/>
 
                 <TextView
                     android:id="@+id/offsiteTimeDifferHR"
@@ -375,7 +391,7 @@
                     android:layout_marginStart="@dimen/_3sdp"
                     android:text="00"
                     android:textColor="@color/app_color"
-                    android:textSize="34sp"
+                    android:textSize="@dimen/_30sdp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -387,7 +403,7 @@
                     android:gravity="bottom"
                     android:text="hrs"
                     android:textColor="@color/app_color"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/_13sdp" />
 
                 <TextView
                     android:id="@+id/offsiteTimeDifferMin"
@@ -396,7 +412,7 @@
                     android:layout_marginStart="@dimen/_3sdp"
                     android:text="00"
                     android:textColor="@color/app_color"
-                    android:textSize="34sp"
+                    android:textSize="@dimen/_30sdp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -408,20 +424,21 @@
                     android:gravity="bottom"
                     android:text="mins"
                     android:textColor="@color/app_color"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/_13sdp" />
 
             </LinearLayout>
             <LinearLayout
                 android:layout_marginTop="@dimen/_25sdp"
-                android:padding="@dimen/_2sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/_5sdp">
                 <TextView
                     android:id="@+id/commentsHeading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
+                    android:textSize="@dimen/_13sdp"
                     android:textColor="@color/black"
                     android:text="Enter comments" />
                 <LinearLayout
@@ -442,7 +459,7 @@
                         android:backgroundTint="@color/colorGreyLight"
                         android:background="@drawable/am_bg"
                         android:hint="Type here."
-                        android:textSize="@dimen/_8sdp"
+                        android:textSize="@dimen/_10sdp"
                         android:textStyle="italic"
                         android:src="@drawable/icon_calendartoday" />
                 </LinearLayout>
@@ -470,12 +487,15 @@
             android:elevation="@dimen/_3sdp"
             android:layout_marginStart="@dimen/_5sdp"
             android:textColor="@color/text_color"
+            android:textSize="@dimen/_13sdp"
             android:background="@drawable/button_shapes_with_white_color"
             style="?android:attr/borderlessButtonStyle"
             android:text="CANCEL" />
         <TextView
             android:layout_width="5dp"
-            android:layout_height="match_parent"></TextView>
+            android:layout_height="match_parent">
+
+        </TextView>
         <com.busydoor.app.customMethods.MyCustomButton
             android:id="@+id/offsiteSend"
             android:layout_weight="1"
@@ -485,6 +505,7 @@
             android:textStyle="bold"
             android:layout_gravity="center"
             android:elevation="@dimen/_3sdp"
+            android:textSize="@dimen/_13sdp"
             android:layout_marginEnd="@dimen/_5sdp"
             android:background="@drawable/button_shapes_with_app_color"
             android:layout_marginStart="@dimen/_3sdp"

@@ -42,6 +42,7 @@ interface ApiInterface {
         @Field("device_type") device_type: String,
         @Field("fcm_token") device_token: String,
         @Field("time_zone") time_zone: String,
+        @Field("device_id") deviceId: String,
     ): Call<ResponseBody>
     @FormUrlEncoded
     @Headers("Accept:application/json")
@@ -66,6 +67,16 @@ interface ApiInterface {
     fun homeDataGet(
         @Header("Authorization") inToken: String,
     ): Call<PremiseResponse>
+    @Headers("Accept:application/json")
+    @GET("user/forcelogout")
+    fun forceLogout(
+        @Query("phone_number") phone: String,
+    ): Call<ResponseBody>
+    @Headers("Accept:application/json")
+    @GET("user/logout")
+    fun logOut(
+        @Header("Authorization") token: String,
+    ): Call<AttendanceResponse>
 
 //    // Function to retrieve user activity data
 //    @FormUrlEncoded
@@ -322,6 +333,7 @@ data class CommonRegistrationRequest(
     val device_type: String,
     val device_token: String,
     val time_zone: String,
+    val device_id: String,
     val type: String
 )
 data class editUserRequest(

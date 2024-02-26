@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +37,7 @@ import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
+import com.busydoor.app.customMethods.DatePickerUtil
 import com.busydoor.app.customMethods.FileDownloader
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.STAFF_GRAPH_DATA
@@ -125,10 +127,26 @@ class StaffDetailsOnWeekActivity : ActivityBase(),ApiResponseInterface,HomeClick
 
 
         binding.calendarIcon.setOnClickListener {
-            showDatePicker(calSelectedDate)
+            // Show the DatePicker dialog
+            DatePickerUtil.showDatePicker(
+                this,
+                calSelectedDate
+            ) { formattedDate ->
+                // Update your UI or perform other actions with the selected date
+                calSelectedDate=formattedDate
+                    setUserSelectedDate(calSelectedDate)
+                    selectedMonthAndYear(calSelectedDate)
+                    // Update the TextView to display the selected date with the format
+                    binding.offsiteHeading.text= convertDate(formattedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
+                    binding.tvStaffSelectedLabel.text = convertDate(formattedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
+                    /*** Function to staffListGet when click datePicker select a date to call api request */
+                    staffGraphGet(formattedDate)
+                    staffListGet(formattedDate)
+            }
+
         }
         // Sample date string
-        binding.spinnerView.setOnClickListener {
+        binding.tvMonthSelector.setOnClickListener {
             showMonthYearPickerDialog(selecetdMonthYear)
         }
         binding.actionDownIcon.setOnClickListener {
@@ -403,58 +421,6 @@ class StaffDetailsOnWeekActivity : ActivityBase(),ApiResponseInterface,HomeClick
 
         startActivity(
             intent)
-    }
-
-    /*** Function to show date picker*/
-    @RequiresApi(Build.VERSION_CODES.R)
-    private fun showDatePicker(initialDate: String) {
-        // Parse the initial date string into year, month, and day
-        val initialCalendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-        try {
-            val parsedDate = dateFormat.parse(initialDate)
-            parsedDate?.let {
-                initialCalendar.time = it
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        // Create a Calendar instance for the current date
-        val calendar = Calendar.getInstance()
-
-        // Create a DatePickerDialog with initial year, month, and day
-        val datePickerDialog = DatePickerDialog(
-            this,
-            { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
-                // Create a new Calendar instance to hold the selected date
-                val selectedDate = Calendar.getInstance().apply {
-                    // Set the selected date using the values received from the DatePicker dialog
-                    set(year, monthOfYear, dayOfMonth)
-                }
-                // Create a SimpleDateFormat to format the date as "dd/MM/yyyy"
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-                // Format the selected date into a string
-                val formattedDate = dateFormat.format(selectedDate.time)
-                calSelectedDate=formattedDate
-                setUserSelectedDate(calSelectedDate)
-                selectedMonthAndYear(calSelectedDate)
-                // Update the TextView to display the selected date with the format
-                binding.offsiteHeading.text= convertDate(formattedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
-                binding.tvStaffSelectedLabel.text = convertDate(formattedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
-                /*** Function to staffListGet when click datePicker select a date to call api request */
-                staffGraphGet(formattedDate)
-                staffListGet(formattedDate)
-            },
-            initialCalendar.get(Calendar.YEAR),
-            initialCalendar.get(Calendar.MONTH),
-            initialCalendar.get(Calendar.DAY_OF_MONTH)
-        )
-        // Set the maximum date to the current date within the current month
-        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-        datePickerDialog.show()
     }
 
     private fun setUserSelectedDate(calSelectedDate: String) {

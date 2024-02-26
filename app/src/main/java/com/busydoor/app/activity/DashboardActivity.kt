@@ -1,27 +1,34 @@
 package com.busydoor.app.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.busydoor.app.R
 import com.busydoor.app.adapter.HomeListAdapter
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiInitialize.ABOUTS_US
-import com.busydoor.app.apiService.ApiInitialize.PRIVACY_POLIVY
+import com.busydoor.app.apiService.ApiInitialize.PRIVACY_POLICY
 import com.busydoor.app.apiService.ApiInitialize.TERM_AND_CONDITION
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
@@ -29,7 +36,9 @@ import com.busydoor.app.apiService.ApiResponseManager
 import com.busydoor.app.customMethods.ACTIVITY_PREMISE_ID
 import com.busydoor.app.customMethods.BEACON_DETAILS
 import com.busydoor.app.customMethods.CHECK_DIALOG_OPEN_CLOSE
+import com.busydoor.app.customMethods.FORCE_LOGOUT
 import com.busydoor.app.customMethods.HOME_DATA_GET
+import com.busydoor.app.customMethods.LOG_OUT
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.STAFF_BLUETOOTH_LOG
 import com.busydoor.app.customMethods.SUCCESS_CODE
@@ -38,6 +47,7 @@ import com.busydoor.app.customMethods.gContext
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.databinding.ActivityDashboardBinding
 import com.busydoor.app.interfaceD.HomeClick
+import com.busydoor.app.model.AttendanceResponse
 import com.busydoor.app.model.EmitterDetailsRespons
 import com.busydoor.app.model.PremiseResponse
 import com.busydoor.app.model.PremiseListModel
@@ -62,6 +72,7 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
         super.onCreate(savedInstanceState)
         /** assign the instance in setContentView... **/
         setContentView(binding.root)
+
         objSharedPref = PrefUtils(this)
         /** assign the instance in bd-application... **/
         bdApplication = application as BDApplication
@@ -79,7 +90,7 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
     }
 
     override fun homePostionClick(postion: Int) {
-        ACTIVITY_PREMISE_ID=homeDataGet!!.data[postion].premiseId.toString()
+        ACTIVITY_PREMISE_ID = homeDataGet!!.data[postion].premiseId.toString()
         startActivity(
             Intent(
                 this@DashboardActivity,
@@ -101,63 +112,15 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
         title.text= "Logout"
         content.text="Are your sure do you want to logout from the application?"
         cancel.setOnClickListener { alert.dismiss() }
-        val ok = view.findViewById<View>(com.busydoor.app.R.id.ok_action) as Button
+        val ok = view.findViewById<View>(R.id.ok_action) as Button
         ok.setOnClickListener {
-            //whatever you want
+            logOutApi()
+            alert.dismiss()
             objSharedPref.putBoolean(getString(R.string.isLogin), false)
-            if ((objSharedPref.getBoolean("isServiceRun"))) {
-                // stop the service after user log out..
-                stopBackgroundService()
-                staticBeaconOut()
-            }
-            // set empty to beaconMacAddress data for stop monitoring that regions...
-            objSharedPref.putString("beaconMacAddress", "")
-            // set empty to user data..
-            objSharedPref.putString(getString(R.string.userResponse), "")
             Log.e("QQQQQ=== ","logout "+objSharedPref.getString(getString(R.string.userResponse)).toString())
-            val getStartedIntent = Intent(this@DashboardActivity, LoginHomeActivity::class.java)
-            startActivity(getStartedIntent)
-            finishAffinity()
+
         }
         alert.show()
-    }
-
-    /** logout fun here... **/
-    @RequiresApi(Build.VERSION_CODES.R)
-    private fun logout() {
-        val builder = AlertDialog.Builder(this)
-        //set title for alert dialog
-        builder.setTitle("Logout")
-        //set message for alert dialog
-        builder.setMessage("Are you sure you want to logout?")
-        builder.setIcon(android.R.drawable.ic_dialog_alert)
-        //performing positive action
-        builder.setPositiveButton("Yes"){ _, _ ->
-            objSharedPref.putBoolean(getString(R.string.isLogin), false)
-            if ((objSharedPref.getBoolean("isServiceRun"))) {
-                // stop the service after user log out..
-                stopBackgroundService()
-                staticBeaconOut()
-            }
-            // set empty to beaconMacAddress data for stop monitoring that regions...
-            objSharedPref.putString("beaconMacAddress", "")
-            // set empty to user data..
-            objSharedPref.putString(getString(R.string.userResponse), "")
-            Log.e("QQQQQ=== ","logout "+objSharedPref.getString(getString(R.string.userResponse)).toString())
-            val getStartedIntent = Intent(this@DashboardActivity, LoginHomeActivity::class.java)
-            startActivity(getStartedIntent)
-            finishAffinity()
-        }
-
-        //performing negative action
-        builder.setNegativeButton("No"){ _, _ ->
-            dialog!!.dismiss()
-        }
-        // Create the AlertDialog
-        val alertDialog: AlertDialog = builder.create()
-        // Set other dialog properties
-        alertDialog.setCancelable(false)
-        alertDialog.show()
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -198,6 +161,32 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun logOutApi(
+    ) {
+        try {
+            if (isOnline(this)) {
+                ApiRequest(
+                    this,ApiInitialize.initialize(ApiInitialize.LOCAL_URL).logOut(
+                        "Bearer ${getUserModel()!!.data.token}"
+                    ), LOG_OUT, true,this
+                )
+            } else {
+                showSnackBar(
+                    binding.root,
+                    getString(R.string.noInternet),
+                    ACTIONSNACKBAR.DISMISS
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("APIEXceptions", e.toString())
+            showSnackBar(
+                binding.root,
+                e.toString(),
+                ACTIONSNACKBAR.DISMISS)
+        }
+
+    }
     /** restartApplication fun here Its used to start a BD-application ble_logic... **/
     @RequiresApi(Build.VERSION_CODES.R)
     fun restartApplication() {
@@ -221,7 +210,6 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
     /** this function is used to back the app... **/
     override fun onBackPressed() {
         super.onBackPressed()
-        appClose()
     }
 
     /** onResume function ... **/
@@ -229,6 +217,39 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
     override fun onResume() {
         super.onResume()
         gContext = this@DashboardActivity
+    }
+    fun showDialogeBox(context: Context,status: String) {
+        // Create and show the dialog using Intent to create an Activity:
+        val dialogIntent = Intent(context, DialogActivity::class.java)
+        dialogIntent.putExtra("dialogTitle", "Bluetooth Disabled")
+        dialogIntent.putExtra("dialogMessage", "Auto Check-In and Check-Out requires Bluetooth. Please enable it.")
+        dialogIntent.putExtra("isClose", status)
+        // Add flags to ensure the Activity is created on top of other activities and
+        // doesn't get added to the back stack:
+        dialogIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        context.startActivity(dialogIntent)
+    }
+    fun showGpsDialog(context: Context,Status:String) {
+        val intent = Intent(context, GpsDialogActivity::class.java)
+        intent.putExtra("dialogTitle", "Enable GPS")
+        intent.putExtra("dialogMessage", "Auto Check-In and Check-Out requires GPS. Enable GPS?")
+        intent.putExtra("isClose", Status)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        context.startActivity(intent)
+    }
+    private fun checkBatteryOptimizationPermissionss() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+            if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
+                val intent = Intent()
+                intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                intent.data = Uri.parse("package:$packageName")
+                startActivity(intent)
+            }
+            else{
+                com.busydoor.app.customMethods.objSharedPref.putBoolean("isBatteryOpt",true)
+            }
+        }
     }
 
     /** buildAlertMessageAppRestart function when its called after that logout the user... **/
@@ -277,10 +298,10 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
     override fun getApiResponse(apiResponseManager: ApiResponseManager<*>) {
         Log.e("setHomeOfferData","")
         when (apiResponseManager.type) {
-                    HOME_DATA_GET -> {
+            HOME_DATA_GET -> {
                 homeDataGet = apiResponseManager.response as PremiseResponse
                 if (homeDataGet!!.statusCode == SUCCESS_CODE) {
-                    Log.e("setHomeOfferDatass",homeDataGet!!.data.toString())
+                    Log.e("setHomeOfferDatass", homeDataGet!!.data.toString())
                     if (homeDataGet!!.data.isNotEmpty()) {
                         binding.PremiseListView.visibility = View.VISIBLE
                         binding.premiseNoData.visibility = View.GONE
@@ -294,24 +315,12 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
                 }
             }
 
-//            USER_ACCESSS -> {
-//                userAccessData = apiResponseManager.response as UserAccessData
-//                if (userAccessData!!.data.useraccess) {
-//                    isUserHavingAccess = true
-//                    homeDataGet()
-//                } else {
-//                    isUserHavingAccess = false
-//                    binding.rvOfferData.visibility = View.GONE
-//                    binding.tvHomeNoData.visibility = View.VISIBLE
-//                }
-
-//            }
-
             BEACON_DETAILS -> {
                 val emittersDetailsModel = apiResponseManager.response as EmitterDetailsRespons
                 if (emittersDetailsModel.statusCode == 200) {
                     if (emittersDetailsModel.data != null && emittersDetailsModel.data.size > 0) {
-                        val userIdRes = objSharedPref.getString(getString(R.string.userResponse)).toString()
+                        val userIdRes =
+                            objSharedPref.getString(getString(R.string.userResponse)).toString()
                         var arrayList = ""
                         var nameSpaceArrayList = ""
                         var instanceArrayList = ""
@@ -353,8 +362,38 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
                     }
                 }
             }
+
+            LOG_OUT -> {
+                var forceLogout = apiResponseManager.response as AttendanceResponse
+                if (forceLogout.statusCode == SUCCESS_CODE) {
+                    setUserDataEmptyAndNavigation()
+                    showMessage(forceLogout.message.toString())
+                } else {
+                    showMessage(forceLogout.message.toString())
+                }
+            }
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun setUserDataEmptyAndNavigation(){
+        // Once check Service run
+        if ((objSharedPref.getBoolean("isServiceRun"))) {
+            // stop the service after user log out..
+            stopBackgroundService()
+            staticBeaconOut()
+        }
+        // set empty to beaconMacAddress data for stop monitoring that regions...
+        objSharedPref.putString("beaconMacAddress", "")
+        // set empty to user data.. and deviceId
+        objSharedPref.putString(getString(R.string.userResponse), "")
+        objSharedPref.putString("deviceId", "")
+        // Navigate to Login Page
+        val getStartedIntent = Intent(this@DashboardActivity, LoginHomeActivity::class.java)
+        startActivity(getStartedIntent)
+        finishAffinity()
+    }
+
 
     /** Once getApiResponse function will called ang get data then create list to that data fun here ... **/
     private fun setHomeOfferData(data: ArrayList<PremiseResponse.Data>) {
@@ -425,7 +464,7 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
         tv_side_menu_privacy_polivy.setOnClickListener {
 
             val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(PRIVACY_POLIVY)
+            i.data = Uri.parse(PRIVACY_POLICY)
             startActivity(i)
             sideMenuSelectKey = "privacy_policy"
 

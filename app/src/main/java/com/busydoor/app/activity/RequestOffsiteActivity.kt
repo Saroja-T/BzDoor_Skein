@@ -13,6 +13,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -25,6 +26,7 @@ import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
+import com.busydoor.app.customMethods.DatePickerUtil
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.REQUEST_OFFSITE
 import com.busydoor.app.customMethods.SUCCESS_CODE
@@ -117,7 +119,16 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
         // Set a click listener on the "Select Date" button
         binding.calendarIcon.setOnClickListener {
             // Show the DatePicker dialog
-            showDatePicker(userSelectedDate!!)
+            DatePickerUtil.showDatePicker(
+                this,
+                userSelectedDate!!
+            ) { formattedDate ->
+                // Update your UI or perform other actions with the selected date
+                userSelectedDate = formattedDate;
+                // Update the TextView to display the selected date with the format
+                displayCurrentDate= convertDate(formattedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
+                binding.offsiteDateHeading.text=displayCurrentDate
+            }
         }
         /** Navigate to screen back to home. **/
         binding.requestOffciteTool.offsiteBack.setOnClickListener{
@@ -260,50 +271,6 @@ class RequestOffsiteActivity : ActivityBase(),ApiResponseInterface {
         }else{
             showAlertBox("offsiteSend")
         }
-    }
-
-    /** Show the DatePicker With current Month days only Showing Condition **/
-    @RequiresApi(Build.VERSION_CODES.R)
-    private fun showDatePicker(initialDate: String) {
-        // Parse the initial date string into year, month, and day
-        val initialCalendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        try {
-            val parsedDate = dateFormat.parse(initialDate)
-            parsedDate?.let {
-                initialCalendar.time = it
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        // Create a Calendar instance for the current date
-        val calendar = Calendar.getInstance()
-        // Create a DatePickerDialog with initial year, month, and day
-        val datePickerDialog = DatePickerDialog(
-            this,
-            { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
-                // Create a new Calendar instance to hold the selected date
-                val selectedDate = Calendar.getInstance().apply {
-                    // Set the selected date using the values received from the DatePicker dialog
-                    set(year, monthOfYear, dayOfMonth)
-                }
-                // Create a SimpleDateFormat to format the date as "dd/MM/yyyy"
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                // Format the selected date into a string
-                val formattedDate = dateFormat.format(selectedDate.time)
-                userSelectedDate = formattedDate;
-                // Update the TextView to display the selected date with the format
-                displayCurrentDate= convertDate(formattedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
-                binding.offsiteDateHeading.text=displayCurrentDate
-            },
-            initialCalendar.get(Calendar.YEAR),
-            initialCalendar.get(Calendar.MONTH),
-            initialCalendar.get(Calendar.DAY_OF_MONTH)
-        )
-
-        // Set the maximum date to the current date within the current month
-        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-        datePickerDialog.show()
     }
 
     /** Check the validation for selecting END time **/

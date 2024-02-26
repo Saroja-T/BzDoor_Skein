@@ -2,8 +2,8 @@ package com.busydoor.app.activity
 
 import MonthYearPickerDialog
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
@@ -29,7 +29,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
@@ -37,6 +36,7 @@ import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
+import com.busydoor.app.customMethods.DatePickerUtil
 import com.busydoor.app.customMethods.FileDownloader
 import com.busydoor.app.customMethods.HOME_DATA_GET
 import com.busydoor.app.customMethods.NameConvertion
@@ -48,7 +48,6 @@ import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.databinding.ActivityStaffDetailGraphBinding
 import com.busydoor.app.interfaceD.HomeClick
 import com.busydoor.app.model.StaffGraphDetails
-import com.busydoor.app.viewmodel.ProfileViewModel
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.MarkerView
@@ -110,10 +109,11 @@ open class StaffDetailGraphActivity : ActivityBase(), OnChartValueSelectedListen
                 // same time, respect the user's decision. Don't link to system
                 // settings in an effort to convince the user to change their
                 // decision.
-                showToastShort(this, "isGranted false")
+                showToastShort(this, "Permission Denied")
 
             }
         }
+    @SuppressLint("SuspiciousIndentation")
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,13 +123,11 @@ open class StaffDetailGraphActivity : ActivityBase(), OnChartValueSelectedListen
         /*** initialize encrypt fun here  */
         userID = getUserModel()?.data?.userId.toString()
         premiseID = activity?.intent?.getStringExtra("premiseId").toString()
-
-        binding.offsiteHeading.text= convertDate(globalDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
-
         userID =intent.getStringExtra("userId").toString()
         premiseID = intent.getStringExtra("premiseId").toString()
         userName = intent.getStringExtra("userName").toString()
         userSelectedDate = intent.getStringExtra("selectedDate").toString()
+        binding.offsiteHeading.text= convertDate(userSelectedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
         /*** initialize shared-preference here  */
         staffGraphDataGet(userSelectedDate)
 
@@ -137,7 +135,20 @@ open class StaffDetailGraphActivity : ActivityBase(), OnChartValueSelectedListen
         selectedDate = Calendar.getInstance()
 
         binding.calendarIcon.setOnClickListener{
-            showDatePicker(userSelectedDate)
+            // Show the DatePicker dialog
+            DatePickerUtil.showDatePicker(
+                this,
+                userSelectedDate!!
+            ) { formattedDate ->
+                // Update your UI or perform other actions with the selected date
+                userSelectedDate=formattedDate
+                selectedMonthAndYear(userSelectedDate)
+                // Update the TextView to display the selected date with the format
+                binding.offsiteHeading.text= convertDate(formattedDate,"yyyy-MM-dd","EEE - dd 'th' MMM',' yyyy")
+                /*** Function to staffListGet when click datePicker select a date to call api request */
+                staffGraphDataGet(userSelectedDate)
+                chart.marker=null
+            }
         }
         binding.staffDetailToolbar.backPage.setOnClickListener {
             finish()
@@ -171,7 +182,7 @@ open class StaffDetailGraphActivity : ActivityBase(), OnChartValueSelectedListen
         xAxis.granularity = 1f
 
         // Sample date string
-        binding.spinnerView.setOnClickListener {
+        binding.tvMonthSelector.setOnClickListener {
             showMonthYearPickerDialog(selecetdMonthYear)
         }
         binding.actionDownIcon.setOnClickListener {
@@ -512,11 +523,22 @@ open class StaffDetailGraphActivity : ActivityBase(), OnChartValueSelectedListen
         binding.chart.groupBars(0f, groupSpace, barSpace)
         binding.chart.invalidate()
         binding.chart.fitScreen()
+        // Select the last entry by default
+        val lastIndex = values1.size - 1
+        // highlight the first dataset
+        val dataSetIndex = 0
+        binding.chart.highlightValue(lastIndex.toFloat(), dataSetIndex, false)
+        // Manually trigger onValueSelected for the last entry
+       handleOnValueSelected(lastIndex.toFloat(), dataSetIndex)
+    }
+    private fun handleOnValueSelected(xIndex: Float, dataSetIndex: Int) {
+        val entry = chart.data.getDataSetByIndex(dataSetIndex).getEntryForIndex(xIndex.toInt())
+        val highlight = Highlight(xIndex, entry.y, dataSetIndex)
+        onValueSelected(entry, highlight)
     }
 
     override fun onValueSelected(e: Entry?, h: Highlight?) {
-        Log.i("Activity", "Selected: $e, dataSet: ${h?.dataSetIndex}")
-
+        Log.i("Activityzzz", "Selected: $e, dataSet: ${h?.dataSetIndex}")
         binding.chartTimeDetailsIndicatorOnline.visibility = View.VISIBLE
         binding.indicatorOffsite.visibility = View.VISIBLE
         binding.indicatorOffline.visibility = View.VISIBLE
@@ -558,8 +580,8 @@ open class StaffDetailGraphActivity : ActivityBase(), OnChartValueSelectedListen
     }
 
     private fun updateUI(status: String, details: StaffGraphDetails.Data.GraphDetails?) {
-        Log.e("statuzzz",details!!.onlineTimings.toString())
-        binding.tvGraphStatusOnline.text="online"
+        Log.e("statuzzz",details!!.toString())
+        binding.tvGraphStatusOnline.text="Online"
         binding.tvGraphStatusOffsite.text="Offsite"
         binding.tvGraphStatusOffline.text="Offline"
         if(details!!.onlineTimings !=null&&details!!.onlineTimings !="") {binding.chartTimeDetailsOnline.text = details?.onlineTimings}else{binding.chartTimeDetailsOnline.text = "No timings available"}
@@ -575,55 +597,6 @@ open class StaffDetailGraphActivity : ActivityBase(), OnChartValueSelectedListen
     }
 
 
-
-    @RequiresApi(Build.VERSION_CODES.R)
-    private fun showDatePicker(initialDate: String) {
-        // Parse the initial date string into year, month, and day
-        val initialCalendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-        try {
-            val parsedDate = dateFormat.parse(initialDate)
-            parsedDate?.let {
-                initialCalendar.time = it
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        // Create a Calendar instance for the current date
-        val calendar = Calendar.getInstance()
-
-        // Create a DatePickerDialog with initial year, month, and day
-        val datePickerDialog = DatePickerDialog(
-            this,
-            { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
-                // Create a new Calendar instance to hold the selected date
-                val selectedDate = Calendar.getInstance().apply {
-                    // Set the selected date using the values received from the DatePicker dialog
-                    set(year, monthOfYear, dayOfMonth)
-                }
-                // Create a SimpleDateFormat to format the date as "dd/MM/yyyy"
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-                // Format the selected date into a string
-                val formattedDate = dateFormat.format(selectedDate.time)
-                userSelectedDate=formattedDate
-                selectedMonthAndYear(userSelectedDate)
-                // Update the TextView to display the selected date with the format
-                binding.offsiteHeading.text= convertDate(formattedDate,"yyyy-MM-dd","EEE - dd 'th' MMM',' yyyy")
-                /*** Function to staffListGet when click datePicker select a date to call api request */
-                staffGraphDataGet(userSelectedDate)
-                chart.marker=null
-            },
-            initialCalendar.get(Calendar.YEAR),
-            initialCalendar.get(Calendar.MONTH),
-            initialCalendar.get(Calendar.DAY_OF_MONTH)
-        )
-        // Set the maximum date to the current date within the current month
-        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-        datePickerDialog.show()
-    }
 
 
     /** Send data To Api requestOffsite */
@@ -666,10 +639,9 @@ open class StaffDetailGraphActivity : ActivityBase(), OnChartValueSelectedListen
                         setHomeOfferData(graphData.data!!)
                         /*** graph datas are set */
                         setGraphData(graphData.data!!)
+                    }
+                    else{
                         hideStatusView()
-//                        showSnackBar(binding.root,graphData.message.toString(),ActivityBase.ACTIONSNACKBAR.DISMISS)
-                    }else{
-//                        showSnackBar(binding.root,graphData.message.toString(),ActivityBase.ACTIONSNACKBAR.DISMISS)
                     }
                 }
 
@@ -685,11 +657,10 @@ open class StaffDetailGraphActivity : ActivityBase(), OnChartValueSelectedListen
 
 
     private fun setHomeOfferData(dataModel: StaffGraphDetails.Data) {
-        binding.staffDetailToolbar.userName.text = NameConvertion().truncateText(dataModel.userDetails!!.userFirstName+dataModel.userDetails!!.userLastName)
+        binding.staffDetailToolbar.userName.text = NameConvertion().truncateText(dataModel.userDetails!!.userFirstName+" "+dataModel.userDetails!!.userLastName)
         Glide.with(this)
             .load(dataModel!!.userDetails!!.userImage.toString())
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .into(binding.staffDetailToolbar.PremiseStaffImage)
 
 
@@ -754,13 +725,13 @@ class CustomBarMarkerView(context: Context?, layoutResource: Int, private val da
                 }
             }else if(highlight.dataSetIndex===1){
                 if(values2[t].y===e.y){
-                    tvContent.text = convertMinutesToHours(dataModel[t].totalOfflinePercentage)
+                    tvContent.text = convertMinutesToHours(dataModel[t].totalRequestOffsitePercentage)
                     tvStatusGraph.text = "Offsite"
                 }
 
             }else if(highlight.dataSetIndex===2) {
                 if(values3[t].y===e.y){
-                    tvContent.text =convertMinutesToHours( dataModel[t].totalRequestOffsitePercentage)
+                    tvContent.text =convertMinutesToHours( dataModel[t].totalOfflinePercentage)
                     tvStatusGraph.text = "Offline"
                 }
             }

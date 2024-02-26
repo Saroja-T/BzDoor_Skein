@@ -81,7 +81,7 @@ class UserListAdapter(
         circularProgressDrawable.backgroundColor= R.color.app_color
         circularProgressDrawable.start()
 
-        if(userId != model.userId.toString() && isAdmin.toLowerCase()=="admin"){holder.userActive!!.visibility= View.VISIBLE}else{
+        if(userId != model.userId.toString() && isAdmin.lowercase()=="admin"){holder.userActive!!.visibility= View.VISIBLE}else{
             holder.userActive!!.visibility= View.GONE
         }
         // Set click listener for the userActive ImageView/Button

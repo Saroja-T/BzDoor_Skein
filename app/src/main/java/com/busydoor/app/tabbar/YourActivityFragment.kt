@@ -22,7 +22,6 @@ import com.busydoor.app.customMethods.ALL_REQUEST_OFFSITE
 import com.busydoor.app.customMethods.ENCRYPTION_IV
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.SUCCESS_CODE
-import com.busydoor.app.customMethods.convertDate
 import com.busydoor.app.customMethods.encode
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.customMethods.key

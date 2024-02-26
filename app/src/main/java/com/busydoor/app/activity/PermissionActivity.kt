@@ -147,8 +147,14 @@ class BeaconScanPermissionsActivity: PermissionsActivity()  {
                 }
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
             } else {
-//                objSharedPref.putBoolean("isBluetoothOn",true)
+                objSharedPref.putBoolean("isBluetoothOn",true)
                 // Bluetooth is already enabled; you can start using it.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !objSharedPref!!.getBoolean("isServiceRun")) {
+                    // All permissions are granted, proceed with BLE logic
+                    bdApplication.blelogic()
+                    // Finish the activity after handling permissions and BLE logic
+                    finish()
+                }
             }
         }
     }
@@ -190,7 +196,7 @@ class BeaconScanPermissionsActivity: PermissionsActivity()  {
 
         val titleView = TextView(this)
         titleView.gravity = Gravity.CENTER
-        titleView.textSize = dp(12).toFloat()
+        titleView.textSize = resources.getDimension(R.dimen._13sdp)
         titleView.text = title
         titleView.layoutParams = params
 
@@ -198,7 +204,7 @@ class BeaconScanPermissionsActivity: PermissionsActivity()  {
         val messageView = TextView(this)
         messageView.text = message
         messageView.gravity = Gravity.CENTER
-        messageView.textSize = dp(6).toFloat()
+        messageView.textSize = resources.getDimension(R.dimen._6sdp)
         messageView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
         messageView.layoutParams = params
         layout.addView(messageView)
@@ -226,14 +232,6 @@ class BeaconScanPermissionsActivity: PermissionsActivity()  {
         continueButton.isEnabled = false
         continueButton.setOnClickListener {
             enableBluetooth()
-            /**
-             * click the *continue* button
-             * before the kill the page call the *BLE-LOGIC* fun in BD application
-             **/
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                bdApplication.blelogic()
-            }
-            finish()
         }
         continueButton.layoutParams = params
         layout.addView(continueButton)
@@ -253,7 +251,7 @@ class BeaconScanPermissionsActivity: PermissionsActivity()  {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             context.startActivity(intent)
         }else{
-//            objSharedPref.putBoolean("isGPS",true)
+            objSharedPref.putBoolean("isGPS",true)
         }
     }
 
@@ -305,6 +303,25 @@ class BeaconScanPermissionsActivity: PermissionsActivity()  {
             index += 1
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun requestBatteryOptimization() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val powerManager =
+                getSystemService(Context.POWER_SERVICE) as PowerManager
+            if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
+                val intent = Intent()
+                intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                intent.data = Uri.parse("package:$packageName")
+                startActivity(intent)
+            }else{
+                objSharedPref!!.putBoolean("isBatteryOpt",true)
+            }
+        }
+    }
+
+
+
     override fun onResume() {
         super.onResume()
         setButtonColors()
@@ -317,6 +334,9 @@ class BeaconScanPermissionsActivity: PermissionsActivity()  {
             drawable.setColorFilter(Color.parseColor("#4355E3"), PorterDuff.Mode.SRC_IN) // Set the color you want
             // Set the modified drawable as the button's background
             continueButton.background = drawable
+
+            // Request battery optimization when all permissions are granted
+            requestBatteryOptimization()
         }
     }
 

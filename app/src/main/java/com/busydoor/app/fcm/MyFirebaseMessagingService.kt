@@ -10,13 +10,18 @@ import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.busydoor.app.R
+import com.busydoor.app.activity.BottomNavigationBarActivity
 import com.busydoor.app.activity.SplashActivity
+import com.busydoor.app.customMethods.ACTIVITY_PREMISE_ID
 import com.busydoor.app.customMethods.PrefUtils
+import com.busydoor.app.customMethods.RetriveRequestOffsiteDate
+import com.busydoor.app.customMethods.isNotify
 import com.busydoor.app.customMethods.objSharedPref
 import com.busydoor.app.service.BDApplication
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -83,7 +88,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 sendOndefault(remoteMessage,remoteMessage.notification!!.imageUrl)
             }
             else -> {
-                sendOndefault(remoteMessage, remoteMessage.notification!!.imageUrl)
+                sendRequestOffsite(remoteMessage, remoteMessage.notification!!.imageUrl)
             }
         }
     }
@@ -199,7 +204,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val message: String = remoteMessage.notification!!.body.toString()
             val notification1: Notification = NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setLargeIcon(getBitmapFromURL(imageUrl))
-                .setSmallIcon(R.drawable.icon_request)
+                .setSmallIcon(R.drawable.app_icon_notification)
                 .setAutoCancel(true)
                 .setContentTitle(title)
                 .setContentText(message)
@@ -235,7 +240,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val title: String = remoteMessage.notification!!.title.toString()
         val message: String = remoteMessage.notification!!.body.toString()
         val notification2: Notification = NotificationCompat.Builder(this, CHANNEL_2_ID)
-            .setSmallIcon(R.drawable.icon_request)
+            .setSmallIcon(R.drawable.app_icon_notification)
             .setContentTitle(title)
             .setContentText(message)
             .setAutoCancel(true)
@@ -273,7 +278,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
 
         val notification3: Notification = NotificationCompat.Builder(this, CHANNEL_3_ID)
-            .setSmallIcon(R.drawable.icon_request)
+            .setSmallIcon(R.drawable.app_icon_notification)
             .setContentTitle(title)
             .setAutoCancel(true)
             .setContentText(message)
@@ -310,10 +315,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val intent = Intent(this,SplashActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+
         val title: String = remoteMessage.notification!!.title.toString()
         val message: String = remoteMessage.notification!!.body.toString()
         val notification4: Notification = NotificationCompat.Builder(this, CHANNEL_4_ID)
-            .setSmallIcon(R.drawable.icon_request)
+            .setSmallIcon(R.drawable.app_icon_notification)
             .setAutoCancel(true)
             .setContentTitle(title)
             .setContentText(message)
@@ -339,19 +345,80 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager!!.notify(4, notification4)
     }
     private fun sendOndefault(remoteMessage: RemoteMessage, imageUrl: Uri?) {
-        Log.e("sendOnChannel5", ""+remoteMessage.notification!!.icon)
+        Log.e("sendOnChannel5", "no==  "+remoteMessage.notification!!.toString())
+        Log.e("sendOnChannel5", "data== "+ remoteMessage.data["date"])
+        Log.e("sendOnChannel5", "data== "+ remoteMessage.data["premise_id"])
+        Log.e("sendOnChannel5", "data== "+ remoteMessage.data["click_action"])
+        Log.e("sendOnChannel5", "data== "+ remoteMessage.data.toString())
+        Log.e("sendOnChannel5", "data== "+ remoteMessage.data["premise_id"])
 
         val intent = Intent(this,SplashActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+        // Create a PendingIntent to handle the tap on the notification
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
         val title: String = remoteMessage.notification!!.title.toString()
         val message: String = remoteMessage.notification!!.body.toString()
         val default: Notification = NotificationCompat.Builder(this, CHANNEL_4_ID)
-            .setSmallIcon(R.drawable.icon_request)
+            .setSmallIcon(R.drawable.app_icon_notification)
             .setAutoCancel(true)
             .setLargeIcon(getBitmapFromURL(imageUrl))
             .setContentTitle(title)
             .setContentText(message)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setStyle(NotificationCompat.BigPictureStyle().bigPicture(getBitmapFromURL(imageUrl)))
+            .build()
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        notificationManager!!.notify(5, default)
+    }
+    private fun sendRequestOffsite(remoteMessage: RemoteMessage, imageUrl: Uri?) {
+//        Log.e("sendOnChannel5", "no===  "+remoteMessage.notification!!.toString())
+//        Log.e("sendOnChannel5", "data=== "+ remoteMessage.data["date"])
+//        Log.e("sendOnChannel5", "data=== "+ remoteMessage.data["premise_id"])
+//        Log.e("sendOnChannel5", "data=== "+ remoteMessage.data["click_action"])
+//        Log.e("sendOnChannel5", "data=== "+ remoteMessage.data.toString())
+        Log.e("sendOnChannel5", "notification=== "+ remoteMessage.notification!!.clickAction.toString())
+        Log.e("sendOnChannel5", "data=== "+ remoteMessage.data["premise_id"])
+
+        if(remoteMessage.data.toString() !=null && remoteMessage.data.toString() !="null"){
+            ACTIVITY_PREMISE_ID= remoteMessage.data["premise_id"].toString()
+            RetriveRequestOffsiteDate= remoteMessage.data["date"].toString()
+            isNotify=true
+        }
+
+        val intent = Intent(this,BottomNavigationBarActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        // Create a PendingIntent to handle the tap on the notification
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val title: String = remoteMessage.notification!!.title.toString()
+        val message: String = remoteMessage.notification!!.body.toString()
+        val default: Notification = NotificationCompat.Builder(this, CHANNEL_4_ID)
+            .setSmallIcon(R.drawable.app_icon_notification)
+            .setAutoCancel(true)
+            .setLargeIcon(getBitmapFromURL(imageUrl))
+            .setContentTitle(title)
+            .setContentText(message)
+            .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setStyle(NotificationCompat.BigPictureStyle().bigPicture(getBitmapFromURL(imageUrl)))

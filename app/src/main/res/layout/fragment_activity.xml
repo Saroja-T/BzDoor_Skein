@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:padding="@dimen/_5sdp"
+    android:id="@+id/requestActivity"
     android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/user_view"
@@ -40,11 +41,12 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_marginTop="@dimen/_10sdp"
-        android:layout_width="@dimen/_190sdp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_view"
         app:tabIndicatorColor="@color/app_color"
         app:tabSelectedTextColor="@color/black"
+        app:tabSelectedTextAppearance="@dimen/_20sdp"
         android:background="@color/white" />
 
     <View

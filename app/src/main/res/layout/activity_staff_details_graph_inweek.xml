@@ -21,11 +21,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_5sdp"
-            android:layout_margin="@dimen/_5sdp"
             android:orientation="horizontal">
             <LinearLayout
                 android:id="@+id/calendarIcon"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:layout_height="wrap_content"
@@ -37,47 +36,48 @@
                     android:layout_height="wrap_content"
                     android:text="Fri -13th Oct,2023"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_13sdp" />
+                    android:textSize="@dimen/_13sdp"
+                    android:textStyle="bold" />
                 <ImageView
-                    android:id="@+id/calendarIconv"
-                    android:padding="@dimen/_1sdp"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="match_parent"
+                    android:padding="@dimen/_1sdp"
                     android:src="@drawable/icon_calendartoday" />
+
 
             </LinearLayout>
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/pdfShowView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_2sdp"
                 android:orientation="horizontal">
-
                 <LinearLayout
+                    android:id="@+id/tvMonthSelector"
+                    android:elevation="@dimen/_5sdp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:layout_margin="@dimen/_5sdp"
                     android:background="@drawable/button_shapes_with_white_color"
-                    android:elevation="@dimen/_5sdp"
-                    android:layout_margin="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/spinnerView"
-                        android:layout_width="55dp"
-                        android:layout_height="wrap_content"
-                        android:elevation="@dimen/_5sdp"
-                        android:gravity="left"
-                        android:text="Oct"
-                        android:textColor="@color/black"
-                        android:textSize="20sp" />
-
-                    <ImageView
-                        android:layout_width="@dimen/_10sdp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:padding="@dimen/_1sdp"
+                        android:elevation="@dimen/_8sdp"
+                        android:gravity="center"
+                        android:textSize="@dimen/_13sdp"
+                        android:layout_gravity="center"
+                        android:text="Oct"
+                        android:textColor="@color/black" />
+                    <ImageView
+                        android:layout_width="@dimen/_13sdp"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/_2sdp"
                         android:src="@drawable/down_arrow" />
                 </LinearLayout>
 
@@ -85,7 +85,7 @@
                     android:id="@+id/actionDownIcon"
                     android:layout_width="35dp"
                     android:layout_height="match_parent"
-                    android:padding="@dimen/_2sdp"
+                    android:padding="@dimen/_3sdp"
                     android:src="@drawable/icon_download" />
 
 
@@ -121,7 +121,7 @@
                 android:layout_margin="@dimen/_5sdp"
                 android:elevation="@dimen/_10sdp"
                 android:text="No staff data available"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_13sdp"
                 android:visibility="gone" />
 
         </LinearLayout>
@@ -141,6 +141,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:layout_gravity="center"
+                android:textSize="@dimen/_13sdp"
                 android:layout_marginStart="@dimen/_15sdp"
                 tools:text="Monday, March 22,2021" />
             <LinearLayout
@@ -156,6 +157,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Staff"
+                    android:textSize="@dimen/_13sdp"
                     android:textColor="@color/app_color"
                     android:layout_marginEnd="@dimen/_5sdp" />
                 <androidx.appcompat.widget.SwitchCompat

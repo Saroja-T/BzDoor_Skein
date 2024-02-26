@@ -21,8 +21,8 @@ const val CREATE_NEW_USER =8
 const val ADD_USER_TO_PREMISE =8
 const val USER_ACTIVE_DEACTIVE=6
 const val USER_STAFF_DATA=10
-const val USER_KNOWN_DETAILS_DATA=12
-const val USER_CONFIG_DATA=15
+const val FORCE_LOGOUT=12
+const val LOG_OUT=15
 const val USER_ACCESSS=15
 const val STATUS_GRAPH_DATA =18
 const val USER_LIST_DATA =19
@@ -65,10 +65,10 @@ var isUserHavingAccess : Boolean = false
 
 const val key = "12345678901234561234567890123456"
 const val ENCRYPTION_IV = "12345678901234561234567890123456"
-var END_DATE = ""
-var DATE_OPTION = ""
+var NotificationDate = ""
 var ACTIVITY_DATE = ""
 var ACTIVITY_PREMISE_ID = ""
+var isNotify:Boolean =false
 var DEVICE_TYPE: String = "Android"
 var forceResendingTokenGbl: PhoneAuthProvider.ForceResendingToken? =null
 lateinit var activity: Activity
@@ -81,6 +81,7 @@ var InActivate ="In-Activate"
 var ActiveInActivate ="Activate/In-Activate User"
 var donutStatusValue: String = ""
 var isRefresh: Boolean = false
+var RetriveRequestOffsiteDate: String = ""
 
 
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_75sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,13 +18,15 @@
         android:layout_height="@dimen/_70sdp">
 
         <!-- Image with Border -->
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.busydoor.app.customMethods.RoundRectCornerImageView
             android:id="@+id/PremiseImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/_2sdp"
+            android:layout_margin="@dimen/_12sdp"
             android:layout_marginStart="@dimen/_2sdp"
-            android:padding="@dimen/_10sdp"
+            android:background="@drawable/home_list_back"
+            android:elevation="@dimen/_15sdp"
+            android:scaleType="center"
             android:visibility="visible" />
         <!-- Camera Icon -->
     </androidx.constraintlayout.widget.ConstraintLayout>

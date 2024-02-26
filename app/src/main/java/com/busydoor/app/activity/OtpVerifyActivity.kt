@@ -1,6 +1,5 @@
 package com.busydoor.app.activity
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
@@ -16,13 +15,11 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import com.busydoor.app.R
 import com.busydoor.app.apiService.ApiInitialize
-import com.busydoor.app.apiService.ApiInterface
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
@@ -32,7 +29,6 @@ import com.busydoor.app.apiService.editUserRequest
 import com.busydoor.app.customMethods.ADD_USER
 import com.busydoor.app.customMethods.ADD_USER_PREMISE
 import com.busydoor.app.customMethods.ADD_USER_RESPONSE
-import com.busydoor.app.customMethods.DEVICE_TYPE
 import com.busydoor.app.customMethods.ERROR_CODE
 import com.busydoor.app.customMethods.REGISTER
 import com.busydoor.app.customMethods.SUCCESS_CODE
@@ -44,9 +40,6 @@ import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.customMethods.isRefresh
 import com.busydoor.app.customMethods.userSelectedImage
 import com.busydoor.app.databinding.ActivityOtpVerifyBinding
-import com.busydoor.app.fragment.OnUserCreatedListener
-import com.busydoor.app.interfaceD.OnOtpVerifiedListener
-import com.busydoor.app.interfaceD.OtpVerifiedListenerHolder
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -94,7 +87,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
             }
         }
 
-        binding.resendCode.setOnClickListener {
+        binding.resendCodeView.setOnClickListener {
             if (TextUtils.isEmpty(phone_number)) {
                 //when mobile number text field is empty displaying a toast message.
                 Toast.makeText(
@@ -167,7 +160,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
     /** VerifyCode function here ... **/
     @RequiresApi(Build.VERSION_CODES.R)
     private fun verifyCode(code: String) {
-//          showDialog("response")
+          showProgress()
         //below line is used for getting getting credentials from our verification id and code.
         val credential = PhoneAuthProvider.getCredential(verificationId, code)
 
@@ -243,7 +236,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
     private fun registerApi() {
         Log.d(TAG, "onCreate: " + objSharedPref.getString("FCM_TOKEN")!!)
         if (isOnline(this@OtpVerifyActivity)) {
-            Log.e("OTPPPP  ","registerApi   "+objSharedPref.getString("FCM_TOKEN")!!.toString())
+            Log.e("OTPPPP  ","registerApi   "+objSharedPref.getString("deviceId")!!.toString())
             ApiRequest(
                 this,
                 ApiInitialize.initialize(ApiInitialize.LOCAL_URL).userRegisterFunction(
@@ -256,6 +249,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
                         encrypt("Android"),
                         encrypt(objSharedPref.getString("FCM_TOKEN")!!),
                         encrypt(timeZoneSet),
+                        intent.getStringExtra("deviceId").toString(),
                         "register"),
                 ),
                 REGISTER, true, this
@@ -276,6 +270,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
         mAuth!!.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    dismissProgress()
                     when (register_type) {
                         "add_user_to_premise" -> {
                             updateUserToPremise()
@@ -380,8 +375,10 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
                 Log.e(TAG, "response LOGIN:-$response")
                 when (response.optInt("status_code")) {
                     SUCCESS_CODE -> {
+                        val data = response.getJSONObject("data")
                         objSharedPref.putString(getString(R.string.userResponse), responseValue)
                         objSharedPref.putBoolean(getString(R.string.isLogin), true)
+//                        objSharedPref.putString("userImage", data.optString("photo"))
                         val getStartedIntent = Intent(this@OtpVerifyActivity, DashboardActivity::class.java)
                         overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
                         getStartedIntent.putExtra("user_response",objSharedPref.getString(getString(R.string.userResponse)))

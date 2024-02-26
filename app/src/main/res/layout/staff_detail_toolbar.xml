@@ -46,8 +46,8 @@
             <!-- Camera Icon -->
             <pl.droidsonroids.gif.GifImageView
                 android:id="@+id/staffStatus"
-                android:layout_width="15dp"
-                android:layout_height="@dimen/_10sdp"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:background="@drawable/white_radius"
                 app:layout_constraintEnd_toEndOf="@id/PremiseStaffImage"

@@ -136,6 +136,9 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         }
         userID = getUserModel()?.data?.userId.toString()
         premiseID = activity?.intent?.getStringExtra("premiseId").toString()
+        if(premiseID ==null|| premiseID =="null"||premiseID ==""){
+            premiseID= ACTIVITY_PREMISE_ID
+        }
         Log.e("original value home== ",premiseID.toString())
 
 //        binding.userProfileView.editProfile.setOnClickListener {
@@ -220,13 +223,21 @@ class HomeFragment : Fragment(),ApiResponseInterface {
                 )
             }
         }
-        homeViewModel.homeData.observe(viewLifecycleOwner) { data ->
-            // Handle changes to the shared data in TabBarFragment
-            // The 'data' variable contains the updated value
-            Log.e("sharedData", data)
-            apiDate = data
-            globalDate=data
-            homeDataGet(data)
+        if(premiseID ==null|| premiseID ==""||premiseID ==""){
+//            Toast.makeText(requireContext(), ACTIVITY_PREMISE_ID.toString()+"lll", Toast.LENGTH_SHORT).show()
+            premiseID= ACTIVITY_PREMISE_ID
+           apiDate= RetriveRequestOffsiteDate
+            homeDataGet(apiDate)
+        }else {
+//            Toast.makeText(requireContext(), ACTIVITY_PREMISE_ID.toString()+"mmm", Toast.LENGTH_SHORT).show()
+            homeViewModel.homeData.observe(viewLifecycleOwner) { data ->
+                // Handle changes to the shared data in TabBarFragment
+                // The 'data' variable contains the updated value
+                Log.e("sharedData", data)
+                apiDate = data
+                globalDate = data
+                homeDataGet(data)
+            }
         }
         return root
 
@@ -398,7 +409,7 @@ class HomeFragment : Fragment(),ApiResponseInterface {
         maxDays=calculateDateDifference("$year-$month-$day")+1
 
         lateinit var date: Triple<Int, Int, Int>
-        if(maxDays<6){
+        if(maxDays<7){
             date = Triple(year, month-1, day)
         }else{
             date = Triple(year, month, day)
@@ -498,7 +509,7 @@ class HomeFragment : Fragment(),ApiResponseInterface {
     /*** Function to api homeDataGet */
     @RequiresApi(Build.VERSION_CODES.R)
     private fun homeDataGet(date:String) {
-        Log.e("original value","Bearer ${getUserModel()!!.data.token}");
+        Log.e("original value","Bearer ${date}");
         if (isOnline(requireContext())) {
             ApiRequest(
                 requireActivity(),

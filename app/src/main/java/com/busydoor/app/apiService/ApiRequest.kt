@@ -88,9 +88,9 @@ open class ApiRequest<T>(
                 if(activity!=null) {
                     toast(error.message(), true, activity)
                 }
-                Log.e("error.status()==>", error.status().toString())
+                Log.e("error.status()==>", "zzzzzzz"+error.status().toString())
                 if (error.status() == 401 || error.status() == 405) {
-                    Log.e("error.status()==>", error.status().toString())
+                    Log.e("error.status()==>","mmmmmmm"+ response.code().toString())
 
                     if(activity!=null){
                         PrefUtils(activity!!).putBoolean(
@@ -107,7 +107,7 @@ open class ApiRequest<T>(
                 }
             }
             else if (response.code() == 401 || response.code()  == 405) {
-                Log.e("error.status()==>", response.code().toString())
+                Log.e("error.status()==>","nnnnnn"+ response.code().toString())
 
                 if(activity!=null){
                     PrefUtils(activity!!).putBoolean(

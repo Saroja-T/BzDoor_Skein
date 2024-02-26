@@ -65,15 +65,13 @@ class RequestsAdapter(
             Glide.with(context)
                 .load(model.requesterPhoto)
                 .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(holder.imageUSer)
         }else{
             Glide.with(context)
                 .load(R.drawable.icon_users)
                 .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(holder.imageUSer)
         }
 
@@ -82,15 +80,13 @@ class RequestsAdapter(
             Glide.with(context)
                 .load(model.approverPhoto)
                 .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(holder.imageManager)
         }else{
             Glide.with(context)
                 .load(R.drawable.icon_users)
                 .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(holder.imageManager)
         }
 
@@ -98,15 +94,13 @@ class RequestsAdapter(
             Glide.with(context)
                 .load(model.requesterPhoto)
                 .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(holder.premiseImage)
         }else{
             Glide.with(context)
                 .load(R.drawable.icon_users)
                 .placeholder(circularProgressDrawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(holder.premiseImage)
         }
 
@@ -117,7 +111,7 @@ class RequestsAdapter(
             homeClick.activityPositionClick(model.staffTimePermissionId!!,"reject","")
         }
 
-        if(isAdmin=="1" && (model.requesterType!="yours")){
+        if((isAdmin.lowercase()=="admin" || isAdmin.lowercase()=="manager") && (model.requesterType!="yours")){
             holder.accept_rejectView.visibility=View.VISIBLE
         }else{
             holder.accept_rejectView.visibility=View.GONE
@@ -175,10 +169,10 @@ class RequestsAdapter(
                     holder.accept_rejectView.visibility = View.GONE
                     holder.tvReasonTitle.text="Rejected reason:"
                     holder.approvalStatusView.visibility=View.VISIBLE
-                    if(model.approverFirstName!=null && model.approverFirstName!="")
-                    holder.approvalSatus.text =model.approverFirstName+" has "+ model.timePermissionStatus
-                    else
-                    holder.approvalSatus.text = "Automatically rejected"
+                    if(model.approverFirstName!=null && model.approverFirstName!=""){
+                    holder.approvalSatus.text =model.approverFirstName+" has "+ model.timePermissionStatus}
+                    else{
+                    holder.approvalSatus.text = "Automatically rejected"}
 
                 }
                 "approved" -> {

@@ -1,8 +1,8 @@
 package com.busydoor.app.activity
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -10,21 +10,19 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.busydoor.app.R
 import com.busydoor.app.apiService.*
 import com.busydoor.app.customMethods.*
@@ -94,8 +92,15 @@ class RegisterActivity : ActivityBase(), ApiResponseInterface, AdapterView.OnIte
             startActivity(loginActivity)
             finish()
         }
+
+       objSharedPref.putString("deviceId",getAndroidId(this))
     }
 
+    private fun getAndroidId(context: Context): String {
+        Log.e("getAndroidId",
+            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID).toString())
+        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+    }
     /** onResume fun... **/
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
@@ -136,15 +141,16 @@ class RegisterActivity : ActivityBase(), ApiResponseInterface, AdapterView.OnIte
                 this,
                 ApiInitialize.initialize(ApiInitialize.LOCAL_URL).userRegisterFunction(
                     CommonRegistrationRequest(
-                    encrypt(binding.etFirstName.text.toString()),
-                    encrypt(binding.edLastName.text.toString()),
-                        encrypt(binding.edMobileNumber.text.toString()),
-                        userSelectedImage,
-                        encrypt(accessLevelName.lowercase(Locale.ROOT)),
-                    encrypt(DEVICE_TYPE),
-                    objSharedPref.getString("FCM_TOKEN")!!,
-                    encrypt(timeZoneSet),
-                    "check")
+                encrypt(binding.etFirstName.text.toString()),
+                encrypt(binding.edLastName.text.toString()),
+                    encrypt(binding.edMobileNumber.text.toString()),
+                    userSelectedImage,
+                    encrypt(accessLevelName.lowercase(Locale.ROOT)),
+                encrypt(DEVICE_TYPE),
+                objSharedPref.getString("FCM_TOKEN")!!,
+                encrypt(timeZoneSet),
+                objSharedPref.getString("deviceId")!!,
+                "check")
                 ),
                 REGISTER, true, this
             )
@@ -215,14 +221,15 @@ class RegisterActivity : ActivityBase(), ApiResponseInterface, AdapterView.OnIte
 
                 forceResendingTokenGbl = PhoneAuthUtil.getForceResendingToken()
                 dismissProgress()
-                Log.e("login", "jio")
+                Log.e("OTPPPP", objSharedPref.getString("deviceId")!!)
                 val getStartedIntent = Intent(this@RegisterActivity, OtpVerifyActivity::class.java)
-                getStartedIntent.putExtra("verificationId", PhoneAuthUtil.getForceResendingToken())
+                getStartedIntent.putExtra("verificationId",PhoneAuthUtil.getVerificationId())
                 getStartedIntent.putExtra("phone_number", binding.edMobileNumber.text.toString())
                 getStartedIntent.putExtra("otp_type", "Register")
                 getStartedIntent.putExtra("first_name", binding.etFirstName.text.toString())
                 getStartedIntent.putExtra("last_name", binding.edLastName.text.toString())
                 getStartedIntent.putExtra("accessLevelName", accessLevelName)
+                getStartedIntent.putExtra("deviceId", objSharedPref.getString("deviceId"))
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
                 startActivity(getStartedIntent)
                 finish()
@@ -270,14 +277,14 @@ class RegisterActivity : ActivityBase(), ApiResponseInterface, AdapterView.OnIte
     private fun showActivePopupMenu(view: View) {
         val popupMenu = PopupMenu(view.context, view)
         popupMenu.menu.add("Take a picture")
-        popupMenu.menu.add("Galley")
+        popupMenu.menu.add("Gallery")
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.title) {
                 "Take a picture" -> {
                     getFromCamera()
                     true
                 }
-                "Galley" -> {
+                "Gallery" -> {
                     openGallery()
                     true
                 }

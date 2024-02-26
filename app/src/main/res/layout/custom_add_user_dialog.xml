@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textSize="20sp"
+        android:textSize="@dimen/_13sdp"
         android:gravity="center"
         android:text="Add an existing user to your business"
         android:textColor="@color/black"
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="normal"
-        android:textSize="15sp"
+        android:textSize="@dimen/_13sdp"
         android:gravity="center"
         android:padding="@dimen/_5sdp"
         android:layout_marginTop="10dp"
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_20sdp">
 
-                <com.busydoor.app.customMethods.MyCustomEdittext
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="start"
@@ -189,6 +189,7 @@
         android:orientation="horizontal"
         android:layout_gravity="center"
         android:gravity="center"
+        android:layout_margin="@dimen/_5sdp"
         android:padding="@dimen/_1sdp"
         android:layout_marginStart="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_5sdp"
@@ -203,6 +204,7 @@
             android:layout_weight="1"
             android:elevation="@dimen/_3sdp"
             android:text="NO, CANCEL"
+            android:textSize="@dimen/_13sdp"
             android:background="@drawable/button_shapes_with_white_color"
             android:textColor="@color/black"
             android:textAllCaps="false"
@@ -215,6 +217,7 @@
             android:layout_weight="1"
             android:elevation="@dimen/_3sdp"
             android:text="YES, ADD"
+            android:textSize="@dimen/_13sdp"
             android:background="@drawable/button_shapes_with_app_color"
             android:textColor="@color/white"
             android:textAllCaps="false"

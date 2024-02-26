@@ -155,6 +155,7 @@
             android:textStyle="normal"
             android:layout_gravity="center"
             android:textColor="@color/black"
+            android:textSize="@dimen/_12sdp"
             android:layout_marginEnd="@dimen/_5sdp"/>
         <TextView
             android:id="@+id/requestedOffsiteTime"
@@ -180,6 +181,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="normal"
+            android:textSize="@dimen/_10sdp"
             android:textColor="@color/black"
             android:text="Comments" />
         <LinearLayout
@@ -201,6 +203,7 @@
                 android:padding="@dimen/_5sdp"
                 android:textStyle="normal"
                 android:text="Hi, Welcome"
+                android:textSize="@dimen/_10sdp"
                 android:textColor="@color/text_color">
 
             </TextView>

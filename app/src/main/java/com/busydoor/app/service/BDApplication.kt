@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.busydoor.app.R
@@ -18,6 +19,8 @@ import com.busydoor.app.customMethods.STAFF_BLUETOOTH_LOG
 import com.busydoor.app.customMethods.STAFF_BLUETOOTH_OUT
 import com.busydoor.app.customMethods.apiTriggered
 import com.busydoor.app.activity.CryptLib2
+import com.busydoor.app.activity.DialogActivity
+import com.busydoor.app.activity.GpsDialogActivity
 import com.busydoor.app.activity.SplashActivity
 import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequestForBecon
@@ -42,6 +45,8 @@ class BDApplication: Application() {
     private val macRegex = Regex("([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}")
     private fun isMac(str: String) = str.matches(macRegex)
     private var cryptLib: CryptLib2? = null
+    private var isLocationDialogShowing = false // Flag to track dialog visibility
+    private var dialogActivity: DialogActivity? = null // Reference to the DialogActivity instance
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate() {
         Log.d("BDApplication", "oncreate fun enter")
@@ -49,11 +54,6 @@ class BDApplication: Application() {
         objSharedPref = PrefUtils(this)
         cryptLib =
             CryptLib2()
-        val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
-        registerReceiver(mReceiver, filter)
-        val locationFilter = IntentFilter(LocationManager.MODE_CHANGED_ACTION)
-        registerReceiver(mLocationReceiver, locationFilter)
-
         /*** Reboot scenario if check user was login and use have an macAddress then only Start service **/
         if (objSharedPref?.getBoolean(getString(R.string.isLogin))!! && objSharedPref?.getString("beaconMacAddress") != null &&
             objSharedPref?.getString("beaconMacAddress") != ""
@@ -65,6 +65,11 @@ class BDApplication: Application() {
     @SuppressLint("SuspiciousIndentation")
     @RequiresApi(Build.VERSION_CODES.R)
     fun blelogic() {
+        /*** Once trigger this function,Assume user have an Beacon devices, So Now Register those Receivers **/
+        val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+        registerReceiver(mReceiver, filter)
+        val locationFilter = IntentFilter(LocationManager.MODE_CHANGED_ACTION)
+        registerReceiver(mLocationReceiver, locationFilter)
 
         beaconManager = BeaconManager.getInstanceForApplication(this)
         beaconManager.beaconParsers.clear()
@@ -160,6 +165,9 @@ class BDApplication: Application() {
             beaconManager.removeAllRangeNotifiers()
         }
         objSharedPref!!.putBoolean("isServiceRun", false)
+        /*** Once user Logout the service will be stop then additionally stop Both receivers ('Bluetooth','Location')**/
+        unregisterReceiver(mLocationReceiver)
+        unregisterReceiver(mReceiver)
 
     }
 
@@ -245,7 +253,6 @@ class BDApplication: Application() {
                     Log.e("STAFF_BLUETOOTH_LOG", "AttendanceResponse Success")
                 } else {
                     Log.e("STAFF_BLUETOOTH_LOG", "AttendanceResponse Failed")
-
                 }
             }
 
@@ -269,8 +276,8 @@ class BDApplication: Application() {
 
     /*** mReceiver to bluetooth status monitor ***/
 
-    private val mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        @RequiresApi(Build.VERSION_CODES.R)
+    val mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.O)
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
             if (action == BluetoothAdapter.ACTION_STATE_CHANGED) {
@@ -282,14 +289,15 @@ class BDApplication: Application() {
                     BluetoothAdapter.STATE_OFF -> {
                         Log.d("Bluapter", "Bluetooth Turned OFF ")
                         sendEmittersStatus("bluetooth_disabled", DEVICE_TYPE)
+                        showDialogeBox(context,"no")
                         if (isNotificationPermissionGranted(context)){
                             sendNotification("Enable Bluetooth to Auto Check-In and Check-Out")
                         }
                     }
-
                     BluetoothAdapter.STATE_ON -> {
                         Log.d("Bluapter", "Bluetooth Turned on ")
                         sendEmittersStatus("bluetooth_enabled", DEVICE_TYPE)
+                        showDialogeBox(context,"yes")
                         if (isNotificationPermissionGranted(context)){
                             sendNotification("Auto Check-In and Check-Out is Turned ON")
                         }
@@ -299,18 +307,37 @@ class BDApplication: Application() {
         }
     }
 
+    fun showDialogeBox(context: Context,status: String) {
+        // Create and show the dialog using Intent to create an Activity:
+        val dialogIntent = Intent(context, DialogActivity::class.java)
+        dialogIntent.putExtra("dialogTitle", "Bluetooth Disabled")
+        dialogIntent.putExtra("dialogMessage", "Auto Check-In and Check-Out requires Bluetooth. Please enable it.")
+        dialogIntent.putExtra("isClose", status)
+        // Add flags to ensure the Activity is created on top of other activities and
+        // doesn't get added to the back stack:
+        dialogIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        context.startActivity(dialogIntent)
+    }
+     fun showGpsDialog(context: Context,Status:String) {
+        val intent = Intent(context, GpsDialogActivity::class.java)
+        intent.putExtra("dialogTitle", "Enable GPS")
+        intent.putExtra("dialogMessage", "Auto Check-In and Check-Out requires GPS. Enable GPS?")
+        intent.putExtra("isClose", Status)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        context.startActivity(intent)
+    }
+
     /*** mLocationReceiver to monitor status to location ***/
-    private val mLocationReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        @RequiresApi(Build.VERSION_CODES.P)
+    val mLocationReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.O)
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
             if (action == LocationManager.MODE_CHANGED_ACTION) {
                 val locationManager =
                     context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 if (locationManager.isLocationEnabled) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    showGpsDialog(context,"yes")
                         sendEmittersStatus("location_enabled", DEVICE_TYPE)
-                    }
                     Log.d("Location", "Location turned ON")
                     if (isNotificationPermissionGranted(context)){
                         sendNotification("Location services are now enabled")
@@ -318,17 +345,17 @@ class BDApplication: Application() {
                 } else {
                     Log.d("Location", "Location turned OFF")
                     // Perform actions when location is turned off
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    showGpsDialog(context,"no")
                         sendEmittersStatus("location_disabled", DEVICE_TYPE)
-                    }
                     if (isNotificationPermissionGranted(context)){
                         sendNotification("Location services are now disabled")
                     }
                 }
             }
         }
-    }
+        
 
+    }
 
     // Check if the notification permission is granted
     private fun isNotificationPermissionGranted(context: Context): Boolean {

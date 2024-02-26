@@ -15,10 +15,6 @@ data class StaffCountResponse (
         @SerializedName("userdetails"    ) var userDetails    : Userdetails?    = Userdetails(),
         @SerializedName("premisedetails" ) var premiseDetails : Premisedetails? = Premisedetails(),
         @SerializedName("count"          ) var count          : Count?          = Count(),
-        @SerializedName("checkedin_count") var checkInCount: String? = null,
-        @SerializedName("checkedout_count") var checkOutCount: String? = null,
-        @SerializedName("offline_count") var offlineCount: String? = null,
-
     ) {
 
         data class Count(

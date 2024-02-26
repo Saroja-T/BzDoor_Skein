@@ -1,26 +1,30 @@
 package com.busydoor.app.activity
 
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.busydoor.app.R
 import com.busydoor.app.apiService.*
 import com.busydoor.app.customMethods.*
 import com.busydoor.app.databinding.ActivityLoginBinding
-import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import okhttp3.ResponseBody
 import org.json.JSONObject
-import java.util.concurrent.TimeUnit
 
 
 class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
     private var mAuth: FirebaseAuth? = null
-    private var verifyCode: String = ""
-    private var verificationId: String = ""
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
 
     /** Main Function... **/
@@ -49,8 +53,14 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
             startActivity(registerActivity)
             finish()
         }
+        objSharedPref.putString("deviceId",getAndroidId(this))
     }
 
+    private fun getAndroidId(context: Context): String {
+        Log.e("getAndroidId",
+            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID).toString())
+        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+    }
     /** loginApi function... **/
     @RequiresApi(Build.VERSION_CODES.R)
     private fun loginApi() {
@@ -61,7 +71,8 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
                     encrypt(binding.phoneNumber.text.toString()),
                     encrypt(DEVICE_TYPE),
                     objSharedPref.getString("FCM_TOKEN").toString(),
-                    encrypt(timeZoneSet)
+                    encrypt(timeZoneSet),
+                    objSharedPref.getString("deviceId")!!.toString()
                 ),
                 LOGIN, true, this
             )
@@ -81,7 +92,6 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
             this,
             this@LoginHomeActivity,
             number, {
-
                 // Success callback, navigate to the next activity or perform other actions
                 forceResendingTokenGbl = PhoneAuthUtil.getForceResendingToken()
                 val intent = Intent(this@LoginHomeActivity, OtpVerifyActivity::class.java)
@@ -100,7 +110,28 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun forceLogOutApi() {
+        if (isOnline(this@LoginHomeActivity)) {
+            ApiRequest(
+                this,
+                ApiInitialize.initialize(ApiInitialize.LOCAL_URL).forceLogout(
+                    encrypt(binding.phoneNumber.text.toString()),
+                ),
+                FORCE_LOGOUT, true, this
+            )
+        } else {
+            showSnackBar(
+                binding.root,
+                getString(R.string.noInternet),
+                ACTIONSNACKBAR.DISMISS
+            )
+        }
+
+    }
+
     /** getApiResponse function... **/
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun getApiResponse(apiResponseManager: ApiResponseManager<*>) {
         when (apiResponseManager.type) {
             LOGIN -> {
@@ -111,8 +142,8 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
                     SUCCESS_CODE -> {
                         objSharedPref.putString(getString(R.string.userResponse), responseValue)
                         val phone = "+91" + binding.phoneNumber.text.toString()
-                        sendVerificationCode(phone)
                         showProgress()
+                        sendVerificationCode(phone)
                     }
                     ERROR_CODE -> {
                         val data = response.getJSONObject("data")
@@ -122,8 +153,68 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
                             ACTIONSNACKBAR.DISMISS
                         )
                     }
+                    403 -> {
+                        showAlertBox("logout","Are sure want to logout from the other devices?")
+                    }
+                }
+            }
+
+            FORCE_LOGOUT -> {
+                val model = apiResponseManager.response as ResponseBody
+                val responseValue = model.string()
+                val response = JSONObject(responseValue)
+                when (response.optInt("status_code")) {
+                    SUCCESS_CODE ->{
+                        Toast.makeText(this, response.optString("message"), Toast.LENGTH_LONG).show()
+                    }
+                    ERROR_CODE ->{
+                        Toast.makeText(this,response.optString("message"), Toast.LENGTH_LONG).show()
+                    }
+                }
+
+            }
+
+
+        }
+    }
+
+
+    /** Showing the error response ... **/
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun showAlertBox(type: String, reason: String){
+        val dialog = AlertDialog.Builder(this)
+        val view: View = layoutInflater.inflate(R.layout.custom_alert_dialog, null)
+        dialog.setView(view)
+        dialog.setCancelable(true)
+        val alert = dialog.create()
+        alert.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val content = view.findViewById<View>(R.id.dialog_text) as TextView
+        val tittle = view.findViewById<View>(R.id.dialog_tittle_text) as TextView
+        val cancel = view.findViewById<View>(R.id.cancel_action) as Button
+        cancel.setOnClickListener { alert.dismiss() }
+        val ok = view.findViewById<View>(R.id.ok_action) as Button
+        cancel.visibility = View.VISIBLE
+        content.textAlignment= View.TEXT_ALIGNMENT_CENTER
+        content.text = reason
+        ok.text = "Yes,Logout"
+        when(type){
+            "logout"->{
+                tittle.text = "Alert!"
+                if(reason!=null){content.text = reason}
+                ok.setOnClickListener {
+                    forceLogOutApi()
+                    alert.dismiss();
+                }
+            }
+            "success"->{
+                tittle.text = "Success"
+                if(reason!=null){content.text = reason}
+                ok.setOnClickListener {
+                    finish();
+                    alert.dismiss();
                 }
             }
         }
+        alert.show()
     }
 }

@@ -88,8 +88,9 @@ class OffsiteListAdapter(
                 if(model.commentsByApprover !=null && model.commentsByApprover !=""){
                     holder.viewReasonText.visibility= View.VISIBLE
                 }
-                if(model.approverLastName.toString() ==null||model.approverFirstName.toString() ==""){
-                    holder.approvedByDateTime.text= "Your has been rejected automatically "+convertDate(model.approvedDate,"yyyy-MM-dd","MMM',' dd")+"|"+convertDate(model.approvedTime,"HH:mm:ss","hh:mm:a")
+                Log.e("skdldlksd", (model.approverFirstName.toString().trim()=="null").toString())
+                if(model.approverFirstName.toString()==null||model.approverFirstName.toString() ==""||model.approverFirstName.toString().trim()=="null"){
+                    holder.approvedByDateTime.text= "Your request has been rejected automatically "+convertDate(model.approvedDate,"yyyy-MM-dd","MMM',' dd")+"|"+convertDate(model.approvedTime,"HH:mm:ss","hh:mm:a")
                 }else{
                     holder.approvedByDateTime.text= model.approverFirstName+" has rejected on "+convertDate(model.approvedDate,"yyyy-MM-dd","MMM',' dd")+"|"+convertDate(model.approvedTime,"HH:mm:ss","hh:mm:a")
                 }

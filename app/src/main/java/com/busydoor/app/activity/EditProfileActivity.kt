@@ -85,7 +85,7 @@ class EditProfileActivity : ActivityBase(),ApiResponseInterface {
         }
         binding.btnUpdate.setOnClickListener {
             if(binding.edMobileNumber.text.toString()!=getUserModel()!!.data.phoneNumber){
-                updateProfile("check")
+//                updateProfile("check")
                 isSendOtp=true
             }else{
                 //Api update fun here
@@ -275,6 +275,7 @@ class EditProfileActivity : ActivityBase(),ApiResponseInterface {
             GET_USERDETAIL -> {
                 val model = apiResponseManager.response as UserDetails
                 if(model.statusCode == SUCCESS_CODE){
+                    objSharedPref.putString("userImage",model.data!!.photo.toString())
                     setdataToUI(model.data!!)
                 }else{
                    showMessage(model.message.toString())
@@ -294,8 +295,7 @@ class EditProfileActivity : ActivityBase(),ApiResponseInterface {
         Glide.with(this)
             .load(data!!.photo)
             .timeout(1000)
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .fitCenter()
             .into(binding.PremiseStaffImages)
     }
@@ -323,14 +323,14 @@ class EditProfileActivity : ActivityBase(),ApiResponseInterface {
     private fun showActivePopupMenu(view: View) {
         val popupMenu = PopupMenu(view.context, view)
         popupMenu.menu.add("Take a picture")
-        popupMenu.menu.add("Galley")
+        popupMenu.menu.add("Gallery")
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.title) {
                 "Take a picture" -> {
                     getFromCamera()
                     true
                 }
-                "Galley" -> {
+                "Gallery" -> {
                     openGallery()
                     true
                 }

@@ -8,7 +8,6 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Binder
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -28,9 +27,6 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
 import com.busydoor.app.activity.CreateNewUserActivity
 import com.busydoor.app.activity.CryptLib2
@@ -40,6 +36,8 @@ import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
+import com.busydoor.app.customMethods.ACTIVITY_DATE
+import com.busydoor.app.customMethods.ACTIVITY_PREMISE_ID
 import com.busydoor.app.customMethods.ADD_USER_RESPONSE
 import com.busydoor.app.customMethods.ADD_USER_TO_PREMISE
 import com.busydoor.app.customMethods.Activate
@@ -49,6 +47,7 @@ import com.busydoor.app.customMethods.ERROR_CODE
 import com.busydoor.app.customMethods.InActivate
 import com.busydoor.app.customMethods.PhoneAuthUtil
 import com.busydoor.app.customMethods.PrefUtils
+import com.busydoor.app.customMethods.RetriveRequestOffsiteDate
 import com.busydoor.app.customMethods.SUCCESS_CODE
 import com.busydoor.app.customMethods.USER_ACTIVE_DEACTIVE
 import com.busydoor.app.customMethods.USER_LIST_DATA
@@ -59,23 +58,16 @@ import com.busydoor.app.customMethods.isRefresh
 import com.busydoor.app.customMethods.key
 import com.busydoor.app.databinding.FragmentUserListBinding
 import com.busydoor.app.interfaceD.HomeClick
-import com.busydoor.app.interfaceD.OnOtpVerifiedListener
-import com.busydoor.app.interfaceD.OtpVerifiedListenerHolder
 import com.busydoor.app.model.PremiseUserList
 import com.busydoor.app.model.UpdateUserStatus
 import com.busydoor.app.model.UserModel
 import com.busydoor.app.viewmodel.OTPViewModel
 import com.busydoor.app.viewmodel.ProfileViewModel
-import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import java.io.Serializable
-import java.util.concurrent.TimeUnit
 
 interface OnUserCreatedListener : Serializable {
     fun onUserCreated()
@@ -106,7 +98,7 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
     private var isAdmin:String = ""
     // to check whether sub FABs are visible or not
     var isAllFabsVisible: Boolean? = null
-    var isShowAdmin: Boolean? = null
+    private var isShowAdmin: Boolean? = null
     private lateinit var profileViewModel: ProfileViewModel
     private lateinit var otpViewModel : OTPViewModel
 
@@ -148,13 +140,19 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
 
         swStatus="true"
         premiseId=activity?.intent?.getStringExtra("premiseId").toString()
-        isAdmin = getUserModel()?.data?.isAdmin.toString()
-        Log.e("original value userList== ",premiseId.toString())
+//        Toast.makeText(requireContext(),premiseId, Toast.LENGTH_SHORT).show()
+        if(premiseId ==null || premiseId=="" || premiseId =="null"){
+//            Toast.makeText(requireContext(), ACTIVITY_PREMISE_ID.toString()+"lll", Toast.LENGTH_SHORT).show()
+            premiseId= ACTIVITY_PREMISE_ID
+        }
+        isAdmin = getUserModel()?.data?.accessLevel.toString()
+        Log.e("original value userList== ",isAdmin)
         mAuth = FirebaseAuth.getInstance()
         pd = ProgressDialog(requireContext())
         pd.setMessage("Please wait...")
 
-        if(isAdmin=="1") binding.addFab.visibility = View.VISIBLE else binding.addFab.visibility = View.GONE
+        if(isAdmin.lowercase()=="admin" || isAdmin.lowercase()=="manager"){
+            binding.addFab.visibility = View.VISIBLE} else{ binding.addFab.visibility = View.GONE}
 
         // Now set all the FABs and all the action name
         // texts as GONE
@@ -515,12 +513,12 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
                 userListPremise = apiResponseManager.response as PremiseUserList
                 if(userListPremise!!.statusCode== SUCCESS_CODE){
                     setHomeOfferData(userListPremise!!.data!!)
-                    if(userListPremise!!.data!!.userDetails!!.userAccessLevel!!.toLowerCase() !="admin"){
-                        binding.addFab.visibility =View.GONE
-                        isShowAdmin=false
-                    }else if(userListPremise!!.data!!.userDetails!!.userAccessLevel!!.toLowerCase() =="admin"){
+                    if(userListPremise!!.data!!.userDetails!!.userAccessLevel!!.lowercase() =="admin"||userListPremise!!.data!!.userDetails!!.userAccessLevel!!.lowercase() =="manager"){
                         binding.addFab.visibility =View.VISIBLE
                         isShowAdmin=true
+                    }else{
+                        binding.addFab.visibility =View.GONE
+                        isShowAdmin=false
                     }
                     setUserAdapter(userListPremise!!.data!!.staffdetails)
                     premiseName=userListPremise!!.data!!.premiseDetails!!.premiseName.toString()

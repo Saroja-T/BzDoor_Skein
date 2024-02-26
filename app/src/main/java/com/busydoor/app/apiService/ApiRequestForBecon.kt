@@ -4,12 +4,15 @@ package com.busydoor.app.apiService
 import android.accounts.NetworkErrorException
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.Application
+import android.content.Intent
 import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.busydoor.app.activity.LoginHomeActivity
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.service.BDApplication
 import retrofit2.Call
@@ -43,6 +46,7 @@ open class ApiRequestForBecon<T>(
     }
 
 
+
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResponse(call: Call<T>, response: Response<T>) {
         Log.e("Api Request", "REQUEST_URL = " + call.request().url().toString())
@@ -70,9 +74,7 @@ open class ApiRequestForBecon<T>(
                 if(activity!=null){
                     /*** login details here ***/
                     bdApplication.stopForegroundService()
-
                 }
-
             }
 
         }

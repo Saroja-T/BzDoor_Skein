@@ -1,11 +1,9 @@
 package com.busydoor.app.activity
 
 import ImageUtils
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -14,7 +12,6 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -22,18 +19,13 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import com.busydoor.app.R
@@ -100,10 +92,6 @@ class CreateNewUserActivity : ActivityBase(), ApiResponseInterface, AdapterView.
         Log.e("orui",premiseID)
         otpViewModel = ViewModelProvider(this).get(OTPViewModel::class.java)
         otpViewModel.sethomeData("sdsds")
-
-
-//        val wrapper = intent.getSerializableExtra("listener",ListenerWrapper::class.java) as ListenerWrapper
-//        listener = wrapper.listener
 
         val sw_status = findViewById<View>(com.busydoor.app.R.id.sw_status) as SwitchCompat
         sw_status.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -335,14 +323,14 @@ class CreateNewUserActivity : ActivityBase(), ApiResponseInterface, AdapterView.
     private fun showActivePopupMenu(view: View) {
         val popupMenu = PopupMenu(view.context, view)
         popupMenu.menu.add("Take a picture")
-        popupMenu.menu.add("Galley")
+        popupMenu.menu.add("Gallery")
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.title) {
                 "Take a picture" -> {
                     getFromCamera()
                     true
                 }
-                "Galley" -> {
+                "Gallery" -> {
                     openGallery()
                     true
                 }

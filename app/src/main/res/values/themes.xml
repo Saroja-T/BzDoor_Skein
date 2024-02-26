@@ -27,4 +27,8 @@
     <style name="AppTextAppearance.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textAllCaps">true</item>
     </style>
+    <!-- Theme.AppCompat.Light is not a dialog theme -->
+    <style name="DatePickerTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:colorBackground">@color/app_color</item>
+    </style>
 </resources>

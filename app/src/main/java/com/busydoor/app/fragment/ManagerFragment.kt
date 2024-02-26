@@ -8,17 +8,16 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
+import android.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.ViewModelProvider
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.busydoor.app.R
 import com.busydoor.app.activity.ActivityBase
 import com.busydoor.app.activity.CryptLib2
@@ -27,6 +26,8 @@ import com.busydoor.app.apiService.ApiInitialize
 import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
+import com.busydoor.app.customMethods.ACTIVITY_PREMISE_ID
+import com.busydoor.app.customMethods.DatePickerUtil
 import com.busydoor.app.customMethods.ENCRYPTION_IV
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.SUCCESS_CODE
@@ -37,7 +38,6 @@ import com.busydoor.app.customMethods.globalDate
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.customMethods.key
 import com.busydoor.app.databinding.FragmentManagerBinding
-import com.busydoor.app.interfaceD.HomeClick
 import com.busydoor.app.model.StaffCountResponse
 import com.busydoor.app.model.UserModel
 import com.busydoor.app.viewmodel.ProfileViewModel
@@ -92,6 +92,9 @@ class ManagerFragment : Fragment(),ApiResponseInterface{
         /*** set userId premiseID  here  */
         userID = getUserModel()?.data?.userId.toString()
         premiseID = activity?.intent?.getStringExtra("premiseId").toString()
+        if(premiseID ==null || premiseID==""||premiseID =="null"){
+            premiseID= ACTIVITY_PREMISE_ID
+        }
         /*** global date was set by the home fragment selected date on scroll date_picker and
          * then "date" get value from global its passed to next pages staffGraphPage  */
         date= globalDate
@@ -99,7 +102,33 @@ class ManagerFragment : Fragment(),ApiResponseInterface{
         /*** api call */
         staffCountGet(date)
         binding.calendarIcon.setOnClickListener {
-            showDatePicker(date)
+            // Show the DatePicker dialog
+            DatePickerUtil.showDatePicker(
+                requireContext(),
+                date
+            ) { formattedDate ->
+                // Update your UI or perform other actions with the selected date
+                date= formattedDate
+                    // Update the TextView to display the selected date with the format
+                    binding.offsiteDateTime.text =
+                        convertDate(formattedDate, "yyyy-MM-dd", "EEE - dd MMM',' yyyy")
+                    /*** Function to staffListGet when click datePicker select a date to call api request */
+                    staffCountGet(formattedDate)
+            }
+//            DatePickerUtil.showDatePicker(
+//                requireContext(),
+//                date!!,
+//                onDateSetListener = { formattedDate ->
+//                    // Handle the selected date in the activity
+//                    // Update UI or perform other actions
+//                    date= formattedDate
+//                    // Update the TextView to display the selected date with the format
+//                    binding.offsiteDateTime.text =
+//                        convertDate(formattedDate, "yyyy-MM-dd", "EEE - dd MMM',' yyyy")
+//                    /*** Function to staffListGet when click datePicker select a date to call api request */
+//                    staffCountGet(formattedDate)
+//                }
+//            )
         }
 
         binding.pgbStaffs.setOnClickListener {
@@ -107,53 +136,6 @@ class ManagerFragment : Fragment(),ApiResponseInterface{
         }
         binding.offsiteDateTime.text= convertDate(globalDate,"yyyy-MM-dd","EEE, MMM dd, yyyy")
         return root
-    }
-
-
-
-    @RequiresApi(Build.VERSION_CODES.R)
-    private fun showDatePicker(initialDate: String) {
-        // Parse the initial date string into year, month, and day
-        val initialCalendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        try {
-            val parsedDate = dateFormat.parse(initialDate)
-            parsedDate?.let {
-                initialCalendar.time = it
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        // Create a Calendar instance for the current date
-        val calendar = Calendar.getInstance()
-        // Create a DatePickerDialog with initial year, month, and day
-        val datePickerDialog = DatePickerDialog(
-            requireContext(),
-            { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
-                // Create a new Calendar instance to hold the selected date
-                val selectedDate = Calendar.getInstance().apply {
-                    // Set the selected date using the values received from the DatePicker dialog
-                    set(year, monthOfYear, dayOfMonth)
-                }
-                // Create a SimpleDateFormat to format the date as "dd/MM/yyyy"
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                // Format the selected date into a string
-                val formattedDate = dateFormat.format(selectedDate.time)
-                date= formattedDate
-                // Update the TextView to display the selected date with the format
-                binding.offsiteDateTime.text =
-                    convertDate(formattedDate, "yyyy-MM-dd", "EEE - dd MMM',' yyyy")
-                /*** Function to staffListGet when click datePicker select a date to call api request */
-                staffCountGet(formattedDate)
-            },
-            initialCalendar.get(Calendar.YEAR),
-            initialCalendar.get(Calendar.MONTH),
-            initialCalendar.get(Calendar.DAY_OF_MONTH)
-        )
-
-        // Set the maximum date to the current date within the current month
-        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-        datePickerDialog.show()
     }
 
     /*** Function to api staffCountGet api request */
@@ -229,13 +211,9 @@ class ManagerFragment : Fragment(),ApiResponseInterface{
                                 offlineStaffCount = totalStaffCount - presentStaffCount
 
                                 binding.staffCountView.text= "$presentStaffCount"
-                                binding.tvCheckIn.text= staffCountData!!.data!!.checkInCount
-                                binding.tvCheckOut.text= staffCountData!!.data!!.checkOutCount
-                                binding.tvOffline.text= staffCountData!!.data!!.offlineCount
-
-                                //binding.textCheckedIn.text= "$checkedInStaffCount"
-                               // binding.textCheckedOut.text= "$checkedOutStaffCount"
-                                //binding.textOffline.text= "$offlineStaffCount"
+                                binding.tvCheckIn.text= "$checkedInStaffCount"
+                                binding.tvCheckOut.text= "$checkedOutStaffCount"
+                                binding.tvOffline.text= "$offlineStaffCount"
 
                                 if (presentStaffCount != 0 && presentStaffCount != null) {
                                     percentage = ((100 * presentStaffCount)

@@ -52,16 +52,14 @@ class YourActivityListAdapter(
                 .load(model.image)
                 .placeholder(circularProgressDrawable)
                 .timeout(1000)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(holder.cIvImage)
         }else{
             Glide.with(context)
                 .load(R.drawable.icon_users)
                 .placeholder(circularProgressDrawable)
                 .timeout(1000)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(holder.cIvImage)
         }
 

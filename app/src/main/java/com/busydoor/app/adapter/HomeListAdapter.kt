@@ -44,8 +44,6 @@ class HomeListAdapter(
         val model: PremiseResponse.Data = premiseDashbordList[position]
 
         val circularProgressDrawable = CircularProgressDrawable(context)
-        circularProgressDrawable.strokeWidth = 5f
-        circularProgressDrawable.centerRadius = 30f
         circularProgressDrawable.backgroundColor= R.color.app_color
         circularProgressDrawable.start()
         Log.d(TAG, "onBindViewHolder: "+model.premiseStatus)
@@ -55,18 +53,14 @@ class HomeListAdapter(
 
             Glide.with(context)
                 .load(model.photo)
-                .placeholder(circularProgressDrawable)
                 .timeout(1000)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(holder.premiseImage)
         }else{
             Glide.with(context)
                 .load(R.drawable.icon_users)
-                .placeholder(circularProgressDrawable)
                 .timeout(1000)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(holder.premiseImage)
         }
 

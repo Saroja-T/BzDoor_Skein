@@ -1,8 +1,5 @@
-
 package com.busydoor.app.fragment
-
 import android.annotation.SuppressLint
-import android.app.DatePickerDialog
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
@@ -24,8 +21,10 @@ import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
 import com.busydoor.app.customMethods.ACTIVITY_PREMISE_ID
 import com.busydoor.app.customMethods.ALL_REQUEST_OFFSITE
+import com.busydoor.app.customMethods.DatePickerUtil
 import com.busydoor.app.customMethods.ENCRYPTION_IV
 import com.busydoor.app.customMethods.PrefUtils
+import com.busydoor.app.customMethods.RetriveRequestOffsiteDate
 import com.busydoor.app.customMethods.SUCCESS_CODE
 import com.busydoor.app.customMethods.convertDate
 import com.busydoor.app.customMethods.encode
@@ -40,9 +39,6 @@ import com.busydoor.app.viewmodel.ProfileViewModel
 import com.busydoor.app.viewmodel.SharedViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 
 class ActivityFragment : Fragment(),ApiResponseInterface {
@@ -76,19 +72,41 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
         viewPager = root.findViewById(R.id.viewPager)
         objSharedPref = PrefUtils(requireContext())
         cryptLib = CryptLib2()
+
         // Initialize the ViewModel
         sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
 
 
         binding.calendarIcon.setOnClickListener{
-            showDatePicker(sharedViewModel.getSharedData()!!)
+
+            DatePickerUtil.showDatePicker(
+                requireContext(),
+                sharedViewModel.getSharedData()!!
+            ) { formattedDate ->
+                // Update your UI or perform other actions with the selected date
+                binding.offsiteDateTime.text =
+                    convertDate(formattedDate, "yyyy-MM-dd", "EEE, MMM dd, yyyy")
+                /*** Function to staffListGet when click datePicker select a date to call api request */
+                // Set data in MainFragment
+                sharedViewModel.setSharedData(formattedDate)
+                getAllActivities(formattedDate)
+            }
         }
 
 
-        sharedViewModel.sharedData.observe(viewLifecycleOwner) { data ->
-            Log.e("sharedData", data)
-            binding.offsiteDateTime.text = convertDate(data, "yyyy-MM-dd", "EEE - dd MMM',' yyyy")
-            getAllActivities(data)
+        if(RetriveRequestOffsiteDate !=null&& RetriveRequestOffsiteDate!="null"&& RetriveRequestOffsiteDate!=""){
+//            Toast.makeText(requireContext(),RetriveRequestOffsiteDate.toString(), Toast.LENGTH_SHORT).show()
+            binding.offsiteDateTime.text =
+                convertDate(RetriveRequestOffsiteDate, "yyyy-MM-dd", "EEE - dd MMM',' yyyy")
+            getAllActivities(RetriveRequestOffsiteDate)
+        }else {
+//            Toast.makeText(requireContext(),RetriveRequestOffsiteDate.toString()+"lll", Toast.LENGTH_SHORT).show()
+            sharedViewModel.sharedData.observe(viewLifecycleOwner) { data ->
+                Log.e("sharedData", data)
+                binding.offsiteDateTime.text =
+                    convertDate(data, "yyyy-MM-dd", "EEE - dd MMM',' yyyy")
+                getAllActivities(data)
+            }
         }
 
 
@@ -102,96 +120,6 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
     @SuppressLint("SuspiciousIndentation")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    /*** Function to show date picker*/
-    @SuppressLint("NewApi")
-/*
-    private fun showDatePicker() {
-        // Create a Calendar instance for the current date
-        val calendar = Calendar.getInstance()
-        // Create a DatePickerDialog with current year, month, and day as default selections
-        val datePickerDialog = DatePickerDialog(requireContext(),
-            { datePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
-                // Create a new Calendar instance to hold the selected date
-                val selectedDate = Calendar.getInstance().apply {
-                    // Set the selected date using the values received from the DatePicker dialog
-                    set(year, monthOfYear, dayOfMonth)
-                }
-                // Create a SimpleDateFormat to format the date as "dd/MM/yyyy"
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-                // Format the selected date into a string
-                val formattedDate = dateFormat.format(selectedDate.time)
-
-                // Update the TextView to display the selected date with the format
-                binding.offsiteDateTime.text= convertDate(formattedDate,"yyyy-MM-dd","EEE, MMM dd, yyyy")
-                */
-/*** Function to staffListGet when click datePicker select a date to call api request *//*
-                // Set data in MainFragment
-                sharedViewModel.setSharedData(formattedDate)
-                getAllActivities(formattedDate)
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-        // Set the maximum date to the current date within the current month
-        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-        datePickerDialog.show()
-    }
-*/
-
-
-    private fun showDatePicker(initialDate: String) {
-        // Parse the initial date string into year, month, and day
-        val initialCalendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-        try {
-            val parsedDate = dateFormat.parse(initialDate)
-            parsedDate?.let {
-                initialCalendar.time = it
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        // Create a Calendar instance for the current date
-        val calendar = Calendar.getInstance()
-
-        // Create a DatePickerDialog with initial year, month, and day
-        val datePickerDialog = DatePickerDialog(
-            requireContext(),
-            { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
-                // Create a new Calendar instance to hold the selected date
-                val selectedDate = Calendar.getInstance().apply {
-                    // Set the selected date using the values received from the DatePicker dialog
-                    set(year, monthOfYear, dayOfMonth)
-                }
-                // Create a SimpleDateFormat to format the date as "dd/MM/yyyy"
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-                // Format the selected date into a string
-                val formattedDate = dateFormat.format(selectedDate.time)
-
-                // Update the TextView to display the selected date with the format
-                binding.offsiteDateTime.text =
-                    convertDate(formattedDate, "yyyy-MM-dd", "EEE, MMM dd, yyyy")
-                /*** Function to staffListGet when click datePicker select a date to call api request */
-                // Set data in MainFragment
-                sharedViewModel.setSharedData(formattedDate)
-                getAllActivities(formattedDate)
-            },
-            initialCalendar.get(Calendar.YEAR),
-            initialCalendar.get(Calendar.MONTH),
-            initialCalendar.get(Calendar.DAY_OF_MONTH)
-        )
-
-        // Set the maximum date to the current date within the current month
-        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-
-        datePickerDialog.show()
     }
 
     inner class YourPagerAdapter(fm: FragmentManager) :
@@ -245,7 +173,7 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
     fun getAllActivities(date:String) {
         try {
             if (isOnline(requireContext())) {
-                Log.e("apiCalled", " ap")
+                Log.e("apiCalled", ACTIVITY_PREMISE_ID)
                 ApiRequest(
                     requireActivity(),
                     ApiInitialize.initialize(ApiInitialize.LOCAL_URL).getYourActivitiesList(
@@ -274,7 +202,7 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
                 requestAllDataGet = apiResponseManager.response as UserActivities
                 if (requestAllDataGet!!.statusCode == SUCCESS_CODE) {
                     Log.e("apiCalled", " getApiResponse1")
-                    if (requestAllDataGet!!.data != null) {
+                    if (requestAllDataGet!!.data != null || requestAllDataGet!!.data.toString() !="null" ) {
                         Log.e("apiCalled", " getApiResponse2")
                         setHomeOfferData(requestAllDataGet!!.data)
                         Log.e("zzzzzzzz",requestAllDataGet!!.data.toString())

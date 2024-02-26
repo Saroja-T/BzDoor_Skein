@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -24,6 +25,7 @@ import com.busydoor.app.apiService.ApiRequest
 import com.busydoor.app.apiService.ApiResponseInterface
 import com.busydoor.app.apiService.ApiResponseManager
 import com.busydoor.app.customMethods.ALL_REQUEST_OFFSITE
+import com.busydoor.app.customMethods.DatePickerUtil
 import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.SUCCESS_CODE
 import com.busydoor.app.customMethods.activity
@@ -49,10 +51,11 @@ class AllOffsiteRequestActivity : ActivityBase(),ApiResponseInterface, HomeClick
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
-//            getUserListRequest()
           Log.e("tttttttttttttttt1",result.data?.getStringExtra("date").toString())
           val date = result.data?.getStringExtra("date").toString()
             getAllRequest(date)
+            binding.offsiteSelectedDate.text=convertDate(date,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
+
         }else{
             Log.e("ttttttttttttttt2222",intent.getStringExtra("date").toString())
 
@@ -76,7 +79,20 @@ class AllOffsiteRequestActivity : ActivityBase(),ApiResponseInterface, HomeClick
         getAllRequest(userSelectedDate!!)
         /** show date picker onclick... **/
         binding.calendarIcon.setOnClickListener{
-            showDatePicker(calenderSelectedDate!!)
+            // Show the DatePicker dialog
+            DatePickerUtil.showDatePicker(
+                this,
+                calenderSelectedDate!!
+            ) { formattedDate ->
+                // Update your UI or perform other actions with the selected date
+                userSelectedDate = formattedDate;
+                calenderSelectedDate=userSelectedDate
+                // Update the TextView to display the selected date with the format
+                displayCurrentDate= convertDate(formattedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
+                binding.offsiteSelectedDate.text=displayCurrentDate
+                /*** Function to staffListGet when click datePicker select a date to call api request */
+                getAllRequest(userSelectedDate!!)
+            }
         }
         /** Navigate to back page... **/
         binding.requestOffcite.backToDonut.setOnClickListener{
@@ -108,52 +124,6 @@ class AllOffsiteRequestActivity : ActivityBase(),ApiResponseInterface, HomeClick
         }
 
     }
-
-    /** Show alert box with the different condition bases to shows the contents here... **/
-    @RequiresApi(Build.VERSION_CODES.P)
-    private fun showAlertBox(type: String, reason: String){
-        val dialog = AlertDialog.Builder(this)
-        val view: View = layoutInflater.inflate(com.busydoor.app.R.layout.custom_alert_dialog, null)
-        dialog.setView(view)
-        dialog.setCancelable(true)
-        val alert = dialog.create()
-        alert.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        val content = view.findViewById<View>(R.id.dialog_text) as TextView
-        val tittle = view.findViewById<View>(R.id.dialog_tittle_text) as TextView
-        val cancel = view.findViewById<View>(R.id.cancel_action) as Button
-        cancel.setOnClickListener { alert.dismiss() }
-        val ok = view.findViewById<View>(R.id.ok_action) as Button
-        cancel.visibility = View.GONE
-        content.textAlignment= View.TEXT_ALIGNMENT_TEXT_START
-        content.text = reason
-        content.background= getDrawable(R.drawable.view_reason_back)
-        ok.text = "Done"
-        when(type){
-            "viewReason"-> {
-                tittle.text = "Reason for Approving"
-                if(reason!=null){content.text = reason}
-                ok.setOnClickListener {
-                    alert.dismiss();
-                }
-            }
-            "approved"->{
-                tittle.text = "Reason for Approving"
-                if(reason!=null){content.text = reason}
-                ok.setOnClickListener {
-                    alert.dismiss();
-                }
-            }
-            "rejected"->{
-                tittle.text = "Reason for Rejecting"
-                if(reason!=null){content.text = reason}
-                ok.setOnClickListener {
-                    alert.dismiss();
-                }
-            }
-        }
-        alert.show()
-    }
-
     /** Show datePicker **/
     @RequiresApi(Build.VERSION_CODES.R)
     private fun showDatePicker(initialDate: String) {
@@ -199,6 +169,52 @@ class AllOffsiteRequestActivity : ActivityBase(),ApiResponseInterface, HomeClick
         // Set the maximum date to the current date within the current month
         datePickerDialog.datePicker.maxDate = calendar.timeInMillis
         datePickerDialog.show()
+    }
+
+
+    /** Show alert box with the different condition bases to shows the contents here... **/
+    @RequiresApi(Build.VERSION_CODES.P)
+    private fun showAlertBox(type: String, reason: String){
+        val dialog = AlertDialog.Builder(this)
+        val view: View = layoutInflater.inflate(com.busydoor.app.R.layout.custom_alert_dialog, null)
+        dialog.setView(view)
+        dialog.setCancelable(true)
+        val alert = dialog.create()
+        alert.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val content = view.findViewById<View>(R.id.dialog_text) as TextView
+        val tittle = view.findViewById<View>(R.id.dialog_tittle_text) as TextView
+        val cancel = view.findViewById<View>(R.id.cancel_action) as Button
+        cancel.setOnClickListener { alert.dismiss() }
+        val ok = view.findViewById<View>(R.id.ok_action) as Button
+        cancel.visibility = View.GONE
+        content.textAlignment= View.TEXT_ALIGNMENT_TEXT_START
+        content.text = reason
+        content.background= getDrawable(R.drawable.view_reason_back)
+        ok.text = "Done"
+        when(type){
+            "viewReason"-> {
+                tittle.text = "Reason for Approving"
+                if(reason!=null){content.text = reason}
+                ok.setOnClickListener {
+                    alert.dismiss();
+                }
+            }
+            "approved"->{
+                tittle.text = "Reason for Approving"
+                if(reason!=null){content.text = reason}
+                ok.setOnClickListener {
+                    alert.dismiss();
+                }
+            }
+            "rejected"->{
+                tittle.text = "Reason for Rejecting"
+                if(reason!=null){content.text = reason}
+                ok.setOnClickListener {
+                    alert.dismiss();
+                }
+            }
+        }
+        alert.show()
     }
 
     /** get data from api and send data to Adapter and show the list fun... **/
@@ -247,6 +263,7 @@ class AllOffsiteRequestActivity : ActivityBase(),ApiResponseInterface, HomeClick
     /** Api request for get all data fun... **/
     @RequiresApi(Build.VERSION_CODES.R)
     fun getAllRequest(date:String) {
+        Log.e("getAllRequest",date.toString())
         try {
             if (isOnline(this)) {
                 ApiRequest(

@@ -31,6 +31,7 @@ import com.busydoor.app.customMethods.AcceptRejectOffsite
 import com.busydoor.app.customMethods.ENCRYPTION_IV
 import com.busydoor.app.customMethods.MyCustomEdittext
 import com.busydoor.app.customMethods.PrefUtils
+import com.busydoor.app.customMethods.RetriveRequestOffsiteDate
 import com.busydoor.app.customMethods.SUCCESS_CODE
 import com.busydoor.app.customMethods.encode
 import com.busydoor.app.customMethods.isOnline
@@ -58,8 +59,6 @@ class RequestFragment : Fragment(), ApiResponseInterface,RequestClick {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-//            getAllActivities("2024-01-09")
-            // Initialize the ViewModel
         }
     }
 
@@ -77,26 +76,25 @@ class RequestFragment : Fragment(), ApiResponseInterface,RequestClick {
         // Retrieve data in TabBarFragment
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-        sharedViewModel.sharedData.observe(viewLifecycleOwner, { data ->
-            // Handle changes to the shared data in TabBarFragment
-            // The 'data' variable contains the updated value
-            Log.e("sharedData",data)
-            getAllActivities(data)
-        })
+        Log.e("zzzzzzzzzzzzz",RetriveRequestOffsiteDate.toString())
+            sharedViewModel.sharedData.observe(viewLifecycleOwner) { data ->
+                // Handle changes to the shared data in TabBarFragment
+                // The 'data' variable contains the updated value
+                Log.e("sharedData", data)
+                getAllActivities(data)
+            }
         return  root
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        getAllActivities("2023-12-28")
 
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
-//        getAllActivities(globalDate)
 
     }
 
@@ -277,7 +275,7 @@ class RequestFragment : Fragment(), ApiResponseInterface,RequestClick {
                 RequestsAdapter(
                     requireContext(),
                     data,
-                    this,getUserModel()!!.data.isAdmin)
+                    this,getUserModel()!!.data.accessLevel)
             // Create adapter object
             binding.rvRequests.adapter = requestListAdapter
             binding.rvRequests.visibility = View.VISIBLE

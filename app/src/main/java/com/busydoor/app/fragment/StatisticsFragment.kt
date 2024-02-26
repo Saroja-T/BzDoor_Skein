@@ -25,6 +25,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -49,7 +50,7 @@ import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.convertDate
 import com.busydoor.app.customMethods.globalDate
 import com.busydoor.app.databinding.FragmentStatisticsBinding
-import com.busydoor.app.interfaceD.HomeClick
+import com.busydoor.app.model.HomeDataResponse
 import com.busydoor.app.model.StaffGraphDetails
 import com.busydoor.app.model.UserModel
 import com.busydoor.app.viewmodel.ProfileViewModel
@@ -118,7 +119,7 @@ open class StatisticsFragment : Fragment(), OnChartValueSelectedListener,ApiResp
                 // same time, respect the user's decision. Don't link to system
                 // settings in an effort to convince the user to change their
                 // decision.
-                showToastShort(requireContext(), "isGranted false")
+                showToastShort(requireContext(), "Permission Denied")
 
             }
         }
@@ -137,7 +138,8 @@ open class StatisticsFragment : Fragment(), OnChartValueSelectedListener,ApiResp
         binding = FragmentStatisticsBinding.inflate(inflater, container, false)
         val root: View = binding.root
         // Inflate the layout for this fragment
-        profileViewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
+        //profileViewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
+        profileViewModel = ViewModelProvider(requireActivity()).get(ProfileViewModel::class.java)
 
         chart=binding.chart
         /*** initialize encrypt fun here  */
@@ -147,6 +149,9 @@ open class StatisticsFragment : Fragment(), OnChartValueSelectedListener,ApiResp
 
         userID = getUserModel()?.data?.userId.toString()
         premiseID = activity?.intent?.getStringExtra("premiseId").toString()
+        if(premiseID==null||premiseID=="null"||premiseID==""){
+            premiseID= ACTIVITY_PREMISE_ID
+        }
 
         binding.offsiteHeading.text= convertDate(globalDate,"yyyy-MM-dd","EEE, MMM dd, yyyy")
 
@@ -157,7 +162,20 @@ open class StatisticsFragment : Fragment(), OnChartValueSelectedListener,ApiResp
         selectedDate = Calendar.getInstance()
 
         binding.calendarIcon.setOnClickListener{
-            showDatePicker(date)
+            // Show the DatePicker dialog
+            DatePickerUtil.showDatePicker(
+                requireContext(),
+                date
+            ) { formattedDate ->
+                // Update your UI or perform other actions with the selected date
+                date=formattedDate
+                    selectedMonthAndYear(date)
+                    // Update the TextView to display the selected date with the format
+                    binding.offsiteHeading.text= convertDate(formattedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
+                    /*** Function to staffListGet when click datePicker select a date to call api request */
+                    chart.marker=null
+                    staffGraphDataGet(date)
+            }
         }
 
         binding.chart.clear()
@@ -188,7 +206,7 @@ open class StatisticsFragment : Fragment(), OnChartValueSelectedListener,ApiResp
         xAxis.granularity = 1f
 
         // Sample date string
-        binding.spinnerView.setOnClickListener {
+        binding.tvMonthSelector.setOnClickListener {
             showMonthYearPickerDialog(selecetdMonthYear)
         }
         binding.actionDownIcon.setOnClickListener {
@@ -530,8 +548,21 @@ open class StatisticsFragment : Fragment(), OnChartValueSelectedListener,ApiResp
         binding.chart.groupBars(0f, groupSpace, barSpace)
         binding.chart.invalidate()
         binding.chart.fitScreen()
+        // Select the last entry by default
+        val lastIndex = values1.size - 1
+        // highlight the first dataset
+        val dataSetIndex = 0
+        binding.chart.highlightValue(lastIndex.toFloat(), dataSetIndex, false)
+        // Manually trigger onValueSelected for the last entry
+        handleOnValueSelected(lastIndex.toFloat(), dataSetIndex)
     }
 
+    private fun handleOnValueSelected(xIndex: Float, dataSetIndex: Int) {
+        val entry = chart.data.getDataSetByIndex(dataSetIndex).getEntryForIndex(xIndex.toInt())
+        val highlight = Highlight(xIndex, entry.y, dataSetIndex)
+        onValueSelected(entry, highlight)
+
+    }
 
 override fun onValueSelected(e: Entry?, h: Highlight?) {
     Log.i("Activity", "Selected: $e, dataSet: ${h?.dataSetIndex}")
@@ -577,7 +608,7 @@ override fun onValueSelected(e: Entry?, h: Highlight?) {
 
     private fun updateUI(status: String, details: StaffGraphDetails.Data.GraphDetails?) {
         Log.e("statuzzz",details!!.offsiteTimings.toString())
-        binding.tvGraphStatusOnline.text="online"
+        binding.tvGraphStatusOnline.text="Online"
         binding.tvGraphStatusOffsite.text="Offsite"
         binding.tvGraphStatusOffline.text="Offline"
         if(details!!.onlineTimings !=null&&details!!.onlineTimings !="") {binding.chartTimeDetailsOnline.text = details?.onlineTimings}else{binding.chartTimeDetailsOnline.text = "No timings available"}
@@ -590,58 +621,6 @@ override fun onValueSelected(e: Entry?, h: Highlight?) {
         binding.chartTimeDetailsIndicatorOnline.visibility=View.GONE
         binding.indicatorOffline.visibility=View.GONE
         binding.indicatorOffsite.visibility=View.GONE
-    }
-
-
-
-
-    @RequiresApi(Build.VERSION_CODES.R)
-    private fun showDatePicker(initialDate: String) {
-        // Parse the initial date string into year, month, and day
-        val initialCalendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-        try {
-            val parsedDate = dateFormat.parse(initialDate)
-            parsedDate?.let {
-                initialCalendar.time = it
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        // Create a Calendar instance for the current date
-        val calendar = Calendar.getInstance()
-
-        // Create a DatePickerDialog with initial year, month, and day
-        val datePickerDialog = DatePickerDialog(
-            requireContext(),
-            { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
-                // Create a new Calendar instance to hold the selected date
-                val selectedDate = Calendar.getInstance().apply {
-                    // Set the selected date using the values received from the DatePicker dialog
-                    set(year, monthOfYear, dayOfMonth)
-                }
-                // Create a SimpleDateFormat to format the date as "dd/MM/yyyy"
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-                // Format the selected date into a string
-                val formattedDate = dateFormat.format(selectedDate.time)
-                date=formattedDate
-                selectedMonthAndYear(date)
-                // Update the TextView to display the selected date with the format
-                binding.offsiteHeading.text= convertDate(formattedDate,"yyyy-MM-dd","EEE - dd MMM',' yyyy")
-                /*** Function to staffListGet when click datePicker select a date to call api request */
-                chart.marker=null
-                staffGraphDataGet(date)
-            },
-            initialCalendar.get(Calendar.YEAR),
-            initialCalendar.get(Calendar.MONTH),
-            initialCalendar.get(Calendar.DAY_OF_MONTH)
-        )
-        // Set the maximum date to the current date within the current month
-        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-        datePickerDialog.show()
     }
 
 
@@ -730,15 +709,13 @@ override fun onValueSelected(e: Entry?, h: Highlight?) {
                     staffGraphDetailsData = graphData
                     if (graphData.statusCode== SUCCESS_CODE){
                         /*** graph datas are set */
-                        setHomeOfferData(graphData.data!!)
+                        setPremiseData(graphData.data!!)
                         setGraphData(graphData.data!!)
-                        hideStatusView()
                         if(graphData.data!!.pdfDownload=="no"){
                             binding.pdfShowView.visibility=View.GONE
                         }
-//                        showSnackBar(binding.root,graphData.message.toString(),ActivityBase.ACTIONSNACKBAR.DISMISS)
                     }else{
-//                        showSnackBar(binding.root,graphData.message.toString(),ActivityBase.ACTIONSNACKBAR.DISMISS)
+                        hideStatusView()
                     }
                 }
 
@@ -752,15 +729,18 @@ override fun onValueSelected(e: Entry?, h: Highlight?) {
         binding.indicatorOffline.visibility = View.GONE
     }
 
-    private fun setHomeOfferData(dataModel: StaffGraphDetails.Data) {
-        profileViewModel.setProfileData(dataModel!!.userDetails!!.userImage.toString(),
+    private fun setPremiseData(dataModel: StaffGraphDetails.Data) {
+
+        profileViewModel.setProfileData(
+            dataModel.userDetails!!.userImage.toString(),
             dataModel.userDetails!!.userFirstName.toString(),
             dataModel.userDetails!!.userLastName.toString(),
             dataModel.userDetails!!.userStatus.toString(),
-            dataModel.premiseDetails!!.premiseName +", "+dataModel.premiseDetails!!.city+", "+dataModel.premiseDetails!!.state,
+            dataModel.premiseDetails!!.premiseName + ", " + dataModel.premiseDetails!!.city + ", " + dataModel.premiseDetails!!.state,
         )
 
     }
+
 
 
 

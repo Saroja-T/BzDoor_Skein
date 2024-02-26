@@ -40,7 +40,7 @@
                 android:padding="@dimen/_5sdp"
                 android:text="@string/signInHeader"
                 android:textColor="@color/black"
-                android:textSize="32dp" />
+                android:textSize="@dimen/_20sdp" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -86,7 +86,7 @@
                 android:text="Change Photo"
                 android:textColor="@color/text_color"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:textSize="18dp" />
+                android:textSize="@dimen/_18sdp" />
 
             <LinearLayout
                 android:id="@+id/cv_login_view"
@@ -198,7 +198,7 @@
                         android:padding="@dimen/_10sdp"
                         android:textColor="@color/black"
                         android:textColorHint="#CCCCCC"
-                        android:textSize="@dimen/_10sdp"
+                        android:textSize="@dimen/_13sdp"
                         android:layout_marginTop="@dimen/_15sdp"/>
 
 
@@ -216,7 +216,7 @@
                         android:paddingEnd="@dimen/_14sdp"
                         android:textColor="@color/black"
                         android:textColorHint="#CCCCCC"
-                        android:textSize="@dimen/_10sdp"
+                        android:textSize="@dimen/_13sdp"
                         android:layout_marginTop="@dimen/_15sdp"/>
 
 
@@ -248,7 +248,7 @@
                             android:id="@+id/sp_access_level"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_30sdp"
-                            android:textSize="@dimen/_10sdp"
+                            android:textSize="@dimen/_13sdp"
                             android:spinnerMode="dropdown"
                             android:layout_gravity="center"
                             />
@@ -284,7 +284,7 @@
                 android:text="@string/signInHeader"
                 android:elevation="@dimen/_15sdp"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/_15sdp" />
 
             <com.busydoor.app.customMethods.MyCustomTextView
                 android:id="@+id/tv_term_and_condition"
