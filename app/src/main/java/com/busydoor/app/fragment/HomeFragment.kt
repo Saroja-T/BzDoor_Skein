@@ -224,12 +224,10 @@ class HomeFragment : Fragment(),ApiResponseInterface {
             }
         }
         if(premiseID ==null|| premiseID ==""||premiseID ==""){
-//            Toast.makeText(requireContext(), ACTIVITY_PREMISE_ID.toString()+"lll", Toast.LENGTH_SHORT).show()
             premiseID= ACTIVITY_PREMISE_ID
            apiDate= RetriveRequestOffsiteDate
             homeDataGet(apiDate)
         }else {
-//            Toast.makeText(requireContext(), ACTIVITY_PREMISE_ID.toString()+"mmm", Toast.LENGTH_SHORT).show()
             homeViewModel.homeData.observe(viewLifecycleOwner) { data ->
                 // Handle changes to the shared data in TabBarFragment
                 // The 'data' variable contains the updated value

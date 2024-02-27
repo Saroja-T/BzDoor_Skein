@@ -397,15 +397,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.e("sendOnChannel5", "notification=== "+ remoteMessage.notification!!.clickAction.toString())
         Log.e("sendOnChannel5", "data=== "+ remoteMessage.data["premise_id"])
 
-        if(remoteMessage.data.toString() !=null && remoteMessage.data.toString() !="null"){
-            ACTIVITY_PREMISE_ID= remoteMessage.data["premise_id"].toString()
-            RetriveRequestOffsiteDate= remoteMessage.data["date"].toString()
-            isNotify=true
-        }
-
         val intent = Intent(this,BottomNavigationBarActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+
         // Create a PendingIntent to handle the tap on the notification
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -438,6 +433,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             return
         }
         notificationManager!!.notify(5, default)
+        if(remoteMessage.data.toString() !=null && remoteMessage.data.toString() !="null"){
+            ACTIVITY_PREMISE_ID= remoteMessage.data["premise_id"].toString()
+            RetriveRequestOffsiteDate= remoteMessage.data["date"].toString()
+            isNotify=true
+        }
     }
 
 

@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -28,6 +29,7 @@ import com.busydoor.app.customMethods.RetriveRequestOffsiteDate
 import com.busydoor.app.customMethods.SUCCESS_CODE
 import com.busydoor.app.customMethods.convertDate
 import com.busydoor.app.customMethods.encode
+import com.busydoor.app.customMethods.isNotify
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.customMethods.key
 import com.busydoor.app.databinding.FragmentActivityBinding
@@ -95,23 +97,28 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
 
 
         if(RetriveRequestOffsiteDate !=null&& RetriveRequestOffsiteDate!="null"&& RetriveRequestOffsiteDate!=""){
-//            Toast.makeText(requireContext(),RetriveRequestOffsiteDate.toString(), Toast.LENGTH_SHORT).show()
             binding.offsiteDateTime.text =
                 convertDate(RetriveRequestOffsiteDate, "yyyy-MM-dd", "EEE - dd MMM',' yyyy")
-            getAllActivities(RetriveRequestOffsiteDate)
-        }else {
-//            Toast.makeText(requireContext(),RetriveRequestOffsiteDate.toString()+"lll", Toast.LENGTH_SHORT).show()
+            sharedViewModel.setSharedData(RetriveRequestOffsiteDate)
+        }
+
             sharedViewModel.sharedData.observe(viewLifecycleOwner) { data ->
                 Log.e("sharedData", data)
                 binding.offsiteDateTime.text =
                     convertDate(data, "yyyy-MM-dd", "EEE - dd MMM',' yyyy")
                 getAllActivities(data)
             }
-        }
+
 
 
         val adapter = YourPagerAdapter(childFragmentManager)
         viewPager.adapter = adapter
+        if(isNotify){
+            viewPager.setCurrentItem(1,true)
+            isNotify=false
+        }else{
+            viewPager.setCurrentItem(0,true)
+        }
         tabLayout.setupWithViewPager(viewPager)
 
         return root
@@ -173,7 +180,7 @@ class ActivityFragment : Fragment(),ApiResponseInterface {
     fun getAllActivities(date:String) {
         try {
             if (isOnline(requireContext())) {
-                Log.e("apiCalled", ACTIVITY_PREMISE_ID)
+                Log.e("apiCalled", date)
                 ApiRequest(
                     requireActivity(),
                     ApiInitialize.initialize(ApiInitialize.LOCAL_URL).getYourActivitiesList(

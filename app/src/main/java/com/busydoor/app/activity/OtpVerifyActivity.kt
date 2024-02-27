@@ -235,6 +235,7 @@ class OtpVerifyActivity : ActivityBase(),ApiResponseInterface{
     @RequiresApi(Build.VERSION_CODES.R)
     private fun registerApi() {
         Log.d(TAG, "onCreate: " + objSharedPref.getString("FCM_TOKEN")!!)
+        Log.d(TAG, "onCreate: " + objSharedPref.getString("user_response")!!)
         if (isOnline(this@OtpVerifyActivity)) {
             Log.e("OTPPPP  ","registerApi   "+objSharedPref.getString("deviceId")!!.toString())
             ApiRequest(

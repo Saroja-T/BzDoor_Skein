@@ -34,6 +34,7 @@ import com.busydoor.app.customMethods.PrefUtils
 import com.busydoor.app.customMethods.RetriveRequestOffsiteDate
 import com.busydoor.app.customMethods.SUCCESS_CODE
 import com.busydoor.app.customMethods.encode
+import com.busydoor.app.customMethods.isNotify
 import com.busydoor.app.customMethods.isOnline
 import com.busydoor.app.customMethods.key
 import com.busydoor.app.databinding.FragmentRequestBinding
@@ -81,7 +82,8 @@ class RequestFragment : Fragment(), ApiResponseInterface,RequestClick {
                 // Handle changes to the shared data in TabBarFragment
                 // The 'data' variable contains the updated value
                 Log.e("sharedData", data)
-                getAllActivities(data)
+                    getAllActivities(data)
+
             }
         return  root
     }
@@ -254,7 +256,6 @@ class RequestFragment : Fragment(), ApiResponseInterface,RequestClick {
                 aceeptRejectData = apiResponseManager.response as AcceptOffsiteRes
                 Log.e("AcceptRejectOffsite",aceeptRejectData.toString())
                 if(aceeptRejectData!!.statusCode == SUCCESS_CODE){
-//                    getAllActivities(globalDate)
                     showAlertBox("api-success")
                 }else{
                     showAlertBox("api-failure")

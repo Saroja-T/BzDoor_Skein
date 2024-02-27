@@ -140,9 +140,7 @@ class UserListFragment : Fragment(),ApiResponseInterface,HomeClick {
 
         swStatus="true"
         premiseId=activity?.intent?.getStringExtra("premiseId").toString()
-//        Toast.makeText(requireContext(),premiseId, Toast.LENGTH_SHORT).show()
         if(premiseId ==null || premiseId=="" || premiseId =="null"){
-//            Toast.makeText(requireContext(), ACTIVITY_PREMISE_ID.toString()+"lll", Toast.LENGTH_SHORT).show()
             premiseId= ACTIVITY_PREMISE_ID
         }
         isAdmin = getUserModel()?.data?.accessLevel.toString()

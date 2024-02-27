@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
@@ -55,7 +56,6 @@ class BottomNavigationBarActivity : ActivityBase() {
 
         if (intent != null) {
             val dataBundle = intent.extras
-            Toast.makeText(this,isNotify.toString(),Toast.LENGTH_SHORT).show()
             if(dataBundle!=null && dataBundle.toString() !="null" && dataBundle.toString() !=""){
                 val clickAction= dataBundle!!.getString("click_action")
                 if(clickAction !=null && clickAction !="" && clickAction !="null"){
@@ -76,6 +76,7 @@ class BottomNavigationBarActivity : ActivityBase() {
             setupSmoothBottomMenuStaff()
         }
 
+
         profileViewModel.profileData.observe(this) { data ->
             // Handle changes to the shared data in BottomBarFragment
             // The 'data' variable contains the updated value
@@ -95,7 +96,13 @@ class BottomNavigationBarActivity : ActivityBase() {
         binding.userProfileView.editProfile.setOnClickListener {
             startActivity(Intent(this, EditProfileActivity::class.java))
         }
+        binding.bottomBar.setOnClickListener {
+
+
+        }
+
         binding.bottomBar.onItemSelected = {
+
             if(it==0){
                 navController.navigate(R.id.first_fragment)
                 isNotify= false
@@ -103,15 +110,34 @@ class BottomNavigationBarActivity : ActivityBase() {
             }
             Log.e("onItemSelected", "Item $it selected")
         }
+
         binding.bottomBar.onItemReselected = {
             if(it==0){
-//                Toast.makeText(this,isNotify.toString(),Toast.LENGTH_SHORT).show()
                 navController.navigate(R.id.first_fragment)
             }
             Log.e("onItemReselected", "Item $it selected")
         }
 
-        setupSmoothBottomMenu()
+        binding.bottomBarStaff.onItemSelected = {
+
+            if(it==0){
+                navController.navigate(R.id.first_fragment)
+                isNotify= false
+                RetriveRequestOffsiteDate=""
+            }
+            Log.e("onItemSelected", "Item $it selected")
+        }
+
+        binding.bottomBarStaff.onItemReselected = {
+            if(it==0){
+                navController.navigate(R.id.first_fragment)
+            }
+            Log.e("onItemReselected", "Item $it selected")
+        }
+
+
+
+        //setupSmoothBottomMenu()
 
         onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
             // Back is pressed... Finishing the activity
@@ -120,7 +146,6 @@ class BottomNavigationBarActivity : ActivityBase() {
 
 
     }
-
 
     private fun onBackClick() {
         val manager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
@@ -214,7 +239,7 @@ class BottomNavigationBarActivity : ActivityBase() {
         if(isNotify){
             binding.bottomBar.setupWithNavController(menu, navController)
             navController.navigate(R.id.fifth_fragment)
-            isNotify=false
+//            isNotify=false
         }else{
             binding.bottomBar.setupWithNavController(menu, navController)
         }
@@ -223,7 +248,12 @@ class BottomNavigationBarActivity : ActivityBase() {
         val popupMenu = PopupMenu(this, null)
         popupMenu.inflate(R.menu.menu_bottom_staff)
         val menu = popupMenu.menu
-        binding.bottomBarStaff.setupWithNavController(menu, navController)
+        if(isNotify){
+            binding.bottomBarStaff.setupWithNavController(menu, navController)
+            navController.navigate(R.id.fifth_fragment)
+        }else{
+            binding.bottomBarStaff.setupWithNavController(menu, navController)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

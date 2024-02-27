@@ -69,12 +69,12 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
 //        binding.offsiteSelectedDate.text= displayCurrentDate
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-        sharedViewModel.sharedData.observe(viewLifecycleOwner, { data ->
+        sharedViewModel.sharedData.observe(viewLifecycleOwner) { data ->
             // Handle changes to the shared data in TabBarFragment
             // The 'data' variable contains the updated value
-            Log.e("sharedData1",data)
+            Log.e("sharedData1", data)
             getAllActivities(data)
-        })
+        }
         return root
     }
 
@@ -82,14 +82,11 @@ class YourActivityFragment : Fragment(),ApiResponseInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.e("setHomeOfferData","")
-//        getAllActivities("2024-01-09")
 
     }
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
-//        getAllActivities(globalDate)
-
     }
 
     private fun setHomeOfferData(data: ArrayList<UserActivities.Data.Activitiesdetails>) {

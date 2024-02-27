@@ -107,6 +107,7 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
                 Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
             }
         )
+        dismissProgress()
     }
 
 
@@ -140,6 +141,7 @@ class LoginHomeActivity : ActivityBase(),ApiResponseInterface {
                 val response = JSONObject(responseValue)
                 when (response.optInt("status_code")) {
                     SUCCESS_CODE -> {
+                        Log.d(TAG, "onCreate: $response")
                         objSharedPref.putString(getString(R.string.userResponse), responseValue)
                         val phone = "+91" + binding.phoneNumber.text.toString()
                         showProgress()

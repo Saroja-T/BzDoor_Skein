@@ -166,6 +166,7 @@ class DashboardActivity : ActivityBase(),ApiResponseInterface,HomeClick{
     ) {
         try {
             if (isOnline(this)) {
+                Log.e("nnnnnnnnnnnnnn","${getUserModel()!!.data.token}.toString()")
                 ApiRequest(
                     this,ApiInitialize.initialize(ApiInitialize.LOCAL_URL).logOut(
                         "Bearer ${getUserModel()!!.data.token}"
